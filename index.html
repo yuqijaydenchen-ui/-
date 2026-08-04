@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8" />
-    <title>暗影勇者 · 终极进化</title>
+    <title>👻 暗影勇者 · 无尽Boss</title>
     <style>
         * {
             margin: 0;
@@ -33,123 +33,6 @@
             background: #1a1a30;
             box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.7);
             cursor: crosshair;
-        }
-        #miniStatPanel {
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            background: rgba(10, 10, 26, 0.88);
-            border: 1px solid #6bcbff55;
-            border-radius: 12px;
-            padding: 10px 14px;
-            color: #ccc;
-            font-size: 13px;
-            min-width: 160px;
-            backdrop-filter: blur(6px);
-            box-shadow: 0 0 40px #6bcbff22;
-            z-index: 15;
-            pointer-events: auto;
-        }
-        #miniStatPanel .title {
-            color: #6bcbff;
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        #miniStatPanel .title .close-btn {
-            background: none;
-            border: none;
-            color: #667799;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        #miniStatPanel .title .close-btn:hover {
-            color: #ff6666;
-        }
-        #miniStatPanel .row {
-            display: flex;
-            justify-content: space-between;
-            padding: 2px 0;
-            font-size: 12px;
-        }
-        #miniStatPanel .row .sname {
-            color: #8899bb;
-        }
-        #miniStatPanel .row .sval {
-            color: #fff;
-            font-weight: bold;
-        }
-        #miniStatPanel .row button {
-            background: #2a3a5a;
-            color: #6bcbff;
-            border: none;
-            border-radius: 30px;
-            padding: 0 10px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 12px;
-            line-height: 18px;
-        }
-        #miniStatPanel .row button:hover {
-            background: #3a4a6a;
-        }
-        #miniStatPanel .row button:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-        #miniStatPanel .points {
-            color: #44ff88;
-            font-weight: bold;
-            text-align: center;
-            padding: 4px 0;
-            border-top: 1px solid #33445544;
-            margin-top: 4px;
-            font-size: 13px;
-        }
-        #miniStatPanel .skill-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 2px 0;
-            font-size: 12px;
-            border-bottom: 1px solid #22334433;
-        }
-        #miniStatPanel .skill-row .skill-name {
-            color: #ffaa44;
-        }
-        #miniStatPanel .skill-row .skill-status {
-            color: #44ff88;
-            font-size: 11px;
-        }
-        #miniStatPanel .skill-row .skill-status.locked {
-            color: #665555;
-        }
-        #miniStatPanel .skill-row button {
-            background: #2a3a2a;
-            color: #44ff88;
-            border: none;
-            border-radius: 30px;
-            padding: 0 10px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 11px;
-            line-height: 18px;
-        }
-        #miniStatPanel .skill-row button:hover {
-            background: #3a4a3a;
-        }
-        #miniStatPanel .skill-row button:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-        #miniStatPanel .skill-points {
-            color: #ffaa44;
-            font-size: 12px;
-            text-align: center;
-            padding: 2px 0;
         }
         #ui {
             display: flex;
@@ -209,6 +92,12 @@
             font-size: 20px;
             text-shadow: 0 0 25px #f7d44a55;
         }
+        #bossNameDisplay {
+            color: #ff4444;
+            font-size: 18px;
+            text-shadow: 0 0 30px #ff444466;
+            display: none;
+        }
         #bossHpBar {
             color: #ff3333;
             font-size: 18px;
@@ -217,8 +106,8 @@
             gap: 10px;
         }
         #bossHpBar .bar {
-            width: 150px;
-            height: 12px;
+            width: 180px;
+            height: 14px;
             background: #2a1a1a;
             border-radius: 10px;
             overflow: hidden;
@@ -230,12 +119,6 @@
             background: linear-gradient(90deg, #ff3333, #ff8833);
             border-radius: 10px;
             transition: width 0.15s;
-        }
-        #bossNameDisplay {
-            color: #ff8866;
-            font-size: 16px;
-            display: none;
-            text-shadow: 0 0 30px #ff663355;
         }
         #infiniteToggle {
             background: #2a1a3a;
@@ -254,6 +137,20 @@
         #infiniteToggle.active {
             border-color: #44ff88;
             color: #44ff88;
+        }
+        #statBtn {
+            background: #1a2a3a;
+            color: #6bcbff;
+            border: 2px solid #6bcbff;
+            border-radius: 30px;
+            padding: 4px 16px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        #statBtn:hover {
+            background: #2a3a4a;
         }
         #hint {
             color: #445566;
@@ -308,6 +205,88 @@
                 opacity: 1;
             }
         }
+        #statPanel {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            background: #0a0a1aee;
+            border: 2px solid #6bcbff;
+            border-radius: 16px;
+            padding: 20px 24px;
+            color: #fff;
+            z-index: 20;
+            display: none;
+            min-width: 240px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 60px #6bcbff33;
+            font-size: 14px;
+        }
+        #statPanel h3 {
+            text-align: center;
+            color: #f7d44a;
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+        #statPanel .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            border-bottom: 1px solid #33445544;
+        }
+        #statPanel .stat-row .stat-name {
+            color: #aabbdd;
+        }
+        #statPanel .stat-row .stat-val {
+            color: #fff;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+        #statPanel .stat-row button {
+            background: #2a3a5a;
+            color: #6bcbff;
+            border: 1px solid #6bcbff;
+            border-radius: 30px;
+            padding: 0px 14px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        #statPanel .stat-row button:hover {
+            background: #3a4a6a;
+        }
+        #statPanel .stat-row button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        #statPanel .points-remaining {
+            text-align: center;
+            color: #44ff88;
+            font-size: 18px;
+            margin: 10px 0 8px 0;
+            padding: 6px;
+            background: #0a1a12;
+            border-radius: 10px;
+            border: 1px solid #44ff8844;
+        }
+        #statPanel .close-btn {
+            display: block;
+            margin: 10px auto 0 auto;
+            background: #3a1a1a;
+            color: #ff6666;
+            border: 1px solid #ff6666;
+            border-radius: 30px;
+            padding: 4px 24px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        #statPanel .close-btn:hover {
+            background: #4a2a2a;
+        }
         #wrapper {
             position: relative;
         }
@@ -320,11 +299,11 @@
                 height: auto;
             }
             #ui {
-                font-size: 14px;
+                font-size: 13px;
             }
             #hint {
-                font-size: 11px;
-                padding: 4px 12px;
+                font-size: 10px;
+                padding: 4px 10px;
             }
             #msgText {
                 font-size: 28px;
@@ -333,22 +312,16 @@
                 font-size: 16px;
             }
             #uiLeft {
-                gap: 12px;
+                gap: 10px;
             }
             #bossHpBar .bar {
                 width: 80px;
             }
-            #miniStatPanel {
-                top: 10px;
+            #statPanel {
+                top: 60px;
                 right: 10px;
-                padding: 8px 10px;
-                font-size: 11px;
-                min-width: 120px;
-            }
-            #miniStatPanel .row {
-                font-size: 10px;
-            }
-            #miniStatPanel .title {
+                padding: 14px 16px;
+                min-width: 180px;
                 font-size: 12px;
             }
         }
@@ -356,62 +329,49 @@
 </head>
 <body>
     <div id="wrapper">
-        <canvas id="gameCanvas" width="800" height="560"></canvas>
-
-        <div id="miniStatPanel">
-            <div class="title">
-                <span>📊 属性</span>
-                <button class="close-btn" id="closeMiniPanel">✕</button>
-            </div>
-            <div class="points" id="miniPoints">剩余点数: 0</div>
-            <div class="row"><span class="sname">❤️HP</span><span class="sval" id="mHp">100</span><button onclick="upgradeStat('maxHp')">+</button></div>
-            <div class="row"><span class="sname">🏃速度</span><span class="sval" id="mSpeed">4.2</span><button onclick="upgradeStat('speed')">+</button></div>
-            <div class="row"><span class="sname">🦘跳跃</span><span class="sval" id="mJump">10.8</span><button onclick="upgradeStat('jumpPower')">+</button></div>
-            <div class="row"><span class="sname">⚔️伤害</span><span class="sval" id="mDamage">+0%</span><button onclick="upgradeStat('damageBonus')">+</button></div>
-            <div class="row"><span class="sname">🔫射速</span><span class="sval" id="mFireRate">1.00</span><button onclick="upgradeStat('fireRate')">+</button></div>
-            <div class="skill-points" id="miniSkillPoints">🔓 技能点: 0</div>
-            <div class="skill-row"><span class="skill-name">💥穿透</span><span class="skill-status" id="skPierce">🔒</span><button onclick="unlockSkill('pierce')">解锁</button></div>
-            <div class="skill-row"><span class="skill-name">💣爆炸</span><span class="skill-status" id="skExplode">🔒</span><button onclick="unlockSkill('explode')">解锁</button></div>
-            <div class="skill-row"><span class="skill-name">🎯跟踪</span><span class="skill-status" id="skHoming">🔒</span><button onclick="unlockSkill('homing')">解锁</button></div>
-            <div class="skill-row"><span class="skill-name">🌀散射+</span><span class="skill-status" id="skSpread">🔒</span><button onclick="unlockSkill('spread')">解锁</button></div>
-        </div>
-
+        <canvas id="gameCanvas" width="800" height="550"></canvas>
         <div id="msgOverlay">
             <div id="msgText">🎉<div id="msgSub"></div></div>
+        </div>
+        <div id="statPanel">
+            <h3>📊 属性分配</h3>
+            <div class="points-remaining" id="pointsRemaining">剩余: 0</div>
+            <div class="stat-row"><span class="stat-name">❤️ 生命</span><span class="stat-val" id="statHp">100</span><button onclick="upgradeStat('maxHp')">+</button></div>
+            <div class="stat-row"><span class="stat-name">🏃 速度</span><span class="stat-val" id="statSpeed">4.2</span><button onclick="upgradeStat('speed')">+</button></div>
+            <div class="stat-row"><span class="stat-name">🦘 跳跃</span><span class="stat-val" id="statJump">10.8</span><button onclick="upgradeStat('jumpPower')">+</button></div>
+            <div class="stat-row"><span class="stat-name">⚔️ 伤害</span><span class="stat-val" id="statDamage">+0</span><button onclick="upgradeStat('damageBonus')">+</button></div>
+            <div class="stat-row"><span class="stat-name">🔫 射速</span><span class="stat-val" id="statFireRate">1.0</span><button onclick="upgradeStat('fireRate')">+</button></div>
+            <button class="close-btn" onclick="toggleStatPanel()">✕ 关闭</button>
         </div>
         <div id="ui">
             <div id="uiLeft">
                 <span><span class="label">❤️</span> <span id="hpDisplay">100</span></span>
                 <span><span class="label">⭐</span> <span id="levelDisplay">Lv.1</span></span>
-                <span><span class="label">🌍</span> <span id="worldDisplay">1-1-1</span></span>
+                <span><span class="label">🌍</span> <span id="worldDisplay">1-1</span></span>
                 <span><span class="label">🔑</span> <span id="keyDisplay">0 / 0</span></span>
                 <span><span class="label">🦘</span> <span id="jumpDisplay">3</span></span>
-                <span><span class="label">⚔️</span> <span id="weaponDisplay">🔫普通</span></span>
+                <span><span class="label">⚔️</span> <span id="weaponDisplay">普通</span></span>
                 <span id="skillDisplay">⏳ 技能: 就绪</span>
-                <span id="bossNameDisplay" style="display:none;">👹 Boss</span>
-                <button id="infiniteToggle">♾️ 无尽模式</button>
-                <span id="bossHpBar" style="display:none;">
-                    👹 <span class="bar"><span class="fill" id="bossFill"></span></span>
-                    <span id="bossHpText">30</span>
-                </span>
+                <span id="bossNameDisplay">👹 Boss</span>
+                <span id="bossHpBar"><span class="bar"><span class="fill" id="bossFill"></span></span></span>
+                <button id="infiniteToggle">♾️ 无尽</button>
+                <button id="statBtn">📊 属性</button>
             </div>
-            <span id="hint">🖱️射击 &nbsp;|&nbsp; ← → &nbsp;|&nbsp; 空格跳 &nbsp;|&nbsp; Q切武器 &nbsp;|&nbsp; R切子弹 &nbsp;|&nbsp; E技能</span>
+            <span id="hint">🖱️射击 &nbsp;|&nbsp; ← → 移动 &nbsp;|&nbsp; 空格跳 &nbsp;|&nbsp; Q切武器 &nbsp;|&nbsp; E技能 &nbsp;|&nbsp; F属性</span>
         </div>
     </div>
 
     <script>
         // ================================================================
-        //  暗影勇者 · 终极进化版 (地图多样化 + 子弹特效修复)
+        //  👻 暗影勇者 · 无尽Boss版
+        //  5种Boss、动态地图、升级系统、无限模式
         // ================================================================
 
-        const W = 800,
-            H = 560;
-        const GRAVITY = 0.55;
-        const FRICTION = 0.80;
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        let W = 800,
+            H = 550;
 
-        // ---- DOM ----
         const hpSpan = document.getElementById('hpDisplay');
         const worldSpan = document.getElementById('worldDisplay');
         const keySpan = document.getElementById('keyDisplay');
@@ -419,30 +379,19 @@
         const weaponSpan = document.getElementById('weaponDisplay');
         const skillSpan = document.getElementById('skillDisplay');
         const levelSpan = document.getElementById('levelDisplay');
+        const bossNameSpan = document.getElementById('bossNameDisplay');
         const bossHpBar = document.getElementById('bossHpBar');
         const bossFill = document.getElementById('bossFill');
-        const bossHpText = document.getElementById('bossHpText');
-        const bossNameDisplay = document.getElementById('bossNameDisplay');
         const msgOverlay = document.getElementById('msgOverlay');
         const msgText = document.getElementById('msgText');
         const msgSub = document.getElementById('msgSub');
         const infiniteBtn = document.getElementById('infiniteToggle');
+        const statBtn = document.getElementById('statBtn');
+        const statPanel = document.getElementById('statPanel');
+        const pointsRemaining = document.getElementById('pointsRemaining');
 
-        const miniPoints = document.getElementById('miniPoints');
-        const mHp = document.getElementById('mHp');
-        const mSpeed = document.getElementById('mSpeed');
-        const mJump = document.getElementById('mJump');
-        const mDamage = document.getElementById('mDamage');
-        const mFireRate = document.getElementById('mFireRate');
-        const miniSkillPoints = document.getElementById('miniSkillPoints');
-        const skPierce = document.getElementById('skPierce');
-        const skExplode = document.getElementById('skExplode');
-        const skHoming = document.getElementById('skHoming');
-        const skSpread = document.getElementById('skSpread');
-
-        document.getElementById('closeMiniPanel').addEventListener('click', () => {
-            document.getElementById('miniStatPanel').style.display = 'none';
-        });
+        const GRAVITY = 0.55;
+        const FRICTION = 0.80;
 
         const WORLDS = [
             { name: '翡翠森林', bg1: '#1a3a2a', bg2: '#2a5a3a', plat: '#4a8a4a', scary: 0 },
@@ -457,24 +406,66 @@
             { name: '散射', damage: 1, speed: 7, color: '#44ff88', spread: 3, icon: '🔱' }
         ];
 
-        // ---- 子弹类型（颜色+特效定义） ----
-        const BULLET_TYPES = {
-            normal: { label: '普通', color: '#6bcbff', glow: '#6bcbff', damage: 1, speed: 1, pierce: 0, explode: false,
-                homing: false, spread: 1, trail: false },
-            pierce: { label: '穿透', color: '#44ddff', glow: '#44ddff', damage: 1.2, speed: 1.1, pierce: 3, explode: false,
-                homing: false, spread: 1, trail: true },
-            explode: { label: '爆炸', color: '#ff6633', glow: '#ff4400', damage: 1.5, speed: 0.8, pierce: 0, explode: true,
-                homing: false, spread: 1, trail: true },
-            homing: { label: '跟踪', color: '#ff44ff', glow: '#cc44ff', damage: 0.8, speed: 0.7, pierce: 0, explode: false,
-                homing: true, spread: 1, trail: true },
-            spread: { label: '散射+', color: '#44ffaa', glow: '#44ff88', damage: 1, speed: 0.9, pierce: 0, explode: false,
-                homing: false, spread: 5, trail: true }
-        };
+        // ---------- 5种Boss定义 ----------
+        const BOSS_TYPES = [
+            {
+                id: '腐化巨兽',
+                color: '#44aa44',
+                glow: '#88ff88',
+                shape: 'beast',
+                desc: '腐化巨兽',
+                hpMult: 1.0,
+                speed: 0.6,
+                bulletColor: '#44ff44',
+                attackType: 'spray'
+            },
+            {
+                id: '暗影幽灵',
+                color: '#aa44ff',
+                glow: '#cc88ff',
+                shape: 'ghost',
+                desc: '暗影幽灵',
+                hpMult: 0.8,
+                speed: 1.2,
+                bulletColor: '#cc66ff',
+                attackType: 'scatter'
+            },
+            {
+                id: '火焰领主',
+                color: '#ff6622',
+                glow: '#ff8844',
+                shape: 'fire',
+                desc: '火焰领主',
+                hpMult: 1.2,
+                speed: 0.5,
+                bulletColor: '#ff6633',
+                attackType: 'ring'
+            },
+            {
+                id: '冰霜女王',
+                color: '#44ccff',
+                glow: '#88ddff',
+                shape: 'ice',
+                desc: '冰霜女王',
+                hpMult: 0.9,
+                speed: 0.7,
+                bulletColor: '#66ddff',
+                attackType: 'cone'
+            },
+            {
+                id: '虚空使者',
+                color: '#8833cc',
+                glow: '#bb66ff',
+                shape: 'void',
+                desc: '虚空使者',
+                hpMult: 1.4,
+                speed: 0.4,
+                bulletColor: '#aa44ff',
+                attackType: 'nova'
+            }
+        ];
 
-        let unlockedSkills = { pierce: false, explode: false, homing: false, spread: false };
-        let skillPoints = 0;
-        let currentBulletIdx = 0;
-
+        // ---------- 音频 ----------
         let audioCtx = null;
 
         function initAudio() {
@@ -582,91 +573,17 @@
                         osc.start(now);
                         osc.stop(now + 0.35);
                         break;
-                    case 'boss_spawn':
-                        osc.frequency.setValueAtTime(100, now);
-                        osc.frequency.exponentialRampToValueAtTime(400, now + 0.3);
-                        osc.frequency.exponentialRampToValueAtTime(80, now + 0.6);
-                        gain.gain.setValueAtTime(0.3, now);
-                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-                        osc.start(now);
-                        osc.stop(now + 0.6);
-                        break;
-                    case 'explode':
-                        osc.frequency.setValueAtTime(150, now);
-                        osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
-                        gain.gain.setValueAtTime(0.4, now);
-                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-                        osc.start(now);
-                        osc.stop(now + 0.3);
-                        break;
                 }
             } catch (e) {}
         }
 
-        // ---- Boss定义 ----
-        const BOSS_TYPES = [{
-            id: 'flesh',
-            name: '腐肉聚合体',
-            color: '#44aa44',
-            eyeColor: '#88ff44',
-            desc: '直线弹幕',
-            hpMult: 1.0,
-            speedMult: 0.6,
-            attackPattern: 'linear'
-        }, {
-            id: 'banshee',
-            name: '暗影女妖',
-            color: '#aa44ff',
-            eyeColor: '#cc88ff',
-            desc: '散射+瞬移',
-            hpMult: 0.8,
-            speedMult: 1.4,
-            attackPattern: 'spread'
-        }, {
-            id: 'watcher',
-            name: '深渊守望者',
-            color: '#ff4444',
-            eyeColor: '#ff8844',
-            desc: '环形+召唤',
-            hpMult: 1.4,
-            speedMult: 0.5,
-            attackPattern: 'ring'
-        }, {
-            id: 'skeleton',
-            name: '骸骨君王',
-            color: '#dddddd',
-            eyeColor: '#ff4444',
-            desc: '追踪+冲刺',
-            hpMult: 1.2,
-            speedMult: 1.0,
-            attackPattern: 'chase'
-        }, {
-            id: 'chaos',
-            name: '混沌之卵',
-            color: '#ff44aa',
-            eyeColor: '#ff88cc',
-            desc: '随机+分裂',
-            hpMult: 0.9,
-            speedMult: 0.8,
-            attackPattern: 'random'
-        }, {
-            id: 'shadow',
-            name: '终焉之影',
-            color: '#222244',
-            eyeColor: '#8844ff',
-            desc: '全屏弹幕',
-            hpMult: 1.6,
-            speedMult: 1.2,
-            attackPattern: 'omnidirectional'
-        }];
-
-        // ---- 升级系统 ----
+        // ---------- 升级系统 ----------
         const STAT_CONFIG = {
             maxHp: { label: '生命上限', base: 100, cost: 2, inc: 10, min: 100 },
-            speed: { label: '移动速度', base: 4.2, cost: 2, inc: 0.12, min: 3.0 },
-            jumpPower: { label: '跳跃力', base: 10.8, cost: 2, inc: 0.25, min: 8.0 },
-            damageBonus: { label: '伤害加成', base: 0, cost: 3, inc: 0.15, min: 0 },
-            fireRate: { label: '射速', base: 1.0, cost: 3, inc: 0.06, min: 0.5 },
+            speed: { label: '移动速度', base: 4.2, cost: 2, inc: 0.15, min: 3.0 },
+            jumpPower: { label: '跳跃力', base: 10.8, cost: 2, inc: 0.3, min: 8.0 },
+            damageBonus: { label: '伤害加成', base: 0, cost: 3, inc: 0.2, min: 0 },
+            fireRate: { label: '射速', base: 1.0, cost: 3, inc: 0.08, min: 0.5 },
         };
 
         let statPoints = 0;
@@ -676,15 +593,15 @@
         let expToNext = 20;
 
         function initStats() {
-            for (const key in STAT_CONFIG) stats[key] = STAT_CONFIG[key].base;
+            stats = {};
+            for (const key in STAT_CONFIG) {
+                stats[key] = STAT_CONFIG[key].base;
+            }
             statPoints = 0;
-            skillPoints = 0;
-            unlockedSkills = { pierce: false, explode: false, homing: false, spread: false };
-            currentBulletIdx = 0;
             level = 1;
             exp = 0;
             expToNext = 20;
-            updateMiniUI();
+            updateStatUI();
         }
 
         function addExp(amount) {
@@ -693,17 +610,14 @@
                 exp -= expToNext;
                 level++;
                 expToNext = Math.floor(20 + level * 15);
-                const bonus = 1 + Math.floor(Math.random() * 3);
-                statPoints += 2 + bonus;
-                if (level % 3 === 0) skillPoints++;
+                statPoints += 3;
                 playSound('levelup');
-                showMessage('⬆ 升级！', '等级 ' + level + '！获得 ' + (2 + bonus) + ' 属性点' + (level % 3 === 0 ? ' +1技能点' :
-                ''));
-                setTimeout(() => msgOverlay.classList.remove('show'), 1000);
-                updateMiniUI();
+                showMessage('⬆ 升级！', `等级 ${level}！获得 3 个属性点`);
+                setTimeout(() => msgOverlay.classList.remove('show'), 1200);
+                updateStatUI();
                 updateUI();
             }
-            updateMiniUI();
+            updateStatUI();
             updateUI();
         }
 
@@ -711,11 +625,11 @@
             if (statPoints <= 0) return;
             const cfg = STAT_CONFIG[key];
             if (!cfg) return;
-            const cost = Math.floor(cfg.cost + (stats[key] - cfg.base) / cfg.inc * 0.3);
+            const cost = Math.floor(cfg.cost);
             if (statPoints < cost) return;
             statPoints -= cost;
             stats[key] += cfg.inc;
-            updateMiniUI();
+            updateStatUI();
             updateUI();
             applyStats();
         }
@@ -729,382 +643,43 @@
             updateUI();
         }
 
-        function unlockSkill(skillId) {
-            if (skillPoints <= 0 || unlockedSkills[skillId]) return;
-            unlockedSkills[skillId] = true;
-            skillPoints--;
-            playSound('levelup');
-            showMessage('🔓 技能解锁！', BULLET_TYPES[skillId].label + ' 子弹已可用');
-            setTimeout(() => msgOverlay.classList.remove('show'), 1000);
-            updateMiniUI();
-            updateUI();
+        function updateStatUI() {
+            pointsRemaining.textContent = `剩余: ${statPoints}`;
+            document.getElementById('statHp').textContent = stats.maxHp;
+            document.getElementById('statSpeed').textContent = stats.speed.toFixed(2);
+            document.getElementById('statJump').textContent = stats.jumpPower.toFixed(2);
+            document.getElementById('statDamage').textContent = '+' + (stats.damageBonus * 100).toFixed(0) + '%';
+            document.getElementById('statFireRate').textContent = stats.fireRate.toFixed(2);
+            document.querySelectorAll('#statPanel .stat-row button').forEach(b => {
+                b.disabled = statPoints <= 0;
+            });
         }
 
-        function getAvailableBulletTypes() {
-            const types = ['normal'];
-            if (unlockedSkills.pierce) types.push('pierce');
-            if (unlockedSkills.explode) types.push('explode');
-            if (unlockedSkills.homing) types.push('homing');
-            if (unlockedSkills.spread) types.push('spread');
-            return types;
-        }
-
-        function getCurrentBulletType() {
-            const types = getAvailableBulletTypes();
-            return types[currentBulletIdx % types.length] || 'normal';
-        }
-
-        function cycleBulletType() {
-            const types = getAvailableBulletTypes();
-            if (types.length <= 1) return;
-            currentBulletIdx = (currentBulletIdx + 1) % types.length;
-            playSound('weapon');
-            updateUI();
-        }
-
-        // ---- 微型面板 ----
-        function updateMiniUI() {
-            miniPoints.textContent = '剩余点数: ' + statPoints;
-            mHp.textContent = stats.maxHp;
-            mSpeed.textContent = stats.speed.toFixed(2);
-            mJump.textContent = stats.jumpPower.toFixed(2);
-            mDamage.textContent = '+' + (stats.damageBonus * 100).toFixed(0) + '%';
-            mFireRate.textContent = stats.fireRate.toFixed(2);
-            miniSkillPoints.textContent = '🔓 技能点: ' + skillPoints;
-
-            const map = { pierce: skPierce, explode: skExplode, homing: skHoming, spread: skSpread };
-            for (const [id, el] of Object.entries(map)) {
-                if (unlockedSkills[id]) {
-                    el.textContent = '✅';
-                    el.className = 'skill-status';
-                    el.parentElement.querySelector('button').disabled = true;
-                } else {
-                    el.textContent = '🔒';
-                    el.className = 'skill-status locked';
-                    el.parentElement.querySelector('button').disabled = skillPoints <= 0;
-                }
+        function toggleStatPanel() {
+            if (statPanel.style.display === 'block') {
+                statPanel.style.display = 'none';
+            } else {
+                statPanel.style.display = 'block';
+                updateStatUI();
             }
         }
 
         window.upgradeStat = upgradeStat;
-        window.unlockSkill = unlockSkill;
+        window.toggleStatPanel = toggleStatPanel;
 
-        // ================================================================
-        //  地图生成器（多样化布局）
-        // ================================================================
-        function generateLevel(cycle, branch, level, isInfinite) {
-            const platforms = [];
-            const enemies = [];
-            const keys = [];
-            const items = [];
-            const difficulty = (isInfinite ? cycle * 1.8 : cycle * 0.5) + branch + level;
-
-            // ---- 布局模板选择 ----
-            const layoutIdx = (cycle * 7 + branch * 13 + level * 31) % 5;
-            // layout: 0=垂直塔, 1=空中连桥, 2=多层迷宫, 3=随机破碎, 4=阶梯上升
-
-            const groundY = 460;
-            platforms.push({ x: 0, y: groundY, w: W, h: 40 });
-
-            const baseY = [420, 380, 340, 300, 260, 220, 180, 140, 100, 60];
-            const platCount = 6 + Math.floor(difficulty * 0.7) + (isInfinite ? Math.floor(cycle * 0.6) : 0);
-
-            // ---- 根据模板生成平台 ----
-            let platPositions = [];
-
-            if (layoutIdx === 0) {
-                // 垂直塔：平台集中在中间，逐层上升
-                for (let i = 0; i < platCount; i++) {
-                    const y = 420 - i * 38 - Math.floor(cycle * 1.5);
-                    if (y < 50) break;
-                    const x = 300 + Math.sin(i * 1.7 + cycle) * 180;
-                    const w = 70 + Math.sin(i * 0.9 + cycle * 1.3) * 30;
-                    platPositions.push({ x: Math.max(20, Math.min(W - 120, x)), y: Math.max(40, y), w: Math.max(50, w) });
-                }
-            } else if (layoutIdx === 1) {
-                // 空中连桥：水平长条平台
-                for (let i = 0; i < platCount; i++) {
-                    const y = 400 - (i % 4) * 70 - Math.floor(cycle * 1.2);
-                    if (y < 50) break;
-                    const x = 40 + i * 90 + Math.sin(i * 1.1 + cycle * 0.7) * 60;
-                    const w = 100 + Math.sin(i * 0.5 + cycle) * 30;
-                    platPositions.push({ x: Math.max(10, Math.min(W - 110, x)), y: Math.max(40, y), w: Math.max(60, w) });
-                }
-            } else if (layoutIdx === 2) {
-                // 多层迷宫：左右交替
-                for (let i = 0; i < platCount; i++) {
-                    const y = 420 - i * 32 - Math.floor(cycle * 1.8);
-                    if (y < 50) break;
-                    const side = (i % 2 === 0) ? 60 : 380;
-                    const x = side + Math.sin(i * 2.3 + cycle * 1.1) * 120;
-                    const w = 80 + Math.sin(i * 0.7 + cycle * 0.5) * 20;
-                    platPositions.push({ x: Math.max(10, Math.min(W - 100, x)), y: Math.max(40, y), w: Math.max(50, w) });
-                }
-            } else if (layoutIdx === 3) {
-                // 随机破碎：不规则的碎片平台
-                for (let i = 0; i < platCount; i++) {
-                    const y = 430 - i * 30 - Math.floor(cycle * 1.5) + Math.sin(i * 2.7 + cycle * 0.3) * 20;
-                    if (y < 50) break;
-                    const x = 40 + (i * 70 + cycle * 17 + level * 23) % (W - 140);
-                    const w = 50 + ((i * 11 + cycle * 7) % 70);
-                    platPositions.push({ x: Math.max(10, Math.min(W - 80, x)), y: Math.max(40, y), w: Math.max(40, w) });
-                }
-            } else {
-                // 阶梯上升：规整的阶梯
-                for (let i = 0; i < platCount; i++) {
-                    const y = 430 - i * 28 - Math.floor(cycle * 1.2);
-                    if (y < 50) break;
-                    const x = 60 + i * 55 + Math.sin(i * 0.3 + cycle) * 30;
-                    const w = 70 + Math.sin(i * 0.6 + cycle * 0.8) * 20;
-                    platPositions.push({ x: Math.max(10, Math.min(W - 90, x)), y: Math.max(40, y), w: Math.max(50, w) });
-                }
-            }
-
-            // 去重 + 排序
-            platPositions.sort((a, b) => a.y - b.y);
-            for (const p of platPositions) {
-                platforms.push({ x: p.x, y: p.y, w: p.w, h: 14 });
-            }
-
-            // 确保出口在最高处
-            const lastPlat = platforms[platforms.length - 1] || platforms[0];
-            const exitX = lastPlat.x + lastPlat.w / 2 - 15;
-            const exitY = lastPlat.y - 40;
-
-            // ---- 敌人 ----
-            const enemyCount = 3 + Math.floor(difficulty * 0.5) + (isInfinite ? Math.floor(cycle * 0.8) : 0);
-            for (let i = 0; i < enemyCount; i++) {
-                let plat = platforms[1 + (i * 3 + cycle * 7) % (platforms.length - 1)];
-                if (!plat) plat = platforms[1];
-                let lv = Math.min(4, Math.floor((difficulty + i + cycle * 0.5) / 2));
-                const size = 18 + lv * 5;
-                const type = ['mushroom', 'ghost', 'bat', 'mushroom', 'ghost', 'bat'][(i + cycle) % 6];
-                enemies.push({
-                    x: plat.x + 10 + i * 15,
-                    y: plat.y - size,
-                    w: size,
-                    h: size,
-                    type: type,
-                    level: lv,
-                    hp: 2 + lv + Math.floor(cycle * 0.3),
-                    vx: (0.5 + lv * 0.2) * (i % 2 === 0 ? 1 : -1),
-                    speed: 0.7 + lv * 0.2 + cycle * 0.02,
-                    minX: plat.x + 3,
-                    maxX: plat.x + plat.w - size - 3,
-                    startY: plat.y - size,
-                    damage: 10 + lv * 8 + Math.floor(cycle * 1.2),
-                    hitFlash: 0,
-                    aggroRange: 160 + lv * 40 + cycle * 8,
-                    jumpTimer: 0,
-                    expReward: 10 + lv * 4 + Math.floor(cycle * 1.5),
-                });
-            }
-
-            // ---- 钥匙 ----
-            const keyCount = 2 + Math.floor(difficulty / 3) + (isInfinite ? Math.floor(cycle * 0.3) : 0);
-            const usedPlats = platforms.slice(1);
-            for (let i = 0; i < Math.min(keyCount, usedPlats.length); i++) {
-                const plat = usedPlats[i % usedPlats.length];
-                keys.push({ x: plat.x + 12 + i * 18, y: plat.y - 28, collected: false, r: 9 });
-            }
-            while (keys.length < 2) {
-                const plat = platforms[1 + keys.length % (platforms.length - 1)];
-                keys.push({ x: plat.x + 30 + keys.length * 20, y: plat.y - 28, collected: false, r: 9 });
-            }
-
-            // ---- 血包 ----
-            const healCount = 1 + Math.floor(difficulty / 4) + (isInfinite ? Math.floor(cycle * 0.2) : 0);
-            for (let i = 0; i < Math.min(healCount, 6); i++) {
-                let plat = platforms[1 + (i * 7 + cycle * 13) % (platforms.length - 1)];
-                if (!plat) plat = platforms[1];
-                items.push({
-                    type: 'heal',
-                    x: plat.x + 15 + i * 22,
-                    y: plat.y - 30,
-                    r: 12,
-                    value: 20 + Math.floor(cycle * 2),
-                });
-            }
-
-            // ---- 武器 ----
-            if ((cycle + level + branch) % 2 === 1) {
-                let plat = platforms[2 % (platforms.length - 1)];
-                if (!plat) plat = platforms[1];
-                const wIdx = Math.min(3, Math.floor(difficulty / 2) + 1);
-                items.push({
-                    type: 'weapon',
-                    weaponIdx: wIdx,
-                    x: plat.x + 30,
-                    y: plat.y - 30,
-                    r: 14,
-                });
-            }
-
-            // ---- Boss ----
-            const bossType = BOSS_TYPES[Math.floor(Math.random() * BOSS_TYPES.length)];
-            const bossPlat = platforms[Math.floor(platforms.length / 2)] || platforms[0];
-            const baseHp = 40 + cycle * 25 + Math.floor(difficulty * 3);
-            const bossHp = Math.floor(baseHp * bossType.hpMult);
-            const boss = {
-                x: bossPlat.x + bossPlat.w / 2 - 35,
-                y: bossPlat.y - 75,
-                w: 70,
-                h: 75,
-                hp: bossHp,
-                maxHp: bossHp,
-                timer: 0,
-                bullets: [],
-                hitCooldown: 0,
-                expReward: 80 + cycle * 15,
-                type: bossType,
-                phase: 0,
-                speed: 1.2 + cycle * 0.05,
-                attackTimer: 0,
-                spawnY: bossPlat.y - 75,
-                teleportTimer: 0,
-                spawnCount: 0,
-                splitCount: 0,
-                eyeAngle: 0,
-                dashTimer: 0,
-                dashDir: { x: 0, y: 0 },
-            };
-
-            enemies.splice(0, Math.floor(enemies.length / 3));
-
-            return { platforms, enemies, keys, items, exit: { x: exitX, y: exitY, w: 30, h: 38 }, isBoss: true, boss };
-        }
-
-        // ---- 普通模式（前27关） ----
-        function generateNormalLevel(worldIdx, branchIdx, levelIdx, cycleOffset) {
-            const idx = worldIdx * 9 + branchIdx * 3 + levelIdx;
-            const difficulty = worldIdx + branchIdx + levelIdx + cycleOffset * 0.5;
-            const platforms = [];
-            const enemies = [];
-            const keys = [];
-            const items = [];
-
-            platforms.push({ x: 0, y: 460, w: W, h: 40 });
-
-            const platCount = 5 + Math.floor(difficulty / 2);
-            const baseY = [420, 380, 340, 300, 260, 220, 180];
-            for (let i = 0; i < platCount; i++) {
-                let x = 60 + i * 70 + (idx * 13) % 120;
-                if (x > W - 100) x = W - 100;
-                let y = baseY[i % baseY.length] - (i % 3) * 15;
-                let w = 70 + (i * 7 + idx) % 50;
-                platforms.push({ x, y, w, h: 14 });
-            }
-            platforms.sort((a, b) => a.y - b.y);
-
-            const lastPlat = platforms[platforms.length - 1];
-            const exitX = lastPlat.x + lastPlat.w / 2 - 15;
-            const exitY = lastPlat.y - 40;
-
-            const enemyCount = 3 + Math.floor(difficulty * 0.6);
-            for (let i = 0; i < enemyCount; i++) {
-                let plat = platforms[1 + (i * 3) % (platforms.length - 1)];
-                if (!plat) plat = platforms[1];
-                let lv = Math.min(2, Math.floor((difficulty + i) / 3));
-                const size = 20 + lv * 6;
-                const type = (worldIdx === 0) ? 'mushroom' : (worldIdx === 1) ? 'ghost' : 'bat';
-                enemies.push({
-                    x: plat.x + 10 + i * 20,
-                    y: plat.y - size,
-                    w: size,
-                    h: size,
-                    type: type,
-                    level: lv,
-                    hp: 2 + lv,
-                    vx: (0.6 + lv * 0.2) * (i % 2 === 0 ? 1 : -1),
-                    speed: 0.8 + lv * 0.2 + worldIdx * 0.05,
-                    minX: plat.x + 5,
-                    maxX: plat.x + plat.w - size - 5,
-                    startY: plat.y - size,
-                    damage: 10 + lv * 10,
-                    hitFlash: 0,
-                    aggroRange: 150 + lv * 50,
-                    jumpTimer: 0,
-                    expReward: 10 + lv * 5,
-                });
-            }
-
-            const keyCount = 2 + Math.floor(difficulty / 2);
-            const usedPlats = platforms.slice(1);
-            for (let i = 0; i < Math.min(keyCount, usedPlats.length); i++) {
-                const plat = usedPlats[i % usedPlats.length];
-                keys.push({ x: plat.x + 15 + i * 20, y: plat.y - 28, collected: false, r: 9 });
-            }
-            while (keys.length < 2) {
-                const plat = platforms[1 + keys.length % (platforms.length - 1)];
-                keys.push({ x: plat.x + 30 + keys.length * 20, y: plat.y - 28, collected: false, r: 9 });
-            }
-
-            const healCount = 1 + Math.floor(difficulty / 3);
-            for (let i = 0; i < healCount; i++) {
-                let plat = platforms[1 + (i * 7 + idx) % (platforms.length - 1)];
-                if (!plat) plat = platforms[1];
-                items.push({
-                    type: 'heal',
-                    x: plat.x + 20 + i * 25,
-                    y: plat.y - 30,
-                    r: 12,
-                    value: 20,
-                });
-            }
-            if ((idx % 2 === 1) && difficulty > 0) {
-                let plat = platforms[2 % (platforms.length - 1)];
-                if (!plat) plat = platforms[1];
-                const wIdx = Math.min(3, Math.floor(difficulty / 2) + 1);
-                items.push({
-                    type: 'weapon',
-                    weaponIdx: wIdx,
-                    x: plat.x + 30,
-                    y: plat.y - 30,
-                    r: 14,
-                });
-            }
-
-            let isBoss = (branchIdx === 2 && levelIdx === 2);
-            let boss = null;
-            if (isBoss) {
-                const bossPlat = platforms[Math.floor(platforms.length / 2)] || platforms[0];
-                const bossHp = 40 + worldIdx * 20 + Math.floor(cycleOffset * 15);
-                const bossType = BOSS_TYPES[worldIdx % BOSS_TYPES.length];
-                boss = {
-                    x: bossPlat.x + bossPlat.w / 2 - 30,
-                    y: bossPlat.y - 70,
-                    w: 60,
-                    h: 70,
-                    hp: Math.floor(bossHp * bossType.hpMult),
-                    maxHp: Math.floor(bossHp * bossType.hpMult),
-                    timer: 0,
-                    bullets: [],
-                    hitCooldown: 0,
-                    expReward: 50 + worldIdx * 20,
-                    type: bossType,
-                    phase: 0,
-                    speed: 1.0,
-                };
-                enemies.splice(0, Math.floor(enemies.length / 2));
-            }
-
-            return { platforms, enemies, keys, items, exit: { x: exitX, y: exitY, w: 30, h: 38 }, isBoss, boss };
-        }
-
-        // ---- 游戏状态 ----
+        // ---------- 游戏状态 ----------
         let game = {};
 
         function initGame() {
             initStats();
             game = {
                 world: 0,
-                branch: 0,
                 level: 0,
-                maxWorld: 3,
-                maxBranch: 3,
-                maxLevel: 3,
+                maxLevel: 5,
                 infiniteMode: false,
                 totalCycles: 0,
+                mapWidth: W,
+                mapHeight: H,
                 hp: stats.maxHp,
                 maxHp: stats.maxHp,
                 keysCollected: 0,
@@ -1134,7 +709,7 @@
                 enemies: [],
                 keys: [],
                 items: [],
-                exit: { x: 680, y: 60, w: 30, h: 38 },
+                exit: { x: 740, y: 60, w: 30, h: 38 },
                 keysPressed: { left: false, right: false, up: false },
                 frame: 0,
                 particles: [],
@@ -1149,62 +724,164 @@
                 skillMaxCooldown: 480,
                 skillDuration: 90,
                 bossSpawned: false,
-                currentBossType: null,
-                _mouseX: 0,
-                _mouseY: 0,
-                layoutHistory: [],
+                bossType: null,
+                bossPhase: 0,
+                bossTimer: 0,
             };
-            loadLevel(0, 0, 0);
+            loadLevel(0);
             updateUI();
             msgOverlay.classList.remove('show');
             game.running = true;
             game.gameOver = false;
             bossHpBar.style.display = 'none';
-            bossNameDisplay.style.display = 'none';
+            bossNameSpan.style.display = 'none';
             applyStats();
         }
 
-        function loadLevel(w, b, l) {
+        function loadLevel(levelIdx) {
             const cycle = game.totalCycles;
-            const isInfinite = game.infiniteMode;
+            const difficulty = levelIdx + cycle * 3;
+            const mapScale = 1 + Math.floor(cycle / 2) * 0.2;
+            game.mapWidth = Math.min(1200, Math.floor(W * mapScale));
+            game.mapHeight = H;
 
-            let data;
-            if (isInfinite) {
-                data = generateLevel(cycle, b, l, true);
-                if (data.boss) {
-                    bossNameDisplay.style.display = 'inline';
-                    bossNameDisplay.textContent = '👹 ' + data.boss.type.name;
-                    bossNameDisplay.style.color = data.boss.type.color;
-                }
-            } else {
-                data = generateNormalLevel(w % 3, b, l, cycle * 0.5);
-                if (data.boss) {
-                    bossNameDisplay.style.display = 'inline';
-                    bossNameDisplay.textContent = '👹 ' + data.boss.type.name;
-                    bossNameDisplay.style.color = data.boss.type.color;
-                }
+            const platforms = [];
+            const enemies = [];
+            const keys = [];
+            const items = [];
+
+            // 地面
+            platforms.push({ x: 0, y: game.mapHeight - 40, w: game.mapWidth, h: 40 });
+
+            // 动态平台
+            const platCount = 6 + Math.floor(difficulty / 2);
+            const baseY = [420, 380, 340, 300, 260, 220, 180, 140];
+            for (let i = 0; i < platCount; i++) {
+                let x = 60 + i * 80 + (levelIdx * 17) % 120;
+                if (x > game.mapWidth - 80) x = game.mapWidth - 80;
+                let y = baseY[i % baseY.length] - (i % 3) * 15;
+                let w = 70 + (i * 7 + levelIdx) % 50;
+                platforms.push({ x, y, w, h: 14 });
+            }
+            platforms.sort((a, b) => a.y - b.y);
+
+            const lastPlat = platforms[platforms.length - 1];
+            const exitX = Math.min(game.mapWidth - 50, lastPlat.x + lastPlat.w / 2 - 15);
+            const exitY = lastPlat.y - 40;
+
+            // 敌人
+            const enemyCount = 3 + Math.floor(difficulty * 0.6);
+            for (let i = 0; i < enemyCount; i++) {
+                let plat = platforms[1 + (i * 3) % (platforms.length - 1)];
+                if (!plat) plat = platforms[1];
+                let lvl = Math.min(2, Math.floor((difficulty + i) / 3));
+                const size = 20 + lvl * 6;
+                const type = (i % 3 === 0) ? 'mushroom' : (i % 3 === 1) ? 'ghost' : 'bat';
+                enemies.push({
+                    x: plat.x + 10 + i * 20,
+                    y: plat.y - size,
+                    w: size,
+                    h: size,
+                    type: type,
+                    level: lvl,
+                    hp: 2 + lvl + Math.floor(cycle * 0.5),
+                    vx: (0.6 + lvl * 0.2) * (i % 2 === 0 ? 1 : -1),
+                    speed: 0.8 + lvl * 0.2 + cycle * 0.03,
+                    minX: Math.max(0, plat.x + 5),
+                    maxX: Math.min(game.mapWidth, plat.x + plat.w - size - 5),
+                    startY: plat.y - size,
+                    damage: 10 + lvl * 10 + Math.floor(cycle * 2),
+                    hitFlash: 0,
+                    aggroRange: 150 + lvl * 50 + cycle * 10,
+                    expReward: 10 + lvl * 5 + Math.floor(cycle * 2),
+                });
             }
 
-            game.platforms = data.platforms;
-            game.enemies = data.enemies.map(e => ({ ...e, hitFlash: 0 }));
-            game.keys = data.keys.map(k => ({ ...k, collected: false }));
-            game.items = data.items.map(i => ({ ...i }));
-            game.exit = data.exit;
+            // 钥匙
+            const keyCount = 2 + Math.floor(difficulty / 2);
+            const usedPlats = platforms.slice(1);
+            for (let i = 0; i < Math.min(keyCount, usedPlats.length); i++) {
+                const plat = usedPlats[i % usedPlats.length];
+                keys.push({ x: plat.x + 15 + i * 20, y: plat.y - 28, collected: false, r: 9 });
+            }
+            while (keys.length < 2) {
+                const plat = platforms[1 + keys.length % (platforms.length - 1)];
+                keys.push({ x: plat.x + 30 + keys.length * 20, y: plat.y - 28, collected: false, r: 9 });
+            }
+
+            // 物品
+            const healCount = 1 + Math.floor(difficulty / 3);
+            for (let i = 0; i < healCount; i++) {
+                let plat = platforms[1 + (i * 7 + levelIdx) % (platforms.length - 1)];
+                if (!plat) plat = platforms[1];
+                items.push({
+                    type: 'heal',
+                    x: plat.x + 20 + i * 25,
+                    y: plat.y - 30,
+                    r: 12,
+                    value: 20,
+                });
+            }
+            if ((levelIdx % 2 === 1) && difficulty > 0) {
+                let plat = platforms[2 % (platforms.length - 1)];
+                if (!plat) plat = platforms[1];
+                const wIdx = Math.min(3, Math.floor(difficulty / 2) + 1);
+                items.push({
+                    type: 'weapon',
+                    weaponIdx: wIdx,
+                    x: plat.x + 30,
+                    y: plat.y - 30,
+                    r: 14,
+                });
+            }
+
+            // Boss：每5关出现一次
+            let isBoss = (levelIdx % 5 === 4);
+            let boss = null;
+            let bossType = null;
+            if (isBoss) {
+                const bossPlat = platforms[Math.floor(platforms.length / 2)] || platforms[0];
+                const bossIdx = (levelIdx + cycle * 7) % BOSS_TYPES.length;
+                bossType = BOSS_TYPES[bossIdx];
+                const hpMult = 1 + cycle * 0.3 + levelIdx * 0.05;
+                const bossHp = Math.floor((60 + cycle * 20 + levelIdx * 5) * hpMult);
+                boss = {
+                    x: Math.min(game.mapWidth - 100, bossPlat.x + bossPlat.w / 2 - 35),
+                    y: bossPlat.y - 80,
+                    w: 70,
+                    h: 80,
+                    hp: bossHp,
+                    maxHp: bossHp,
+                    timer: 0,
+                    bullets: [],
+                    hitCooldown: 0,
+                    expReward: 80 + cycle * 15 + levelIdx * 5,
+                    type: bossType,
+                    phase: 0,
+                    phaseTimer: 0,
+                };
+                enemies.splice(0, Math.floor(enemies.length / 2));
+                game.bossType = bossType;
+                bossNameSpan.textContent = '👹 ' + bossType.desc;
+                bossNameSpan.style.display = 'block';
+            } else {
+                game.bossType = null;
+                bossNameSpan.style.display = 'none';
+            }
+
+            game.platforms = platforms;
+            game.enemies = enemies.map(e => ({ ...e, hitFlash: 0 }));
+            game.keys = keys.map(k => ({ ...k, collected: false }));
+            game.items = items.map(i => ({ ...i }));
+            game.exit = { x: exitX, y: exitY, w: 30, h: 38 };
             game.totalKeys = game.keys.length;
             game.keysCollected = 0;
             game.levelComplete = false;
             game.bullets = [];
-            game.isBoss = data.isBoss || false;
-            game.boss = data.boss ? { ...data.boss, bullets: [], hitCooldown: 0, timer: 0, teleportTimer: 0, dashTimer: 0,
-                splitCount: 0 } : null;
+            game.isBoss = isBoss;
+            game.boss = boss ? { ...boss, bullets: [], hitCooldown: 0, timer: 0 } : null;
             game.screenShake = 0;
-            game.bossSpawned = false;
-            if (game.boss) game.currentBossType = game.boss.type;
-
-            const displayW = isInfinite ? (cycle * 3 + w + 1) : (w + 1);
-            game.displayWorld = displayW;
-            game.displayBranch = b + 1;
-            game.displayLevel = l + 1;
+            game.bossSpawned = isBoss;
 
             const p = game.player;
             p.x = 40;
@@ -1222,55 +899,41 @@
 
             if (game.isBoss && game.boss) {
                 bossHpBar.style.display = 'flex';
-                bossNameDisplay.style.display = 'inline';
                 updateBossUI();
-                playSound('boss_spawn');
-                showMessage('👹 ' + game.boss.type.name + ' 出现！', '击败它获得大量经验！');
-                setTimeout(() => msgOverlay.classList.remove('show'), 1500);
             } else {
                 bossHpBar.style.display = 'none';
-                bossNameDisplay.style.display = 'none';
             }
             updateUI();
         }
 
         function updateUI() {
             hpSpan.textContent = Math.ceil(game.hp);
-            const w = game.displayWorld || (game.world + 1);
-            const b = game.displayBranch || (game.branch + 1);
-            const l = game.displayLevel || (game.level + 1);
-            worldSpan.textContent = w + '-' + b + '-' + l;
-            keySpan.textContent = game.keysCollected + ' / ' + game.totalKeys;
+            const displayLvl = game.level + 1 + game.totalCycles * 5;
+            worldSpan.textContent = `${displayLvl}`;
+            keySpan.textContent = `${game.keysCollected} / ${game.totalKeys}`;
             const rem = Math.max(0, game.player.maxJumps - game.player.jumpCount);
             jumpSpan.textContent = rem;
-            const bt = getCurrentBulletType();
-            const label = BULLET_TYPES[bt]?.label || '普通';
-            weaponSpan.textContent = WEAPONS[game.player.weapon].icon + ' ' + label;
-            levelSpan.textContent = 'Lv.' + level;
+            weaponSpan.textContent = WEAPONS[game.player.weapon].icon + ' ' + WEAPONS[game.player.weapon].name;
+            levelSpan.textContent = `Lv.${level}`;
 
             if (game.skillCooldown > 0) {
                 const cdSec = Math.ceil(game.skillCooldown / 60);
-                skillSpan.textContent = '⏳ 技能: ' + cdSec + 's';
+                skillSpan.textContent = `⏳ 技能: ${cdSec}s`;
                 skillSpan.style.color = '#ff6666';
             } else if (game.skillActive) {
-                skillSpan.textContent = '⏳ 技能: 激活中';
+                skillSpan.textContent = `⏳ 技能: 激活中`;
                 skillSpan.style.color = '#44ff88';
             } else {
-                skillSpan.textContent = '⏳ 技能: 就绪';
+                skillSpan.textContent = `⏳ 技能: 就绪`;
                 skillSpan.style.color = '#44ff88';
             }
-            updateMiniUI();
+            updateStatUI();
         }
 
         function updateBossUI() {
             if (!game.boss) return;
             const pct = Math.max(0, (game.boss.hp / game.boss.maxHp) * 100);
             bossFill.style.width = pct + '%';
-            bossHpText.textContent = Math.ceil(game.boss.hp);
-            if (game.boss.type) {
-                bossNameDisplay.textContent = '👹 ' + game.boss.type.name;
-                bossNameDisplay.style.color = game.boss.type.color;
-            }
         }
 
         function rectCollide(a, b) {
@@ -1278,9 +941,11 @@
                 a.y < b.y + b.h && a.y + a.h > b.y;
         }
 
-        function dist(x1, y1, x2, y2) { return Math.hypot(x2 - x1, y2 - y1); }
+        function dist(x1, y1, x2, y2) {
+            return Math.hypot(x2 - x1, y2 - y1);
+        }
 
-        // ---- 粒子 ----
+        // ---------- 粒子 ----------
         function spawnParticles(x, y, color, count = 12, speedMult = 1) {
             for (let i = 0; i < count; i++) {
                 const angle = Math.random() * Math.PI * 2;
@@ -1292,7 +957,7 @@
                     vy: Math.sin(angle) * speed - 1,
                     life: 30 + Math.random() * 30,
                     maxLife: 60,
-                    color: color,
+                    color,
                     size: 3 + Math.random() * 5,
                 });
             }
@@ -1327,7 +992,7 @@
             if (game.particles.length > 500) game.particles.splice(0, 150);
         }
 
-        // ---- 射击（修复子弹颜色+特效） ----
+        // ---------- 射击 ----------
         let lastShootTime = 0;
         let shootSoundCooldown = 0;
 
@@ -1337,50 +1002,42 @@
             const coolDownMs = 70 * fireRate;
             if (now - lastShootTime < coolDownMs) return;
             lastShootTime = now;
-            if (!game.running || game.gameOver || game.levelComplete) return;
 
+            if (!game.running || game.gameOver || game.levelComplete) return;
             const p = game.player;
-            const cx = p.x + p.w / 2,
-                cy = p.y + p.h / 2;
-            const dx = targetX - cx,
-                dy = targetY - cy;
+            const cx = p.x + p.w / 2;
+            const cy = p.y + p.h / 2;
+            const dx = targetX - cx;
+            const dy = targetY - cy;
             const len = Math.hypot(dx, dy);
             if (len < 10) return;
-
             const weapon = WEAPONS[p.weapon];
-            const btKey = getCurrentBulletType();
-            const btDef = BULLET_TYPES[btKey] || BULLET_TYPES.normal;
+            const count = weapon.spread || 1;
             const damageBonus = 1 + stats.damageBonus;
-            const count = btDef.spread || weapon.spread || 1;
-
             for (let i = 0; i < count; i++) {
-                const angle = Math.atan2(dy, dx) + (i - (count - 1) / 2) * 0.2;
-                const speed = (game.skillActive ? 0.5 : 1.0) * weapon.speed * btDef.speed;
+                const angle = Math.atan2(dy, dx) + (i - (count - 1) / 2) * 0.25;
+                const speed = game.skillActive ? weapon.speed * 0.4 : weapon.speed;
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed;
                 game.bullets.push({
                     x: cx,
                     y: cy,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
+                    vx: vx,
+                    vy: vy,
                     r: 5,
                     life: 130,
-                    damage: Math.ceil(weapon.damage * damageBonus * btDef.damage),
-                    color: btDef.color,
-                    glow: btDef.glow || btDef.color,
-                    type: btKey,
-                    pierce: btDef.pierce || 0,
-                    explode: btDef.explode || false,
-                    homing: btDef.homing || false,
-                    trail: btDef.trail || false,
-                    hitCount: 0,
-                    trailParticles: [],
+                    damage: Math.ceil(weapon.damage * damageBonus),
+                    color: weapon.color,
                 });
             }
-            // 射击粒子用子弹颜色
-            spawnParticles(cx, cy, btDef.color, 6);
-            if (now - shootSoundCooldown > 100) { playSound('shoot');
-                shootSoundCooldown = now; }
+            spawnParticles(cx, cy, weapon.color, 4);
+            if (now - shootSoundCooldown > 100) {
+                playSound('shoot');
+                shootSoundCooldown = now;
+            }
         }
 
+        // ---------- 技能 ----------
         function activateSkill() {
             if (game.skillCooldown > 0 || game.skillActive) return;
             game.skillActive = true;
@@ -1389,18 +1046,275 @@
             spawnParticles(game.player.x + game.player.w / 2, game.player.y + game.player.h / 2, '#44ff88', 30, 2);
         }
 
-        // ---- 玩家更新 ----
+        // ---------- 绘制Boss (5种不同形状) ----------
+        function drawBoss(b, p) {
+            const type = b.type || BOSS_TYPES[0];
+            const flash = b.hitCooldown > 0;
+            const pulse = 0.95 + Math.sin(game.frame * 0.05) * 0.05;
+
+            // 光晕
+            ctx.shadowColor = type.glow || '#ff4444';
+            ctx.shadowBlur = 60 * pulse;
+            ctx.fillStyle = type.glow + '33';
+            ctx.beginPath();
+            ctx.arc(b.x + b.w / 2, b.y + b.h / 2, 60 * pulse, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = type.color || '#ff4444';
+
+            switch (type.shape) {
+                case 'beast':
+                    // 腐化巨兽 - 四足怪物
+                    ctx.fillStyle = flash ? '#ffffff' : type.color;
+                    ctx.beginPath();
+                    ctx.ellipse(b.x + b.w / 2, b.y + b.h / 2 + 10, 30, 25, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    // 腿
+                    ctx.fillRect(b.x + 8, b.y + b.h - 10, 12, 10);
+                    ctx.fillRect(b.x + b.w - 20, b.y + b.h - 10, 12, 10);
+                    ctx.fillRect(b.x + 5, b.y + b.h - 12, 10, 12);
+                    ctx.fillRect(b.x + b.w - 15, b.y + b.h - 12, 10, 12);
+                    // 眼睛
+                    ctx.fillStyle = '#ff0000';
+                    ctx.shadowBlur = 20;
+                    ctx.beginPath();
+                    ctx.arc(b.x + 20, b.y + 25, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w - 20, b.y + 25, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#000';
+                    const dx = p.x + p.w / 2 - (b.x + 20);
+                    const dy = p.y + p.h / 2 - (b.y + 25);
+                    const d = Math.hypot(dx, dy);
+                    if (d > 0) {
+                        ctx.beginPath();
+                        ctx.arc(b.x + 20 + (dx / d) * 4, b.y + 25 + (dy / d) * 4, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(b.x + b.w - 20 + (dx / d) * 4, b.y + 25 + (dy / d) * 4, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    // 毒液腺体
+                    ctx.fillStyle = type.glow + '66';
+                    ctx.shadowBlur = 40;
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w / 2, b.y + 50, 12 + Math.sin(game.frame * 0.03) * 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                case 'ghost':
+                    // 暗影幽灵 - 半透明灵体
+                    const alpha = 0.6 + Math.sin(game.frame * 0.04) * 0.2;
+                    ctx.globalAlpha = alpha;
+                    ctx.fillStyle = flash ? '#ffffff' : type.color;
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w / 2, b.y + b.h / 2 - 5, 28, 0, Math.PI * 2);
+                    ctx.fill();
+                    // 飘带
+                    for (let i = -2; i <= 2; i++) {
+                        const wx = b.x + b.w / 2 + i * 12 + Math.sin(game.frame * 0.06 + i) * 5;
+                        const wy = b.y + b.h - 5 + Math.sin(game.frame * 0.05 + i * 2) * 8;
+                        ctx.beginPath();
+                        ctx.moveTo(b.x + b.w / 2 + i * 10, b.y + b.h - 5);
+                        ctx.quadraticCurveTo(wx + 5, wy + 10, wx, wy + 20 + Math.sin(game.frame * 0.04 + i) * 5);
+                        ctx.lineWidth = 6;
+                        ctx.strokeStyle = type.color;
+                        ctx.shadowBlur = 30;
+                        ctx.stroke();
+                    }
+                    ctx.globalAlpha = 1;
+                    // 眼睛
+                    ctx.fillStyle = '#ff66ff';
+                    ctx.shadowBlur = 30;
+                    ctx.beginPath();
+                    ctx.arc(b.x + 18, b.y + 25, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w - 18, b.y + 25, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#000';
+                    const dx2 = p.x + p.w / 2 - (b.x + 18);
+                    const dy2 = p.y + p.h / 2 - (b.y + 25);
+                    const d2 = Math.hypot(dx2, dy2);
+                    if (d2 > 0) {
+                        ctx.beginPath();
+                        ctx.arc(b.x + 18 + (dx2 / d2) * 5, b.y + 25 + (dy2 / d2) * 5, 5, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(b.x + b.w - 18 + (dx2 / d2) * 5, b.y + 25 + (dy2 / d2) * 5, 5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    break;
+
+                case 'fire':
+                    // 火焰领主 - 火焰巨人
+                    ctx.fillStyle = flash ? '#ffffff' : type.color;
+                    ctx.shadowBlur = 50;
+                    // 身体
+                    ctx.beginPath();
+                    ctx.roundRect(b.x + 10, b.y + 10, b.w - 20, b.h - 10, 10);
+                    ctx.fill();
+                    // 火焰头发
+                    for (let i = 0; i < 7; i++) {
+                        const fx = b.x + 10 + i * 9 + Math.sin(game.frame * 0.05 + i) * 3;
+                        const fy = b.y + 5 + Math.sin(game.frame * 0.07 + i * 2) * 8;
+                        ctx.fillStyle = type.glow + '88';
+                        ctx.shadowBlur = 40;
+                        ctx.beginPath();
+                        ctx.arc(fx, fy - 5, 10 + Math.sin(game.frame * 0.06 + i) * 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    // 眼睛
+                    ctx.fillStyle = '#ffff00';
+                    ctx.shadowBlur = 30;
+                    ctx.beginPath();
+                    ctx.arc(b.x + 22, b.y + 30, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w - 22, b.y + 30, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#ff4400';
+                    const dx3 = p.x + p.w / 2 - (b.x + 22);
+                    const dy3 = p.y + p.h / 2 - (b.y + 30);
+                    const d3 = Math.hypot(dx3, dy3);
+                    if (d3 > 0) {
+                        ctx.beginPath();
+                        ctx.arc(b.x + 22 + (dx3 / d3) * 4, b.y + 30 + (dy3 / d3) * 4, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(b.x + b.w - 22 + (dx3 / d3) * 4, b.y + 30 + (dy3 / d3) * 4, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    // 火焰核心
+                    ctx.fillStyle = type.glow + '55';
+                    ctx.shadowBlur = 60;
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w / 2, b.y + 55, 15 + Math.sin(game.frame * 0.05) * 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                case 'ice':
+                    // 冰霜女王 - 冰晶女性
+                    ctx.fillStyle = flash ? '#ffffff' : type.color;
+                    ctx.shadowBlur = 40;
+                    // 身体
+                    ctx.beginPath();
+                    ctx.roundRect(b.x + 15, b.y + 15, b.w - 30, b.h - 20, 8);
+                    ctx.fill();
+                    // 冰晶冠
+                    for (let i = 0; i < 5; i++) {
+                        const cx = b.x + 15 + i * 12 + Math.sin(game.frame * 0.03 + i) * 2;
+                        ctx.fillStyle = type.glow + '88';
+                        ctx.shadowBlur = 30;
+                        ctx.beginPath();
+                        ctx.moveTo(cx, b.y);
+                        ctx.lineTo(cx + 6, b.y - 12);
+                        ctx.lineTo(cx + 12, b.y);
+                        ctx.fill();
+                    }
+                    // 眼睛
+                    ctx.fillStyle = '#88ddff';
+                    ctx.shadowBlur = 25;
+                    ctx.beginPath();
+                    ctx.arc(b.x + 22, b.y + 28, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w - 22, b.y + 28, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#004466';
+                    const dx4 = p.x + p.w / 2 - (b.x + 22);
+                    const dy4 = p.y + p.h / 2 - (b.y + 28);
+                    const d4 = Math.hypot(dx4, dy4);
+                    if (d4 > 0) {
+                        ctx.beginPath();
+                        ctx.arc(b.x + 22 + (dx4 / d4) * 4, b.y + 28 + (dy4 / d4) * 4, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(b.x + b.w - 22 + (dx4 / d4) * 4, b.y + 28 + (dy4 / d4) * 4, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    // 冰晶飘动
+                    for (let i = 0; i < 6; i++) {
+                        const fx = b.x + 10 + i * 12 + Math.sin(game.frame * 0.04 + i * 2) * 4;
+                        const fy = b.y + 40 + Math.sin(game.frame * 0.05 + i * 1.5) * 6;
+                        ctx.fillStyle = type.glow + '44';
+                        ctx.shadowBlur = 20;
+                        ctx.beginPath();
+                        ctx.arc(fx, fy, 4 + Math.sin(game.frame * 0.03 + i) * 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    break;
+
+                case 'void':
+                    // 虚空使者 - 虚空生物
+                    ctx.fillStyle = flash ? '#ffffff' : type.color;
+                    ctx.shadowBlur = 50;
+                    // 核心球体
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w / 2, b.y + b.h / 2, 28 + Math.sin(game.frame * 0.03) * 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    // 触手
+                    for (let i = 0; i < 8; i++) {
+                        const ang = i / 8 * Math.PI * 2 + game.frame * 0.02;
+                        const len = 20 + Math.sin(game.frame * 0.04 + i * 1.5) * 10;
+                        ctx.fillStyle = type.glow + '66';
+                        ctx.shadowBlur = 40;
+                        ctx.beginPath();
+                        ctx.moveTo(b.x + b.w / 2 + Math.cos(ang) * 28, b.y + b.h / 2 + Math.sin(ang) * 28);
+                        ctx.quadraticCurveTo(
+                            b.x + b.w / 2 + Math.cos(ang + 0.2) * (28 + len),
+                            b.y + b.h / 2 + Math.sin(ang + 0.2) * (28 + len),
+                            b.x + b.w / 2 + Math.cos(ang + 0.1) * (28 + len * 1.2),
+                            b.y + b.h / 2 + Math.sin(ang + 0.1) * (28 + len * 1.2)
+                        );
+                        ctx.lineWidth = 6;
+                        ctx.stroke();
+                    }
+                    // 眼睛
+                    ctx.fillStyle = '#ff44ff';
+                    ctx.shadowBlur = 40;
+                    ctx.beginPath();
+                    ctx.arc(b.x + 20, b.y + 25, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w - 20, b.y + 25, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#220044';
+                    const dx5 = p.x + p.w / 2 - (b.x + 20);
+                    const dy5 = p.y + p.h / 2 - (b.y + 25);
+                    const d5 = Math.hypot(dx5, dy5);
+                    if (d5 > 0) {
+                        ctx.beginPath();
+                        ctx.arc(b.x + 20 + (dx5 / d5) * 5, b.y + 25 + (dy5 / d5) * 5, 5, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(b.x + b.w - 20 + (dx5 / d5) * 5, b.y + 25 + (dy5 / d5) * 5, 5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    break;
+            }
+            ctx.shadowBlur = 0;
+        }
+
+        // ---------- 玩家更新 ----------
         function updatePlayer() {
             const p = game.player;
             const keys = game.keysPressed;
+
             if (p.invincible > 0) p.invincible--;
 
             if (game.skillActive) {
                 game.skillTimer--;
-                if (game.skillTimer <= 0) { game.skillActive = false;
-                    game.skillCooldown = game.skillMaxCooldown; }
+                if (game.skillTimer <= 0) {
+                    game.skillActive = false;
+                    game.skillCooldown = game.skillMaxCooldown;
+                }
             }
-            if (game.skillCooldown > 0) game.skillCooldown--;
+            if (game.skillCooldown > 0) {
+                game.skillCooldown--;
+            }
 
             if (keys.left) { p.vx = -p.speed;
                 p.facing = -1; } else if (keys.right) { p.vx = p.speed;
@@ -1423,20 +1337,24 @@
 
             p.x += p.vx;
             if (p.x < 0) p.x = 0;
-            if (p.x + p.w > W) p.x = W - p.w;
+            if (p.x + p.w > game.mapWidth) p.x = game.mapWidth - p.w;
 
             p.y += p.vy;
             p.onGround = false;
             for (const plat of game.platforms) {
                 if (rectCollide(p, plat)) {
-                    if (p.vy > 0) { p.y = plat.y - p.h;
+                    if (p.vy > 0) {
+                        p.y = plat.y - p.h;
                         p.vy = 0;
                         p.onGround = true;
-                        p.jumpCount = 0; } else if (p.vy < 0) { p.y = plat.y + plat.h;
-                        p.vy = 0; }
+                        p.jumpCount = 0;
+                    } else if (p.vy < 0) {
+                        p.y = plat.y + plat.h;
+                        p.vy = 0;
+                    }
                 }
             }
-            if (p.y > H + 50) { takeDamage(50); return; }
+            if (p.y > game.mapHeight + 50) { takeDamage(50); return; }
 
             if (game.frame % 2 === 0) {
                 p.trail.push({ x: p.x, y: p.y, life: 20 });
@@ -1447,7 +1365,6 @@
                 if (p.trail[i].life <= 0) p.trail.splice(i, 1);
             }
 
-            // 收集钥匙
             for (const key of game.keys) {
                 if (key.collected) continue;
                 if (dist(p.x + p.w / 2, p.y + p.h / 2, key.x, key.y) < 26) {
@@ -1460,7 +1377,6 @@
                 }
             }
 
-            // 拾取物品
             for (let i = game.items.length - 1; i >= 0; i--) {
                 const item = game.items[i];
                 if (dist(p.x + p.w / 2, p.y + p.h / 2, item.x, item.y) < 25) {
@@ -1472,7 +1388,7 @@
                         game.items.splice(i, 1);
                         updateUI();
                     } else if (item.type === 'weapon') {
-                        game.player.weapon = item.weaponIdx;
+                        p.weapon = item.weaponIdx;
                         spawnParticles(item.x, item.y, '#ffaa44', 20);
                         playSound('weapon');
                         addExp(10);
@@ -1482,46 +1398,27 @@
                 }
             }
 
-            // 出口
             if (game.keysCollected >= game.totalKeys) {
                 if (rectCollide(p, game.exit)) {
                     game.levelComplete = true;
-                    addExp(50 + game.totalCycles * 10);
-                    let nw = game.world,
-                        nb = game.branch,
-                        nl = game.level + 1;
-                    if (nl >= game.maxLevel) { nl = 0;
-                        nb++; if (nb >= game.maxBranch) { nb = 0;
-                            nw++; if (nw >= game.maxWorld) {
-                                if (game.infiniteMode) {
-                                    nw = 0;
-                                    game.totalCycles++;
-                                    showMessage('♾️ 无尽轮回', '第 ' + game.totalCycles + ' 轮 · 地图变化！');
-                                    setTimeout(() => {
-                                        msgOverlay.classList.remove('show');
-                                        game.world = 0;
-                                        game.branch = 0;
-                                        game.level = 0;
-                                        loadLevel(0, 0, 0);
-                                        game.levelComplete = false;
-                                        updateUI();
-                                    }, 1500);
-                                    return;
-                                } else {
-                                    game.running = false;
-                                    showMessage('🏆 通关！', '按空格开启无尽模式继续挑战');
-                                    return;
-                                }
-                            } } }
+                    addExp(50);
+                    let nl = game.level + 1;
+                    if (nl >= game.maxLevel) {
+                        nl = 0;
+                        game.totalCycles++;
+                        if (game.infiniteMode) {
+                            showMessage('♾️ 无尽模式', `第 ${game.totalCycles} 轮开始！`);
+                        } else {
+                            game.running = false;
+                            showMessage('🏆 通关！', '开启无尽模式继续挑战');
+                            return;
+                        }
                     }
-                    const displayW = game.infiniteMode ? (game.totalCycles * 3 + nw + 1) : (nw + 1);
-                    showMessage('🎉 过关！', '进入 ' + displayW + '-' + (nb + 1) + '-' + (nl + 1));
+                    showMessage('🎉 过关！', `进入第 ${nl+1 + game.totalCycles*5} 关`);
                     setTimeout(() => {
                         msgOverlay.classList.remove('show');
-                        game.world = nw;
-                        game.branch = nb;
                         game.level = nl;
-                        loadLevel(nw, nb, nl);
+                        loadLevel(nl);
                         game.levelComplete = false;
                         updateUI();
                     }, 1200);
@@ -1530,10 +1427,10 @@
 
             // 敌人碰撞
             for (const e of game.enemies) {
-                if (e.y > H + 50) continue;
+                if (e.y > game.mapHeight + 50) continue;
                 if (rectCollide(p, e)) {
                     if (p.vy > 0 && p.y + p.h - e.y < 20) {
-                        e.y = H + 100;
+                        e.y = game.mapHeight + 100;
                         p.vy = p.jumpPower * 0.6;
                         p.jumpCount = 0;
                         spawnBlood(e.x + e.w / 2, e.y + e.h / 2, 30);
@@ -1541,8 +1438,7 @@
                         game.totalKills++;
                         addExp(e.expReward || 10);
                         if (Math.random() < 0.2) {
-                            game.items.push({ type: 'heal', x: e.x + e.w / 2, y: e.y - 30, r: 12, value: 20 + Math.floor(game
-                                    .totalCycles * 2) });
+                            game.items.push({ type: 'heal', x: e.x + e.w / 2, y: e.y - 30, r: 12, value: 20 });
                         }
                     } else if (p.invincible <= 0) {
                         takeDamage(e.damage || 10);
@@ -1556,139 +1452,64 @@
                 const b = game.boss;
                 if (rectCollide(p, b)) {
                     if (p.vy > 0 && p.y + p.h - b.y < 30) {
-                        b.hp -= 2 + Math.floor(stats.damageBonus);
+                        b.hp -= 2;
                         b.hitCooldown = 15;
                         p.vy = p.jumpPower * 0.6;
                         p.jumpCount = 0;
                         spawnBlood(b.x + b.w / 2, b.y + 10, 30);
                         playSound('boss_hit');
-                        game.screenShake = 10;
+                        game.screenShake = 12;
                         updateBossUI();
                         if (b.hp <= 0) bossDefeated();
                     } else if (p.invincible <= 0) {
-                        takeDamage(25 + Math.floor(game.totalCycles * 0.5));
+                        takeDamage(30);
                         if (game.hp <= 0) { gameOver(); return; }
                     }
                 }
                 updateBossAI();
             }
 
-            // ---- 子弹更新（修复颜色+特效） ----
             const timeScale = game.skillActive ? 0.6 : 1.0;
             for (let i = game.bullets.length - 1; i >= 0; i--) {
                 const bull = game.bullets[i];
-
-                // 跟踪
-                if (bull.homing && bull.life > 30) {
-                    let target = null,
-                        minDist = Infinity;
-                    for (const e of game.enemies) {
-                        if (e.y > H + 50) continue;
-                        const d = dist(bull.x, bull.y, e.x + e.w / 2, e.y + e.h / 2);
-                        if (d < minDist) { minDist = d;
-                            target = e; }
-                    }
-                    if (target) {
-                        const dx = target.x + target.w / 2 - bull.x;
-                        const dy = target.y + target.h / 2 - bull.y;
-                        const d = Math.hypot(dx, dy);
-                        if (d > 0) {
-                            bull.vx += (dx / d) * 0.06;
-                            bull.vy += (dy / d) * 0.06;
-                            const sp = Math.hypot(bull.vx, bull.vy);
-                            if (sp > 10) { bull.vx = (bull.vx / sp) * 10;
-                                bull.vy = (bull.vy / sp) * 10; }
-                        }
-                    }
-                }
-
-                // 子弹尾迹
-                if (bull.trail && game.frame % 2 === 0) {
-                    game.particles.push({
-                        x: bull.x + (Math.random() - 0.5) * 4,
-                        y: bull.y + (Math.random() - 0.5) * 4,
-                        vx: (Math.random() - 0.5) * 0.3,
-                        vy: (Math.random() - 0.5) * 0.3,
-                        life: 15 + Math.random() * 10,
-                        maxLife: 25,
-                        color: bull.glow || bull.color,
-                        size: 2 + Math.random() * 3,
-                    });
-                }
-
                 bull.x += bull.vx * timeScale;
                 bull.y += bull.vy * timeScale;
                 bull.life--;
-                if (bull.x < -20 || bull.x > W + 20 || bull.y < -20 || bull.y > H + 20 || bull.life <= 0) {
-                    // 消失时小粒子
-                    if (bull.trail) spawnParticles(bull.x, bull.y, bull.color, 5);
+                if (bull.x < -20 || bull.x > game.mapWidth + 20 || bull.y < -20 || bull.y > game.mapHeight + 20 || bull
+                    .life <= 0) {
                     game.bullets.splice(i, 1);
                     continue;
                 }
-
                 let hit = false;
-                // 碰撞敌人
                 for (const e of game.enemies) {
-                    if (e.y > H + 50) continue;
+                    if (e.y > game.mapHeight + 50) continue;
                     if (dist(bull.x, bull.y, e.x + e.w / 2, e.y + e.h / 2) < bull.r + 12) {
                         e.hp -= bull.damage;
-                        bull.hitCount++;
-                        // 击中特效（颜色对应子弹）
-                        spawnParticles(bull.x, bull.y, bull.color, 10, 1.5);
-
-                        if (bull.explode) {
-                            spawnParticles(bull.x, bull.y, '#ff6633', 40, 2.5);
-                            spawnParticles(bull.x, bull.y, '#ffaa44', 20, 2);
-                            playSound('explode');
-                            for (const e2 of game.enemies) {
-                                if (e2 === e || e2.y > H + 50) continue;
-                                if (dist(bull.x, bull.y, e2.x + e2.w / 2, e2.y + e2.h / 2) < 60) {
-                                    e2.hp -= Math.ceil(bull.damage * 0.5);
-                                    if (e2.hp <= 0) {
-                                        e2.y = H + 100;
-                                        spawnBlood(e2.x + e2.w / 2, e2.y + e2.h / 2, 15);
-                                        playSound('kill');
-                                        game.totalKills++;
-                                        addExp(e2.expReward || 10);
-                                    } else e2.hitFlash = 10;
-                                }
-                            }
-                            game.bullets.splice(i, 1);
-                            hit = true;
-                            break;
-                        }
-
                         if (e.hp <= 0) {
-                            e.y = H + 100;
+                            e.y = game.mapHeight + 100;
                             spawnBlood(e.x + e.w / 2, e.y + e.h / 2, 20);
                             playSound('kill');
                             game.totalKills++;
                             addExp(e.expReward || 10);
                             if (Math.random() < 0.15) {
-                                game.items.push({ type: 'heal', x: e.x + e.w / 2, y: e.y - 30, r: 12, value: 20 + Math.floor(
-                                        game.totalCycles * 2) });
+                                game.items.push({ type: 'heal', x: e.x + e.w / 2, y: e.y - 30, r: 12, value: 20 });
                             }
-                        } else { e.hitFlash = 10; }
-
-                        if (bull.pierce > 0 && bull.hitCount >= bull.pierce) {
-                            game.bullets.splice(i, 1);
-                            hit = true;
-                            break;
+                        } else {
+                            e.hitFlash = 10;
+                            spawnParticles(bull.x, bull.y, '#ffaa44', 5);
                         }
                         hit = true;
                         break;
                     }
                 }
-
-                // Boss碰撞
                 if (!hit && game.isBoss && game.boss && game.boss.hp > 0) {
                     const b = game.boss;
                     if (bull.x > b.x && bull.x < b.x + b.w && bull.y > b.y && bull.y < b.y + b.h) {
                         b.hp -= bull.damage;
                         b.hitCooldown = 10;
-                        spawnParticles(bull.x, bull.y, bull.color, 15, 1.5);
+                        spawnBlood(bull.x, bull.y, 10);
                         playSound('boss_hit');
-                        game.screenShake = 6;
+                        game.screenShake = 8;
                         updateBossUI();
                         hit = true;
                         if (b.hp <= 0) bossDefeated();
@@ -1703,11 +1524,11 @@
             updateUI();
         }
 
-        // ---- 敌人AI ----
-        function updateEnemies(timeScale) {
+        // ---------- 敌人AI ----------
+        function updateEnemies(timeScale = 1.0) {
             const p = game.player;
             for (const e of game.enemies) {
-                if (e.y > H + 50) continue;
+                if (e.y > game.mapHeight + 50) continue;
                 const dx = p.x + p.w / 2 - (e.x + e.w / 2);
                 const dy = p.y + p.h / 2 - (e.y + e.h / 2);
                 const d = Math.hypot(dx, dy);
@@ -1715,7 +1536,7 @@
                     e.x += Math.sign(dx) * e.speed * 0.6 * timeScale;
                     if (e.level >= 1 && Math.random() < 0.01 * timeScale) e.y -= 4 * timeScale;
                     if (e.x < 0) e.x = 0;
-                    if (e.x > W - e.w) e.x = W - e.w;
+                    if (e.x > game.mapWidth - e.w) e.x = game.mapWidth - e.w;
                 } else {
                     e.x += e.vx * e.speed * timeScale;
                     if (e.x < e.minX || e.x > e.maxX) e.vx *= -1;
@@ -1726,7 +1547,7 @@
             }
         }
 
-        // ---- Boss AI（保留6种） ----
+        // ---------- Boss AI (5种不同攻击) ----------
         function updateBossAI() {
             const b = game.boss;
             if (!b || b.hp <= 0) return;
@@ -1735,159 +1556,131 @@
             const dy = p.y + p.h / 2 - (b.y + b.h / 2);
             const d = Math.hypot(dx, dy);
             const timeScale = game.skillActive ? 0.5 : 1.0;
-            const pattern = b.type.attackPattern;
+            const type = b.type || BOSS_TYPES[0];
 
-            if (pattern === 'chase') {
-                if (b.dashTimer > 0) {
-                    b.dashTimer -= timeScale;
-                    b.x += b.dashDir.x * 4 * timeScale;
-                    b.y += b.dashDir.y * 4 * timeScale;
-                } else {
-                    if (d > 120) { b.x += Math.sign(dx) * 1.2 * timeScale;
-                        b.y += Math.sign(dy) * 0.8 * timeScale; } else if (d < 80 && Math.random() < 0.02 * timeScale) {
-                        b.dashTimer = 20;
-                        b.dashDir = { x: Math.sign(dx), y: Math.sign(dy) }; }
-                }
-            } else if (pattern === 'spread') {
-                if (b.teleportTimer !== undefined) {
-                    b.teleportTimer -= timeScale;
-                    if (b.teleportTimer <= 0 && Math.random() < 0.02 * timeScale) {
-                        const angle = Math.random() * Math.PI * 2;
-                        const dist = 100 + Math.random() * 150;
-                        b.x = p.x + p.w / 2 + Math.cos(angle) * dist - b.w / 2;
-                        b.y = p.y + p.h / 2 + Math.sin(angle) * dist - b.h / 2;
-                        b.x = Math.max(20, Math.min(W - b.w - 20, b.x));
-                        b.y = Math.max(50, Math.min(380, b.y));
-                        b.teleportTimer = 60 + Math.random() * 60;
-                        spawnParticles(b.x + b.w / 2, b.y + b.h / 2, '#aa44ff', 20, 2);
-                    }
-                } else {
-                    if (d > 150) { b.x += Math.sign(dx) * 0.6 * timeScale;
-                        b.y += Math.sign(dy) * 0.4 * timeScale; } else if (d < 80) { b.x -= Math.sign(dx) * 0.4 * timeScale;
-                        b.y -= Math.sign(dy) * 0.3 * timeScale; }
-                }
-            } else {
-                if (d > 150) { b.x += Math.sign(dx) * 0.6 * timeScale;
-                    b.y += Math.sign(dy) * 0.4 * timeScale; } else if (d < 80) { b.x -= Math.sign(dx) * 0.4 * timeScale;
-                    b.y -= Math.sign(dy) * 0.3 * timeScale; }
+            // Boss移动
+            if (d > 120) {
+                b.x += Math.sign(dx) * 0.5 * timeScale;
+                b.y += Math.sign(dy) * 0.3 * timeScale;
             }
-
-            b.x = Math.max(20, Math.min(W - b.w - 20, b.x));
-            b.y = Math.max(50, Math.min(380, b.y));
+            b.x = Math.max(20, Math.min(game.mapWidth - b.w - 20, b.x));
+            b.y = Math.max(50, Math.min(450, b.y));
 
             b.timer++;
-            let fireRate = Math.max(10, 40 - Math.floor((b.maxHp - b.hp) / 4) - Math.floor(game.totalCycles * 0.5));
-            if (fireRate < 10) fireRate = 10;
+            let fireRate = 35 - Math.floor((b.maxHp - b.hp) / 6);
+            if (fireRate < 12) fireRate = 12;
 
-            if (b.timer > fireRate / Math.max(0.3, timeScale)) {
+            if (b.timer > fireRate / timeScale) {
                 b.timer = 0;
                 const angle = Math.atan2(dy, dx);
-                const baseSpeed = (2.5 + (1 - b.hp / b.maxHp) * 1.8 + game.totalCycles * 0.08) * timeScale;
+                const speed = (2.0 + (1 - b.hp / b.maxHp) * 2.0) * timeScale;
 
-                switch (pattern) {
-                    case 'linear':
-                        for (let i = -1; i <= 1; i++) {
-                            const a = angle + i * 0.15;
-                            b.bullets.push({ x: b.x + b.w / 2, y: b.y + b.h / 2, vx: Math.cos(a) * baseSpeed, vy: Math.sin(
-                                    a) * baseSpeed, r: 8, color: '#44ff44' });
-                        }
-                        break;
-                    case 'spread':
+                switch (type.attackType) {
+                    case 'spray':
+                        // 腐化巨兽：喷吐毒液
                         for (let i = -3; i <= 3; i++) {
-                            const a = angle + i * 0.2;
-                            b.bullets.push({ x: b.x + b.w / 2, y: b.y + b.h / 2, vx: Math.cos(a) * baseSpeed * 0.8, vy: Math
-                                    .sin(a) * baseSpeed * 0.8, r: 6, color: '#cc88ff' });
-                        }
-                        break;
-                    case 'ring':
-                        for (let i = 0; i < 8 + Math.floor(game.totalCycles * 0.3); i++) {
-                            const a = (i / 8) * Math.PI * 2 + game.frame * 0.02;
-                            b.bullets.push({ x: b.x + b.w / 2, y: b.y + b.h / 2, vx: Math.cos(a) * baseSpeed * 0.6, vy: Math
-                                    .sin(a) * baseSpeed * 0.6, r: 7, color: '#ff8844' });
-                        }
-                        if (b.hp < b.maxHp * 0.5 && Math.random() < 0.1) {
-                            game.enemies.push({
-                                x: b.x + Math.random() * b.w,
-                                y: b.y + b.h + 10,
-                                w: 20,
-                                h: 20,
-                                type: 'ghost',
-                                level: 1,
-                                hp: 3 + Math.floor(game.totalCycles * 0.3),
-                                vx: (Math.random() - 0.5) * 2,
-                                speed: 1.0 + game.totalCycles * 0.05,
-                                minX: 0,
-                                maxX: W,
-                                startY: b.y + b.h + 10,
-                                damage: 10 + Math.floor(game.totalCycles * 0.5),
-                                hitFlash: 0,
-                                aggroRange: 200,
-                                jumpTimer: 0,
-                                expReward: 5 + Math.floor(game.totalCycles * 0.5),
+                            const a = angle + i * 0.15;
+                            b.bullets.push({
+                                x: b.x + b.w / 2,
+                                y: b.y + b.h / 2,
+                                vx: Math.cos(a) * speed,
+                                vy: Math.sin(a) * speed,
+                                r: 8,
+                                color: type.bulletColor || '#44ff44',
                             });
                         }
                         break;
-                    case 'chase':
-                        for (let i = -2; i <= 2; i++) {
-                            const a = angle + i * 0.25;
-                            b.bullets.push({ x: b.x + b.w / 2, y: b.y + b.h / 2, vx: Math.cos(a) * baseSpeed * 0.9, vy: Math
-                                    .sin(a) * baseSpeed * 0.9, r: 9, color: '#ff4444' });
+
+                    case 'scatter':
+                        // 暗影幽灵：散射暗影弹
+                        for (let i = 0; i < 6; i++) {
+                            const a = (i / 6) * Math.PI * 2 + game.frame * 0.02;
+                            b.bullets.push({
+                                x: b.x + b.w / 2,
+                                y: b.y + b.h / 2,
+                                vx: Math.cos(a) * speed * 0.8,
+                                vy: Math.sin(a) * speed * 0.8,
+                                r: 6,
+                                color: type.bulletColor || '#cc66ff',
+                            });
                         }
                         break;
-                    case 'random':
-                        for (let i = 0; i < 5 + Math.floor(game.totalCycles * 0.2); i++) {
-                            const a = Math.random() * Math.PI * 2;
-                            const sp = baseSpeed * (0.5 + Math.random() * 0.8);
-                            b.bullets.push({ x: b.x + b.w / 2, y: b.y + b.h / 2, vx: Math.cos(a) * sp, vy: Math.sin(a) *
-                                    sp, r: 5 + Math.random() * 4, color: '#ff88cc' });
-                        }
-                        if (b.hp < b.maxHp * 0.4 && b.splitCount < 3) {
-                            b.splitCount++;
-                            for (let i = 0; i < 2; i++) {
-                                const a2 = Math.random() * Math.PI * 2;
-                                const d2 = 40 + Math.random() * 30;
-                                const cx = b.x + b.w / 2 + Math.cos(a2) * d2;
-                                const cy = b.y + b.h / 2 + Math.sin(a2) * d2;
-                                game.enemies.push({
-                                    x: cx - 12,
-                                    y: cy - 12,
-                                    w: 24,
-                                    h: 24,
-                                    type: 'mushroom',
-                                    level: 2,
-                                    hp: 5 + Math.floor(game.totalCycles * 0.5),
-                                    vx: (Math.random() - 0.5) * 3,
-                                    speed: 1.5 + game.totalCycles * 0.05,
-                                    minX: 0,
-                                    maxX: W,
-                                    startY: cy - 12,
-                                    damage: 15 + Math.floor(game.totalCycles * 0.5),
-                                    hitFlash: 0,
-                                    aggroRange: 200,
-                                    jumpTimer: 0,
-                                    expReward: 8 + Math.floor(game.totalCycles * 0.5),
-                                });
-                            }
+
+                    case 'ring':
+                        // 火焰领主：环形火球
+                        for (let i = 0; i < 10; i++) {
+                            const a = (i / 10) * Math.PI * 2 + game.frame * 0.015;
+                            b.bullets.push({
+                                x: b.x + b.w / 2,
+                                y: b.y + b.h / 2,
+                                vx: Math.cos(a) * speed * 1.2,
+                                vy: Math.sin(a) * speed * 1.2,
+                                r: 7,
+                                color: type.bulletColor || '#ff6633',
+                            });
                         }
                         break;
-                    case 'omnidirectional':
-                        for (let i = 0; i < 12 + Math.floor(game.totalCycles * 0.5); i++) {
-                            const a = (i / 12) * Math.PI * 2 + game.frame * 0.015;
-                            b.bullets.push({ x: b.x + b.w / 2, y: b.y + b.h / 2, vx: Math.cos(a) * baseSpeed * 0.7, vy: Math
-                                    .sin(a) * baseSpeed * 0.7, r: 6, color: '#8844ff' });
+
+                    case 'cone':
+                        // 冰霜女王：扇形冰锥
+                        for (let i = -4; i <= 4; i++) {
+                            const a = angle + i * 0.12;
+                            b.bullets.push({
+                                x: b.x + b.w / 2,
+                                y: b.y + b.h / 2,
+                                vx: Math.cos(a) * speed * 0.9,
+                                vy: Math.sin(a) * speed * 0.9,
+                                r: 5,
+                                color: type.bulletColor || '#66ddff',
+                            });
+                        }
+                        break;
+
+                    case 'nova':
+                    default:
+                        // 虚空使者：星爆
+                        for (let i = 0; i < 12; i++) {
+                            const a = (i / 12) * Math.PI * 2 + game.frame * 0.025;
+                            b.bullets.push({
+                                x: b.x + b.w / 2,
+                                y: b.y + b.h / 2,
+                                vx: Math.cos(a) * speed * 0.6,
+                                vy: Math.sin(a) * speed * 0.6,
+                                r: 4,
+                                color: type.bulletColor || '#aa44ff',
+                            });
                         }
                         break;
                 }
+
+                // Boss低血量额外攻击
+                if (b.hp < b.maxHp * 0.3) {
+                    for (let i = 0; i < 6; i++) {
+                        const a = (i / 6) * Math.PI * 2 + game.frame * 0.03;
+                        b.bullets.push({
+                            x: b.x + b.w / 2,
+                            y: b.y + b.h / 2,
+                            vx: Math.cos(a) * speed * 0.5,
+                            vy: Math.sin(a) * speed * 0.5,
+                            r: 4,
+                            color: '#ffffff',
+                        });
+                    }
+                }
             }
 
+            // Boss子弹更新
             for (let i = b.bullets.length - 1; i >= 0; i--) {
                 const bull = b.bullets[i];
                 bull.x += bull.vx;
                 bull.y += bull.vy;
-                if (bull.x < -30 || bull.x > W + 30 || bull.y < -30 || bull.y > H + 30) { b.bullets.splice(i, 1); continue; }
+                if (bull.x < -30 || bull.x > game.mapWidth + 30 || bull.y < -30 || bull.y > game.mapHeight + 30) {
+                    b.bullets.splice(i, 1);
+                    continue;
+                }
                 if (dist(p.x + p.w / 2, p.y + p.h / 2, bull.x, bull.y) < bull.r + 12) {
                     if (p.invincible <= 0) {
-                        takeDamage(15 + Math.floor(game.totalCycles * 0.3));
+                        takeDamage(20);
                         b.bullets.splice(i, 1);
                         if (game.hp <= 0) { gameOver(); return; }
                     }
@@ -1898,50 +1691,29 @@
 
         function bossDefeated() {
             const b = game.boss;
-            spawnBlood(b.x + b.w / 2, b.y + b.h / 2, 100);
-            spawnParticles(b.x + b.w / 2, b.y + b.h / 2, '#ff8833', 60, 2);
+            spawnBlood(b.x + b.w / 2, b.y + b.h / 2, 80);
+            spawnParticles(b.x + b.w / 2, b.y + b.h / 2, '#ff8833', 50);
             game.screenShake = 25;
             playSound('death');
-            const expReward = (b.expReward || 80) + game.totalCycles * 15;
-            addExp(expReward);
+            addExp(b.expReward || 50);
             game.boss = null;
             game.isBoss = false;
-            game.items.push({ type: 'heal', x: b.x + 10, y: b.y + 10, r: 12, value: 60 + game.totalCycles * 5 });
-            game.items.push({ type: 'heal', x: b.x + b.w - 30, y: b.y + 10, r: 12, value: 60 + game.totalCycles * 5 });
-            game.items.push({ type: 'weapon', weaponIdx: 3, x: b.x + b.w / 2 - 10, y: b.y + b.h + 10, r: 14 });
-            showMessage('💀 ' + b.type.name + ' 被击败！', '获得 ' + expReward + ' 经验！');
-            setTimeout(() => {
-                msgOverlay.classList.remove('show');
-                const p = game.player;
-                for (const item of game.items) {
-                    if (dist(p.x + p.w / 2, p.y + p.h / 2, item.x, item.y) < 60) {
-                        if (item.type === 'heal') {
-                            game.hp = Math.min(game.player.maxHp, game.hp + item.value);
-                            spawnParticles(item.x, item.y, '#44ff88', 10);
-                            playSound('heal');
-                            game.items = game.items.filter(it => it !== item);
-                        } else if (item.type === 'weapon') {
-                            game.player.weapon = item.weaponIdx;
-                            spawnParticles(item.x, item.y, '#ffaa44', 15);
-                            playSound('weapon');
-                            game.items = game.items.filter(it => it !== item);
-                        }
-                    }
-                }
-                updateUI();
-            }, 2000);
+            game.items.push({ type: 'heal', x: b.x + 20, y: b.y + 10, r: 12, value: 50 });
+            game.items.push({ type: 'weapon', weaponIdx: 3, x: b.x + b.w - 30, y: b.y + 10, r: 14 });
             bossHpBar.style.display = 'none';
-            bossNameDisplay.style.display = 'none';
-            updateUI();
+            bossNameSpan.style.display = 'none';
+            showMessage('💀 Boss击败！', `${b.type?.desc || 'Boss'} 已被消灭！`);
+            setTimeout(() => { msgOverlay.classList.remove('show'); }, 1500);
         }
 
+        // ---------- 伤害/死亡 ----------
         function takeDamage(amount) {
             if (game.player.invincible > 0) return;
             game.hp -= amount;
             game.player.invincible = 30;
             game.screenShake = 8;
             playSound('damage');
-            spawnBlood(game.player.x + game.player.w / 2, game.player.y + game.player.h / 2, 25);
+            spawnBlood(game.player.x + game.player.w / 2, game.player.y + game.player.h / 2, 20);
             if (game.hp <= 0) { game.hp = 0;
                 gameOver(); }
             updateUI();
@@ -1951,94 +1723,82 @@
             game.running = false;
             game.gameOver = true;
             playSound('death');
-            showMessage('💀 死亡', '在无尽第 ' + (game.totalCycles + 1) + ' 轮倒下\n按 空格键 重新开始');
+            showMessage('💀 死亡', '按 空格键 重新开始');
         }
 
-        function showMessage(title, sub) {
-            msgText.innerHTML = title + '<div id="msgSub">' + (sub || '') + '</div>';
+        function showMessage(title, sub = '') {
+            msgText.innerHTML = `${title}<div id="msgSub">${sub}</div>`;
             msgOverlay.classList.add('show');
         }
 
-        // ================================================================
-        //  绘制（完整背景修复 + 子弹特效）
-        // ================================================================
+        // ---------- 绘制 ----------
         function draw() {
             const w = game.world % 3;
             const theme = WORLDS[w] || WORLDS[0];
-            const scary = theme.scary + (game.infiniteMode ? 0.5 : 0);
+            const scary = theme.scary;
 
             ctx.clearRect(0, 0, W, H);
 
-            // ---- 背景 ----
+            // 背景（适配地图宽度）
             const grad = ctx.createLinearGradient(0, 0, 0, H);
             grad.addColorStop(0, theme.bg1);
-            grad.addColorStop(0.6, theme.bg2);
-            grad.addColorStop(1, '#0a0a12');
+            grad.addColorStop(1, theme.bg2);
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, W, H);
 
-            // ---- 恐怖特效 ----
-            if (scary >= 0.8) {
-                const fog = ctx.createRadialGradient(W / 2, H / 2, 50, W / 2, H / 2, 500);
-                fog.addColorStop(0, 'rgba(0,0,0,0)');
-                fog.addColorStop(0.5, 'rgba(0,0,0,0.2)');
-                fog.addColorStop(1, 'rgba(0,0,0,0.6)');
-                ctx.fillStyle = fog;
-                ctx.fillRect(0, 0, W, H);
+            // 视口偏移（地图大于屏幕时跟随玩家）
+            let offsetX = 0;
+            if (game.mapWidth > W) {
+                const p = game.player;
+                offsetX = Math.max(0, Math.min(game.mapWidth - W, p.x - W * 0.4));
+            }
 
-                const ghostCount = Math.min(30 + Math.floor(game.totalCycles * 2), 80);
-                for (let i = 0; i < ghostCount; i++) {
-                    const x = (i * 47 + game.frame * 0.06 + Math.sin(i + game.frame * 0.005) * 20) % W;
-                    const y = (i * 37 + Math.sin(i * 1.3 + game.frame * 0.008) * 25 + game.frame * 0.04) % H;
-                    const size = 3 + Math.sin(game.frame * 0.02 + i * 0.7) * 2;
-                    const alpha = 0.04 + Math.sin(game.frame * 0.015 + i * 0.5) * 0.03 + 0.04;
+            ctx.save();
+            ctx.translate(-offsetX, 0);
+
+            // 恐怖特效
+            if (scary >= 1) {
+                const fog = ctx.createRadialGradient(W / 2 + offsetX, H / 2, 30, W / 2 + offsetX, H / 2, 500);
+                fog.addColorStop(0, 'rgba(0,0,0,0)');
+                fog.addColorStop(1, 'rgba(0,0,0,0.4)');
+                ctx.fillStyle = fog;
+                ctx.fillRect(offsetX, 0, W, H);
+                for (let i = 0; i < 20 + scary * 10; i++) {
+                    const x = (i * 37 + game.frame * 0.08) % game.mapWidth;
+                    const y = (i * 29 + Math.sin(i + game.frame * 0.01) * 20) % H;
                     ctx.shadowColor = '#6b3aff';
-                    ctx.shadowBlur = 35;
-                    ctx.fillStyle = 'rgba(120,80,255,' + alpha + ')';
+                    ctx.shadowBlur = 40;
+                    ctx.fillStyle = `rgba(120,80,255,${0.05 + Math.sin(game.frame*0.02+i)*0.03})`;
                     ctx.beginPath();
-                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.arc(x, y, 5 + Math.sin(game.frame * 0.03 + i) * 2, 0, Math.PI * 2);
                     ctx.fill();
                 }
                 ctx.shadowBlur = 0;
-
-                if (scary >= 1.5) {
+                if (scary >= 2) {
                     ctx.fillStyle = 'rgba(120,60,60,0.08)';
                     ctx.font = '34px sans-serif';
-                    ctx.fillText('💀', 25 + Math.sin(game.frame * 0.01) * 5, 50 + Math.sin(game.frame * 0.015) * 3);
-                    ctx.fillText('💀', W - 70 + Math.sin(game.frame * 0.012 + 1) * 5, 45 + Math.sin(game.frame * 0.018 +
-                    2) * 3);
-                    ctx.fillText('💀', W / 2 - 20 + Math.sin(game.frame * 0.008 + 3) * 8, 30 + Math.sin(game.frame *
-                        0.02 + 4) * 4);
-                    for (let i = 0; i < 6; i++) {
-                        const bx = 80 + i * 130 + Math.sin(i * 2 + game.frame * 0.005) * 30;
-                        const by = 70 + Math.sin(i * 1.5 + game.frame * 0.008) * 20;
-                        ctx.fillStyle = 'rgba(80,0,0,0.06)';
-                        ctx.beginPath();
-                        ctx.arc(bx, by, 12 + i * 4 + Math.sin(game.frame * 0.01 + i) * 3, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
+                    ctx.fillText('💀', 30, 55);
+                    ctx.fillText('💀', game.mapWidth - 70, 45);
                 }
             }
 
-            // ---- 平台 ----
+            // 平台
             for (const plat of game.platforms) {
-                const platColor = game.infiniteMode ? 'hsl(' + (220 + game.totalCycles * 3) + ', 30%, ' + (20 + game
-                    .totalCycles * 0.3) + '%)' : theme.plat;
-                ctx.fillStyle = platColor;
-                ctx.shadowColor = (scary >= 1.5 || game.infiniteMode) ? '#ff333355' : 'rgba(0,0,0,0.3)';
+                ctx.fillStyle = theme.plat;
+                ctx.shadowColor = scary >= 2 ? '#ff333355' : 'rgba(0,0,0,0.3)';
                 ctx.shadowBlur = 12;
                 ctx.beginPath();
                 ctx.roundRect(plat.x, plat.y, plat.w, plat.h, 4);
                 ctx.fill();
                 ctx.shadowBlur = 0;
-                ctx.fillStyle = 'rgba(255,255,255,0.06)';
+                ctx.fillStyle = 'rgba(255,255,255,0.07)';
                 ctx.beginPath();
                 ctx.roundRect(plat.x + 4, plat.y - 1, plat.w - 8, 3, 2);
                 ctx.fill();
             }
             ctx.shadowBlur = 0;
 
-            // ---- 出口 ----
+            // 出口
             const ex = game.exit.x,
                 ey = game.exit.y;
             const canEnter = game.keysCollected >= game.totalKeys;
@@ -2055,7 +1815,7 @@
             ctx.fill();
             if (canEnter) {
                 ctx.shadowBlur = 60;
-                ctx.fillStyle = 'rgba(100,220,255,' + (0.3 + Math.sin(game.frame * 0.05) * 0.2) + ')';
+                ctx.fillStyle = `rgba(100,220,255,${0.3 + Math.sin(game.frame*0.05)*0.2})`;
                 ctx.beginPath();
                 ctx.arc(ex + 15, ey + 19, 12 + Math.sin(game.frame * 0.04) * 4, 0, Math.PI * 2);
                 ctx.fill();
@@ -2072,7 +1832,7 @@
             }
             ctx.shadowBlur = 0;
 
-            // ---- 钥匙 ----
+            // 钥匙
             for (const key of game.keys) {
                 if (key.collected) continue;
                 const bob = Math.sin(game.frame * 0.04 + key.x) * 3;
@@ -2094,7 +1854,7 @@
             }
             ctx.shadowBlur = 0;
 
-            // ---- 物品 ----
+            // 物品
             for (const item of game.items) {
                 if (item.type === 'heal') {
                     const bob = Math.sin(game.frame * 0.04 + item.x) * 3;
@@ -2124,13 +1884,13 @@
             }
             ctx.shadowBlur = 0;
 
-            // ---- 敌人 ----
+            // 敌人
             for (const e of game.enemies) {
-                if (e.y > H + 50) continue;
+                if (e.y > game.mapHeight + 50) continue;
                 const flash = e.hitFlash > 0;
                 ctx.shadowColor = '#ff4444';
                 ctx.shadowBlur = 25;
-                const col = ['#2d1a1a', '#4a1a1a', '#6a1a1a', '#8a2a2a'][e.level] || '#2d1a1a';
+                const col = ['#2d1a1a', '#4a1a1a', '#6a1a1a'][e.level] || '#2d1a1a';
                 ctx.fillStyle = flash ? '#ff6666' : col;
                 const size = e.w;
                 ctx.beginPath();
@@ -2163,185 +1923,33 @@
             }
             ctx.shadowBlur = 0;
 
-            // ---- Boss ----
+            // Boss绘制
             if (game.isBoss && game.boss && game.boss.hp > 0) {
-                const b = game.boss;
-                const bt = b.type;
-                const pulse = 0.95 + Math.sin(game.frame * 0.05) * 0.05;
-
-                ctx.shadowColor = bt.color;
-                ctx.shadowBlur = 70 * pulse;
-                ctx.fillStyle = bt.color + '22';
-                ctx.beginPath();
-                ctx.arc(b.x + b.w / 2, b.y + b.h / 2, 90 * pulse, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.shadowBlur = 25;
-                ctx.shadowColor = bt.color + '88';
-                ctx.fillStyle = bt.color;
-                ctx.beginPath();
-                ctx.roundRect(b.x, b.y, b.w, b.h, 12);
-                ctx.fill();
-
-                // 独特特征
-                if (bt.id === 'flesh') {
-                    for (let i = 0; i < 5; i++) {
-                        const fx = b.x + 10 + i * 12 + Math.sin(i + game.frame * 0.01) * 4;
-                        const fy = b.y + 15 + i * 10 + Math.cos(i * 2 + game.frame * 0.02) * 4;
-                        ctx.fillStyle = '#66dd66';
-                        ctx.shadowBlur = 10;
-                        ctx.beginPath();
-                        ctx.arc(fx, fy, 5 + Math.sin(game.frame * 0.03 + i) * 2, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                } else if (bt.id === 'banshee') {
-                    for (let i = 0; i < 6; i++) {
-                        const angle = (i / 6) * Math.PI * 2 + game.frame * 0.02;
-                        const len = 20 + Math.sin(game.frame * 0.04 + i) * 8;
-                        ctx.strokeStyle = '#cc88ff';
-                        ctx.lineWidth = 3;
-                        ctx.shadowBlur = 20;
-                        ctx.beginPath();
-                        ctx.moveTo(b.x + b.w / 2, b.y + b.h / 2);
-                        ctx.lineTo(b.x + b.w / 2 + Math.cos(angle) * len, b.y + b.h / 2 + Math.sin(angle) * len);
-                        ctx.stroke();
-                    }
-                } else if (bt.id === 'watcher') {
-                    const eyeX = b.x + b.w / 2,
-                        eyeY = b.y + b.h / 2;
-                    ctx.shadowBlur = 30;
-                    ctx.shadowColor = '#ff8844';
-                    ctx.fillStyle = '#ff8844';
-                    ctx.beginPath();
-                    ctx.arc(eyeX, eyeY, 20 * pulse, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = '#1a0a0a';
-                    ctx.shadowBlur = 10;
-                    ctx.beginPath();
-                    ctx.arc(eyeX + Math.sin(game.frame * 0.02) * 4, eyeY + Math.cos(game.frame * 0.02) * 4, 8, 0, Math.PI *
-                    2);
-                    ctx.fill();
-                    ctx.fillStyle = '#ff8844';
-                    ctx.shadowBlur = 20;
-                    ctx.beginPath();
-                    ctx.arc(eyeX + Math.sin(game.frame * 0.02) * 6, eyeY + Math.cos(game.frame * 0.02) * 6, 3, 0, Math.PI *
-                        2);
-                    ctx.fill();
-                } else if (bt.id === 'skeleton') {
-                    ctx.shadowBlur = 15;
-                    ctx.fillStyle = '#ffdd44';
-                    ctx.beginPath();
-                    ctx.moveTo(b.x + 10, b.y + 8);
-                    ctx.lineTo(b.x + 20, b.y - 4);
-                    ctx.lineTo(b.x + 30, b.y + 8);
-                    ctx.lineTo(b.x + 40, b.y - 4);
-                    ctx.lineTo(b.x + 50, b.y + 8);
-                    ctx.closePath();
-                    ctx.fill();
-                    ctx.fillStyle = '#dddddd';
-                    ctx.shadowBlur = 20;
-                    ctx.font = '18px sans-serif';
-                    ctx.fillText('☠', b.x + 18, b.y + 32);
-                } else if (bt.id === 'chaos') {
-                    for (let i = 0; i < 8; i++) {
-                        const a = (i / 8) * Math.PI * 2 + game.frame * 0.01;
-                        const r = 15 + Math.sin(game.frame * 0.04 + i) * 5;
-                        ctx.fillStyle = 'hsl(' + (320 + i * 10) + ', 80%, ' + (50 + Math.sin(game.frame * 0.03 + i) * 10) +
-                            '%)';
-                        ctx.shadowBlur = 20;
-                        ctx.beginPath();
-                        ctx.arc(b.x + b.w / 2 + Math.cos(a) * r * pulse, b.y + b.h / 2 + Math.sin(a) * r * pulse, 6 *
-                            pulse, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                } else if (bt.id === 'shadow') {
-                    ctx.shadowBlur = 40;
-                    ctx.shadowColor = '#8844ff';
-                    for (let i = 0; i < 10; i++) {
-                        const a = (i / 10) * Math.PI * 2 + game.frame * 0.01;
-                        const r = 20 + Math.sin(game.frame * 0.03 + i * 2) * 10;
-                        const alpha = 0.3 + Math.sin(game.frame * 0.04 + i) * 0.15;
-                        ctx.fillStyle = 'rgba(136,68,255,' + alpha + ')';
-                        ctx.beginPath();
-                        ctx.arc(b.x + b.w / 2 + Math.cos(a + game.frame * 0.01) * r, b.y + b.h / 2 + Math.sin(a + game
-                            .frame * 0.01) * r, 10 * pulse, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                }
-
-                // Boss眼睛
-                ctx.shadowBlur = 20;
-                ctx.shadowColor = '#ff0000';
-                const pp = game.player;
-                for (let i = 0; i < 2; i++) {
-                    const ex = b.x + 14 + i * (b.w - 28);
-                    const ey = b.y + 18 + (b.hitCooldown > 0 ? 5 : 0);
-                    ctx.fillStyle = bt.eyeColor || '#ff4444';
-                    ctx.beginPath();
-                    ctx.arc(ex, ey, 10, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = '#1a0a0a';
-                    ctx.shadowBlur = 0;
-                    const dx = pp.x + pp.w / 2 - ex,
-                        dy = pp.y + pp.h / 2 - ey;
-                    const d = Math.hypot(dx, dy);
-                    if (d > 0) { const mx = (dx / d) * 4,
-                            my = (dy / d) * 4;
-                        ctx.beginPath();
-                        ctx.arc(ex + mx, ey + my, 4, 0, Math.PI * 2);
-                        ctx.fill(); }
-                }
-
-                // Boss子弹
-                for (const bull of b.bullets) {
-                    const color = bull.color || '#ff6633';
-                    ctx.shadowColor = color;
-                    ctx.shadowBlur = 40;
-                    ctx.fillStyle = color;
-                    ctx.beginPath();
-                    ctx.arc(bull.x, bull.y, bull.r, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = '#fff';
-                    ctx.shadowBlur = 20;
-                    ctx.beginPath();
-                    ctx.arc(bull.x - 2, bull.y - 2, bull.r * 0.3, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-                ctx.shadowBlur = 0;
-
-                if (b.hp < b.maxHp * 0.3 && Math.floor(game.frame / 8) % 2 === 0) {
+                drawBoss(game.boss, game.player);
+                // Boss血条（低血量闪烁）
+                if (game.boss.hp < game.boss.maxHp * 0.3 && Math.floor(game.frame / 8) % 2 === 0) {
                     ctx.fillStyle = 'rgba(255,0,0,0.1)';
-                    ctx.fillRect(0, 0, W, H);
+                    ctx.fillRect(offsetX, 0, W, H);
                 }
             }
 
-            // ---- 玩家子弹（修复颜色） ----
+            // 子弹
             for (const bull of game.bullets) {
-                // 发光
-                ctx.shadowColor = bull.glow || bull.color || '#6bcbff';
-                ctx.shadowBlur = 35;
-                // 主体
+                ctx.shadowColor = bull.color || '#6bcbff';
+                ctx.shadowBlur = 30;
                 ctx.fillStyle = bull.color || '#6bcbff';
                 ctx.beginPath();
                 ctx.arc(bull.x, bull.y, bull.r, 0, Math.PI * 2);
                 ctx.fill();
-                // 内层高光
-                ctx.shadowBlur = 15;
                 ctx.fillStyle = '#ffffff';
+                ctx.shadowBlur = 10;
                 ctx.beginPath();
-                ctx.arc(bull.x - 1.5, bull.y - 1.5, bull.r * 0.35, 0, Math.PI * 2);
+                ctx.arc(bull.x - 2, bull.y - 2, bull.r * 0.3, 0, Math.PI * 2);
                 ctx.fill();
-                // 外发光（更大）
-                ctx.shadowBlur = 50;
-                ctx.shadowColor = bull.glow || bull.color || '#6bcbff';
-                ctx.fillStyle = (bull.glow || bull.color || '#6bcbff') + '44';
-                ctx.beginPath();
-                ctx.arc(bull.x, bull.y, bull.r * 1.8, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.shadowBlur = 0;
             }
+            ctx.shadowBlur = 0;
 
-            // ---- 玩家 ----
+            // 玩家
             const p = game.player;
             for (const t of p.trail) {
                 ctx.globalAlpha = t.life / 20 * 0.2;
@@ -2353,7 +1961,9 @@
             }
             ctx.globalAlpha = 1;
 
-            if (p.invincible > 0 && Math.floor(p.invincible / 4) % 2 === 0) ctx.globalAlpha = 0.5;
+            if (p.invincible > 0 && Math.floor(p.invincible / 4) % 2 === 0) {
+                ctx.globalAlpha = 0.5;
+            }
 
             const capeWave = Math.sin(game.frame * 0.06) * 3;
             ctx.shadowColor = '#6bcbff';
@@ -2406,21 +2016,20 @@
             ctx.beginPath();
             ctx.arc(p.x + 16, p.y - 6, 3, 0, Math.PI * 2);
             ctx.fill();
-
-            const mx = game._mouseX || 0,
-                my = game._mouseY || 0;
-            const eyeDx = mx - (p.x + p.w / 2),
-                eyeDy = my - (p.y + p.h / 2);
+            const mx = game._mouseX || 0;
+            const my = game._mouseY || 0;
+            const eyeDx = mx + offsetX - (p.x + p.w / 2);
+            const eyeDy = my - (p.y + p.h / 2);
             const eyeDist = Math.hypot(eyeDx, eyeDy);
             if (eyeDist > 0) {
-                const ox = (eyeDx / eyeDist) * 2,
-                    oy = (eyeDy / eyeDist) * 2;
+                const offsetX2 = (eyeDx / eyeDist) * 2;
+                const offsetY2 = (eyeDy / eyeDist) * 2;
                 ctx.fillStyle = '#44ff88';
                 ctx.beginPath();
-                ctx.arc(p.x + 7 + ox, p.y - 4 + oy, 2.5, 0, Math.PI * 2);
+                ctx.arc(p.x + 7 + offsetX2, p.y - 4 + offsetY2, 2.5, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.beginPath();
-                ctx.arc(p.x + 17 + ox, p.y - 4 + oy, 2.5, 0, Math.PI * 2);
+                ctx.arc(p.x + 17 + offsetX2, p.y - 4 + offsetY2, 2.5, 0, Math.PI * 2);
                 ctx.fill();
             } else {
                 ctx.fillStyle = '#44ff88';
@@ -2431,10 +2040,11 @@
                 ctx.arc(p.x + 17, p.y - 4, 2.5, 0, Math.PI * 2);
                 ctx.fill();
             }
+
             ctx.shadowBlur = 0;
             ctx.globalAlpha = 1;
 
-            // ---- 粒子 ----
+            // 粒子
             for (const pt of game.particles) {
                 ctx.shadowBlur = 20;
                 ctx.shadowColor = pt.color;
@@ -2447,30 +2057,33 @@
             ctx.globalAlpha = 1;
             ctx.shadowBlur = 0;
 
-            // ---- 屏幕震动 ----
+            ctx.restore();
+
+            // 屏幕震动（在视口之后）
             if (game.screenShake > 0) {
                 const shake = game.screenShake * 0.5;
+                ctx.save();
                 ctx.translate((Math.random() - 0.5) * shake * 2, (Math.random() - 0.5) * shake * 2);
                 game.screenShake *= 0.9;
                 if (game.screenShake < 0.1) game.screenShake = 0;
+                ctx.restore();
             }
 
-            // ---- HUD ----
-            ctx.fillStyle = 'rgba(255,255,255,0.07)';
+            // HUD
+            ctx.fillStyle = 'rgba(255,255,255,0.08)';
             ctx.font = '14px sans-serif';
             const expPct = Math.floor((exp / expToNext) * 100);
-            const modeText = game.infiniteMode ? '♾️ 第' + (game.totalCycles + 1) + '轮' : '普通';
-            ctx.fillText('🌍 ' + theme.name + '  |  🗡️ ' + game.totalKills + '杀  |  EXP ' + exp + '/' + expToNext + '(' +
-                expPct + '%)  |  ' + modeText, 14, 28);
+            const mapInfo = game.mapWidth > W ? ` 🌍 ${Math.floor(game.mapWidth/W*100)}%` : '';
+            ctx.fillText(`🗡️ ${game.totalKills}杀  |  EXP ${exp}/${expToNext} (${expPct}%)${mapInfo}`, 14, 28);
             if (game.hp < 30) {
-                ctx.fillStyle = 'rgba(255,0,0,0.15)';
+                ctx.fillStyle = 'rgba(255,0,0,0.12)';
                 ctx.fillRect(0, 0, W, H);
             }
-
-            if (game.isBoss && game.boss && game.boss.hp > 0) {
-                ctx.fillStyle = game.boss.type.color + '88';
-                ctx.font = '16px sans-serif';
-                ctx.fillText('⚔️ ' + game.boss.type.name + ' · ' + game.boss.type.desc, W / 2 - 120, 24);
+            // Boss名字在顶部
+            if (game.isBoss && game.boss && game.boss.hp > 0 && game.bossType) {
+                ctx.fillStyle = '#ff444466';
+                ctx.font = '18px sans-serif';
+                ctx.fillText(`👹 ${game.bossType.desc}  Lv.${game.level+1}`, W / 2 - 80, 30);
             }
         }
 
@@ -2490,14 +2103,14 @@
             return this;
         };
 
-        // ---- 事件 ----
+        // ---------- 事件 ----------
         canvas.addEventListener('mousedown', (e) => {
             if (!game.running || game.gameOver || game.levelComplete) return;
             const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width,
-                scaleY = canvas.height / rect.height;
-            const mx = (e.clientX - rect.left) * scaleX,
-                my = (e.clientY - rect.top) * scaleY;
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const mx = (e.clientX - rect.left) * scaleX;
+            const my = (e.clientY - rect.top) * scaleY;
             game._mouseX = mx;
             game._mouseY = my;
             shootBullet(mx, my);
@@ -2505,8 +2118,8 @@
 
         canvas.addEventListener('mousemove', (e) => {
             const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width,
-                scaleY = canvas.height / rect.height;
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
             game._mouseX = (e.clientX - rect.left) * scaleX;
             game._mouseY = (e.clientY - rect.top) * scaleY;
         });
@@ -2517,16 +2130,14 @@
                 e.preventDefault(); }
             if (key === 'ArrowRight' || key === 'd' || key === 'D') { game.keysPressed.right = true;
                 e.preventDefault(); }
-            if (key === 'ArrowUp' || key === 'w' || key === 'W' || key === ' ') { game.keysPressed.up = true;
-                e.preventDefault(); }
+            if (key === 'ArrowUp' || key === 'w' || key === 'W' || key === ' ') {
+                game.keysPressed.up = true;
+                e.preventDefault();
+            }
             if (key === 'q' || key === 'Q') {
                 game.player.weapon = (game.player.weapon + 1) % WEAPONS.length;
                 playSound('weapon');
                 updateUI();
-                e.preventDefault();
-            }
-            if (key === 'r' || key === 'R') {
-                cycleBulletType();
                 e.preventDefault();
             }
             if (key === 'e' || key === 'E') {
@@ -2534,9 +2145,15 @@
                 updateUI();
                 e.preventDefault();
             }
+            if (key === 'f' || key === 'F') {
+                toggleStatPanel();
+                e.preventDefault();
+            }
             if (key === ' ') {
                 e.preventDefault();
-                if (game.gameOver || !game.running) initGame();
+                if (game.gameOver || !game.running) {
+                    initGame();
+                }
             }
         });
         document.addEventListener('keyup', (e) => {
@@ -2545,27 +2162,29 @@
                 e.preventDefault(); }
             if (key === 'ArrowRight' || key === 'd' || key === 'D') { game.keysPressed.right = false;
                 e.preventDefault(); }
-            if (key === 'ArrowUp' || key === 'w' || key === 'W' || key === ' ') { game.keysPressed.up = false;
-                e.preventDefault(); }
+            if (key === 'ArrowUp' || key === 'w' || key === 'W' || key === ' ') {
+                game.keysPressed.up = false;
+                e.preventDefault();
+            }
         });
 
         infiniteBtn.addEventListener('click', function() {
             game.infiniteMode = !game.infiniteMode;
             this.classList.toggle('active');
-            this.textContent = game.infiniteMode ? '♾️ 无尽模式 (开)' : '♾️ 无尽模式 (关)';
+            this.textContent = game.infiniteMode ? '♾️ 无尽 (开)' : '♾️ 无尽 (关)';
             if (game.infiniteMode) {
                 game.totalCycles = 0;
-                game.world = 0;
-                game.branch = 0;
                 game.level = 0;
-                loadLevel(0, 0, 0);
-                showMessage('♾️ 无尽模式已开启', '每关地图不同，随机Boss！');
+                loadLevel(0);
+                showMessage('♾️ 无尽模式已开启', '每5关随机Boss，地图越来越大！');
                 setTimeout(() => msgOverlay.classList.remove('show'), 1500);
             }
             updateUI();
         });
 
-        // ---- 主循环 ----
+        statBtn.addEventListener('click', toggleStatPanel);
+
+        // ---------- 主循环 ----------
         function gameLoop() {
             if (game.running && !game.gameOver && !game.levelComplete) {
                 game.frame++;
@@ -2580,7 +2199,7 @@
         gameLoop();
 
         window.addEventListener('keydown', (e) => {
-            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'q', 'Q', 'r', 'R', 'e', 'E'].includes(e.key)) {
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'q', 'Q', 'e', 'E', 'f', 'F'].includes(e.key)) {
                 e.preventDefault();
             }
         });
