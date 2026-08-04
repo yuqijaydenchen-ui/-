@@ -43,6 +43,7 @@
             background: #0a0a1a;
             touch-action: none;
         }
+        
         /* ===== 主菜单 ===== */
         #mainMenu {
             position: absolute;
@@ -199,6 +200,181 @@
             opacity: 0.5;
         }
 
+        /* ===== 游戏内 UI (覆盖在 canvas 上的 HTML 元素) ===== */
+        #gameUI {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        #gameUI .hud-top {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        #gameUI .hud-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-size: 12px;
+            color: #aabbdd;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        }
+        #gameUI .hud-left .hp-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        #gameUI .hud-left .hp-bar-bg {
+            width: 120px;
+            height: 10px;
+            background: rgba(255,0,0,0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        #gameUI .hud-left .hp-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4444, #44ff88);
+            border-radius: 5px;
+            transition: width 0.2s;
+            width: 100%;
+        }
+        #gameUI .hud-left .info-text {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+        #gameUI .hud-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+            font-size: 12px;
+            color: #aabbdd;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        }
+        #gameUI .hud-right .weapon-skill {
+            display: flex;
+            gap: 12px;
+        }
+        #gameUI .hud-right .badge {
+            background: rgba(255,255,255,0.08);
+            padding: 2px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+            font-size: 11px;
+        }
+
+        /* Boss 血条 */
+        #bossHud {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            max-width: 400px;
+            display: none;
+            background: rgba(0,0,0,0.6);
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,50,50,0.3);
+            backdrop-filter: blur(4px);
+        }
+        #bossHud.show {
+            display: block;
+        }
+        #bossHud .boss-name {
+            color: #ff6666;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(255,50,50,0.3);
+        }
+        #bossHud .boss-hp-bg {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,0,0,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 3px;
+            border: 1px solid rgba(255,50,50,0.2);
+        }
+        #bossHud .boss-hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff2222, #ff6644);
+            border-radius: 4px;
+            transition: width 0.3s;
+            width: 100%;
+        }
+        #bossHud .boss-hp-text {
+            color: #ff8888;
+            font-size: 10px;
+            text-align: center;
+            margin-top: 2px;
+        }
+
+        /* 消息覆盖层 */
+        #msgOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(6px);
+            z-index: 15;
+            pointer-events: auto;
+        }
+        #msgOverlay.show {
+            display: flex;
+        }
+        #msgOverlay .msg-box {
+            text-align: center;
+            padding: 30px 40px;
+            background: rgba(10,10,26,0.9);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            max-width: 80%;
+        }
+        #msgOverlay .msg-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: #f7d44a;
+            text-shadow: 0 0 40px #f7d44a44;
+        }
+        #msgOverlay .msg-sub {
+            font-size: 16px;
+            color: #8899bb;
+            margin-top: 8px;
+        }
+        #msgOverlay .msg-btn {
+            margin-top: 16px;
+            background: transparent;
+            border: 2px solid #6bcbff;
+            color: #6bcbff;
+            padding: 10px 32px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: 0.2s;
+        }
+        #msgOverlay .msg-btn:hover,
+        #msgOverlay .msg-btn:active {
+            background: #6bcbff;
+            color: #0a0a1a;
+        }
+
         /* ===== 触摸控件 ===== */
         #touchControls {
             position: absolute;
@@ -316,6 +492,13 @@
             #touchControls.active {
                 display: block;
             }
+            #gameUI .hud-left .hp-bar-bg {
+                width: 80px;
+            }
+            #bossHud {
+                width: 80%;
+                top: 50px;
+            }
         }
         @media (pointer: coarse) {
             #touchControls.active {
@@ -333,6 +516,59 @@
 
     <div id="app">
         <canvas id="gameCanvas" width="840" height="620"></canvas>
+
+        <!-- ===== 游戏内 UI ===== -->
+        <div id="gameUI">
+            <div class="hud-top">
+                <div class="hud-left">
+                    <div class="hp-row">
+                        <span id="hpLabel">❤️</span>
+                        <div class="hp-bar-bg">
+                            <div class="hp-bar-fill" id="hpFill" style="width:100%"></div>
+                        </div>
+                        <span id="hpText">100/100</span>
+                    </div>
+                    <div class="info-text">
+                        <span id="worldDisplay">🌍 翡翠森林</span>
+                        <span style="margin:0 8px">|</span>
+                        <span id="levelDisplay">📊 关 1</span>
+                        <span style="margin:0 8px">|</span>
+                        <span id="keyDisplay">🔑 0</span>
+                        <span style="margin:0 8px">|</span>
+                        <span id="jumpDisplay">⬆ 3</span>
+                    </div>
+                </div>
+                <div class="hud-right">
+                    <div class="weapon-skill">
+                        <span class="badge" id="weaponDisplay">🔫 普通</span>
+                        <span class="badge" id="skillDisplay">⚡ 技能</span>
+                    </div>
+                    <div class="info-text">
+                        <span id="killDisplay">🗡️ 0 杀</span>
+                        <span style="margin:0 8px">|</span>
+                        <span id="expDisplay">⭐ EXP 0/20</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Boss 血条 -->
+        <div id="bossHud">
+            <div class="boss-name" id="bossNameDisplay">👹 BOSS</div>
+            <div class="boss-hp-bg">
+                <div class="boss-hp-fill" id="bossFill" style="width:100%"></div>
+            </div>
+            <div class="boss-hp-text" id="bossHpText">100 / 100</div>
+        </div>
+
+        <!-- 消息覆盖层 -->
+        <div id="msgOverlay">
+            <div class="msg-box">
+                <div class="msg-title" id="msgTitle">🎉 关卡完成</div>
+                <div class="msg-sub" id="msgSub">继续前进！</div>
+                <button class="msg-btn" id="msgBtn">继续</button>
+            </div>
+        </div>
 
         <!-- 主菜单 -->
         <div id="mainMenu">
@@ -355,7 +591,7 @@
 
             <button class="menu-btn secondary" id="btnReset">🔄 重置进度</button>
             <div class="save-info" id="saveInfo">📀 未找到存档</div>
-            <div class="version">v3.1 · 中英双语</div>
+            <div class="version">v3.2 · 中英双语</div>
         </div>
 
         <!-- 触摸控件 -->
@@ -370,8 +606,7 @@
 
     <script>
         // ================================================================
-        //  👻 暗影勇者 · 完整版（中英双语 + 移动主菜单 + 存档 + 音量 + 震动）
-        //  活力全开 🔥 一次打包
+        //  👻 暗影勇者 · 完整版（中英双语 + 全部 UI）
         // ================================================================
 
         // ---------- DOM ----------
@@ -397,6 +632,26 @@
         const shootBtn = document.getElementById('shootBtn');
         const jumpBtn = document.getElementById('jumpBtn');
 
+        // 游戏内 UI 元素
+        const hpFill = document.getElementById('hpFill');
+        const hpText = document.getElementById('hpText');
+        const worldDisplay = document.getElementById('worldDisplay');
+        const levelDisplay = document.getElementById('levelDisplay');
+        const keyDisplay = document.getElementById('keyDisplay');
+        const jumpDisplay = document.getElementById('jumpDisplay');
+        const weaponDisplay = document.getElementById('weaponDisplay');
+        const skillDisplay = document.getElementById('skillDisplay');
+        const killDisplay = document.getElementById('killDisplay');
+        const expDisplay = document.getElementById('expDisplay');
+        const bossHud = document.getElementById('bossHud');
+        const bossFill = document.getElementById('bossFill');
+        const bossHpText = document.getElementById('bossHpText');
+        const bossNameDisplay = document.getElementById('bossNameDisplay');
+        const msgOverlay = document.getElementById('msgOverlay');
+        const msgTitle = document.getElementById('msgTitle');
+        const msgSub = document.getElementById('msgSub');
+        const msgBtn = document.getElementById('msgBtn');
+
         const W = 840,
             H = 620;
         const SAVE_KEY = 'shadow_hero_save_v3';
@@ -419,6 +674,22 @@
                 resetDone: '✅ 已重置所有进度',
                 loadFail: '⚠️ 存档加载失败，将开始新游戏',
                 langLabel: '🌐 中文',
+                hp: '❤️ 生命',
+                kills: '杀',
+                exp: '⭐ EXP',
+                level: '关',
+                keys: '🔑 钥匙',
+                jumps: '⬆ 跳跃',
+                weapon: '🔫 武器',
+                skill: '⚡ 技能',
+                world: '🌍',
+                boss: '👹 BOSS',
+                levelComplete: '🎉 关卡完成！',
+                levelCompleteSub: '继续前进！',
+                gameOver: '💀 游戏结束',
+                gameOverSub: '点击重新开始',
+                continueBtn: '继续',
+                restartBtn: '重新开始',
             },
             en: {
                 title: '👻 Shadow Hero',
@@ -436,6 +707,22 @@
                 resetDone: '✅ Progress reset',
                 loadFail: '⚠️ Save load failed, starting new game',
                 langLabel: '🌐 English',
+                hp: '❤️ HP',
+                kills: 'Kills',
+                exp: '⭐ EXP',
+                level: 'Lv',
+                keys: '🔑 Keys',
+                jumps: '⬆ Jumps',
+                weapon: '🔫 Weapon',
+                skill: '⚡ Skill',
+                world: '🌍',
+                boss: '👹 BOSS',
+                levelComplete: '🎉 Level Complete!',
+                levelCompleteSub: 'Continue forward!',
+                gameOver: '💀 Game Over',
+                gameOverSub: 'Click to restart',
+                continueBtn: 'Continue',
+                restartBtn: 'Restart',
             }
         };
 
@@ -456,6 +743,7 @@
             toggleShake.textContent = settings.shakeEnabled ? t('on') : t('off');
             langToggle.textContent = currentLang === 'zh' ? '🌐 中文' : '🌐 English';
             updateSaveInfo();
+            updateGameUI();
         }
 
         langToggle.addEventListener('click', () => {
@@ -709,6 +997,8 @@
         function showMainMenu() {
             mainMenu.classList.remove('hidden');
             touchControls.classList.remove('active');
+            msgOverlay.classList.remove('show');
+            bossHud.classList.remove('show');
             updateSaveInfo();
             updateUIStrings();
         }
@@ -749,8 +1039,7 @@
                 game.totalKills = saveData.totalKills || 0;
                 applyStats();
                 loadLevel(game.world, game.branch, game.level);
-                updateUI();
-                updateMiniUI();
+                updateGameUI();
                 return true;
             } catch (e) {
                 console.error('Restore failed', e);
@@ -805,26 +1094,43 @@
         let skillPoints = 0;
         let unlockedSkills = { pierce: false, explode: false, homing: false, spread: false };
         let currentBulletIdx = 0;
-        let hpRegenTimer = 0;
 
-        // UI 引用 (游戏内)
-        const hpSpan = document.getElementById('hpDisplay');
-        const worldSpan = document.getElementById('worldDisplay');
-        const keySpan = document.getElementById('keyDisplay');
-        const jumpSpan = document.getElementById('jumpDisplay');
-        const weaponSpan = document.getElementById('weaponDisplay');
-        const skillSpan = document.getElementById('skillDisplay');
-        const levelSpan = document.getElementById('levelDisplay');
-        const bossHpBar = document.getElementById('bossHpBar');
-        const bossFill = document.getElementById('bossFill');
-        const bossHpText = document.getElementById('bossHpText');
-        const bossNameDisplay = document.getElementById('bossNameDisplay');
-        const msgOverlay = document.getElementById('msgOverlay');
-        const msgText = document.getElementById('msgText');
-        const msgSub = document.getElementById('msgSub');
+        // ---------- UI 更新函数 ----------
+        function updateGameUI() {
+            if (!game || !game.player) return;
+            const p = game.player;
+            const hpPct = Math.max(0, (game.hp / game.maxHp) * 100);
+            hpFill.style.width = hpPct + '%';
+            hpText.textContent = `${Math.ceil(game.hp)}/${Math.ceil(game.maxHp)}`;
 
-        // 因为主菜单已包含这些UI，游戏内UI我们动态创建在画布上
-        // 但为了简便，我们直接用画布绘制所有UI
+            const worldIdx = game.world % 3;
+            worldDisplay.textContent = `${t('world')} ${currentLang === 'zh' ? WORLDS[worldIdx]?.name || '' : WORLDS[worldIdx]?.nameEn || ''}`;
+            levelDisplay.textContent = `${t('level')} ${game.level + 1}`;
+            keyDisplay.textContent = `${t('keys')} ${game.keysCollected || 0}`;
+            jumpDisplay.textContent = `${t('jumps')} ${p.maxJumps - p.jumpCount}`;
+
+            const wpn = WEAPONS[p.weapon] || WEAPONS[0];
+            weaponDisplay.textContent = `${t('weapon')} ${currentLang === 'zh' ? wpn.name : wpn.nameEn}`;
+
+            const bt = getCurrentBulletType();
+            const btLabel = currentLang === 'zh' ? BULLET_TYPES[bt]?.label || '普通' : BULLET_TYPES[bt]?.labelEn || 'Normal';
+            skillDisplay.textContent = `${t('skill')} ${btLabel}`;
+
+            killDisplay.textContent = `🗡️ ${game.totalKills || 0} ${t('kills')}`;
+            expDisplay.textContent = `${t('exp')} ${exp}/${expToNext}`;
+
+            // Boss UI
+            if (game.isBoss && game.boss && game.boss.hp > 0) {
+                bossHud.classList.add('show');
+                const b = game.boss;
+                const pct = Math.max(0, (b.hp / b.maxHp) * 100);
+                bossFill.style.width = pct + '%';
+                bossHpText.textContent = `${Math.ceil(b.hp)} / ${Math.ceil(b.maxHp)}`;
+                bossNameDisplay.textContent = `${t('boss')} ${currentLang === 'zh' ? (b.type?.name || '') : (b.type?.nameEn || '')}`;
+            } else {
+                bossHud.classList.remove('show');
+            }
+        }
 
         // ---------- 游戏初始化 ----------
         function initGame() {
@@ -894,19 +1200,21 @@
                 bossSpawned: false,
                 currentBossType: null,
             };
-            // 加载初始关卡 (简化版)
             loadLevel(0, 0, 0);
-            updateUI();
-            updateMiniUI();
-            game.running = true;
-            game.gameOver = false;
             applyStats();
+            updateGameUI();
             hideMainMenu();
+            msgOverlay.classList.remove('show');
         }
 
-        // 占位函数，实际由完整逻辑覆盖
+        function getCurrentBulletType() {
+            const types = ['normal', 'pierce', 'explode', 'homing', 'spread'];
+            const avail = types.filter(t => unlockedSkills[t] || t === 'normal');
+            if (currentBulletIdx >= avail.length) currentBulletIdx = 0;
+            return avail[currentBulletIdx] || 'normal';
+        }
+
         function loadLevel(w, b, l) {
-            // 简化版 - 实际游戏会完整实现
             game.platforms = [
                 { x: 0, y: 460, w: 840, h: 40 },
                 { x: 80, y: 400, w: 100, h: 14 },
@@ -925,7 +1233,8 @@
             game.boss = null;
             game.player.x = 40;
             game.player.y = 400;
-            updateUI();
+            game.player.jumpCount = 0;
+            updateGameUI();
         }
 
         function applyStats() {
@@ -934,14 +1243,7 @@
             p.maxHp = stats.maxHp;
             p.speed = stats.speed;
             p.jumpPower = -stats.jumpPower;
-        }
-
-        function updateUI() {
-            // 由画布绘制代替
-        }
-
-        function updateMiniUI() {
-            // 由画布绘制代替
+            game.maxHp = stats.maxHp;
         }
 
         // ---------- 触控 ----------
@@ -965,6 +1267,11 @@
             joystickData.x = 0;
             joystickData.y = 0;
             joystickKnob.style.transform = 'translate(0, 0)';
+            if (game.keysPressed) {
+                game.keysPressed.left = false;
+                game.keysPressed.right = false;
+                game.keysPressed.up = false;
+            }
         }, { passive: false });
 
         function updateJoystick(e) {
@@ -984,7 +1291,6 @@
             joystickData.x = dx / maxDist;
             joystickData.y = dy / maxDist;
             joystickKnob.style.transform = `translate(${dx}px, ${dy}px)`;
-            // 更新键盘状态
             if (game.keysPressed) {
                 game.keysPressed.left = joystickData.x < -0.3;
                 game.keysPressed.right = joystickData.x > 0.3;
@@ -992,11 +1298,42 @@
             }
         }
 
-        // ---------- 射击与跳跃按钮 ----------
+        // ---------- 射击与跳跃 ----------
+        function shootBullet(tx, ty) {
+            if (!game || !game.running || game.gameOver) return;
+            const p = game.player;
+            const cx = p.x + p.w / 2;
+            const cy = p.y + p.h / 2;
+            const dx = tx - cx;
+            const dy = ty - cy;
+            const len = Math.hypot(dx, dy);
+            if (len < 10) return;
+            const speed = 8;
+            const bt = getCurrentBulletType();
+            const bType = BULLET_TYPES[bt] || BULLET_TYPES.normal;
+            game.bullets.push({
+                x: cx,
+                y: cy,
+                vx: (dx / len) * speed,
+                vy: (dy / len) * speed,
+                r: 5,
+                life: 80,
+                damage: bType.damage,
+                color: bType.color,
+                type: bt,
+                pierce: bType.pierce || 0,
+                explode: bType.explode || false,
+                homing: bType.homing || false,
+                spread: bType.spread || 1,
+                trail: [],
+            });
+            playSound('shoot');
+        }
+
         shootBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            if (game && game.running) {
-                const mx = game.player.x + game.player.w / 2 + 100;
+            if (game && game.running && game.player) {
+                const mx = game.player.x + game.player.w / 2 + 100 * game.player.facing;
                 const my = game.player.y + game.player.h / 2;
                 shootBullet(mx, my);
             }
@@ -1006,33 +1343,9 @@
             e.preventDefault();
             if (game && game.running && game.keysPressed) {
                 game.keysPressed.up = true;
-                setTimeout(() => { if (game.keysPressed) game.keysPressed.up = false; }, 150);
+                setTimeout(() => { if (game.keysPressed) game.keysPressed.up = false; }, 200);
             }
         }, { passive: false });
-
-        // 射击函数 (简化)
-        function shootBullet(tx, ty) {
-            if (!game || !game.running) return;
-            const p = game.player;
-            const cx = p.x + p.w / 2;
-            const cy = p.y + p.h / 2;
-            const dx = tx - cx;
-            const dy = ty - cy;
-            const len = Math.hypot(dx, dy);
-            if (len < 10) return;
-            const speed = 8;
-            game.bullets.push({
-                x: cx,
-                y: cy,
-                vx: (dx / len) * speed,
-                vy: (dy / len) * speed,
-                r: 5,
-                life: 80,
-                damage: 1,
-                color: '#6bcbff',
-            });
-            playSound('shoot');
-        }
 
         // ---------- 主菜单按钮 ----------
         btnNew.addEventListener('click', () => {
@@ -1054,7 +1367,21 @@
 
         btnReset.addEventListener('click', resetSave);
 
-        // ---------- 画布绘制(含双语UI) ----------
+        // 消息按钮
+        msgBtn.addEventListener('click', () => {
+            msgOverlay.classList.remove('show');
+            if (game.gameOver) {
+                initGame();
+            } else {
+                // 继续下一关
+                game.level++;
+                loadLevel(game.world, game.branch, game.level);
+                game.running = true;
+                updateGameUI();
+            }
+        });
+
+        // ---------- 画布绘制 (简化，主要用于游戏元素) ----------
         function draw() {
             ctx.clearRect(0, 0, W, H);
             // 背景
@@ -1077,6 +1404,22 @@
                 ctx.shadowBlur = 0;
             }
 
+            // 出口
+            if (game.exit && !game.isBoss) {
+                ctx.fillStyle = '#44ff8844';
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = '#44ff8844';
+                ctx.beginPath();
+                ctx.roundRect(game.exit.x, game.exit.y, game.exit.w, game.exit.h, 4);
+                ctx.fill();
+                ctx.fillStyle = '#44ff88';
+                ctx.font = '18px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('🚪', game.exit.x + game.exit.w / 2, game.exit.y + game.exit.h - 4);
+                ctx.shadowBlur = 0;
+                ctx.textAlign = 'left';
+            }
+
             // 玩家
             if (game.player) {
                 const p = game.player;
@@ -1087,7 +1430,6 @@
                 ctx.roundRect(p.x, p.y, p.w, p.h, 5);
                 ctx.fill();
                 ctx.shadowBlur = 0;
-                // 简单头盔
                 ctx.fillStyle = '#5dade2';
                 ctx.beginPath();
                 ctx.arc(p.x + p.w / 2, p.y - 4, 12, 0, Math.PI * 2);
@@ -1133,55 +1475,6 @@
                     ctx.fill();
                 }
             }
-
-            // HUD - 双语显示
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = 'rgba(255,255,255,0.08)';
-            ctx.font = '14px sans-serif';
-            const worldName = currentLang === 'zh' ? WORLDS[game.world % 3]?.name || '' : WORLDS[game.world % 3]?.nameEn || '';
-            const modeText = game.infiniteMode ? (currentLang === 'zh' ? '♾️ 无尽' : '♾️ Endless') : (currentLang === 'zh' ?
-                '普通' : 'Normal');
-            const hpText = currentLang === 'zh' ? '❤️ 生命' : '❤️ HP';
-            const killsText = currentLang === 'zh' ? '杀' : 'Kills';
-            ctx.fillText(`🌍 ${worldName}  |  ${hpText} ${Math.ceil(game.hp||100)}  |  🗡️ ${game.totalKills||0} ${killsText}  |  ${modeText}`,
-                14, 28);
-
-            // 关卡信息
-            const levelText = currentLang === 'zh' ? '关' : 'Lv';
-            ctx.fillStyle = 'rgba(255,255,255,0.06)';
-            ctx.font = '13px sans-serif';
-            ctx.fillText(`📊 ${levelText} ${level}  |  EXP ${exp}/${expToNext}`, 14, 48);
-
-            // 武器与子弹
-            const bt = getCurrentBulletType?.() || 'normal';
-            const btLabel = currentLang === 'zh' ? BULLET_TYPES[bt]?.label || '普通' : BULLET_TYPES[bt]?.labelEn || 'Normal';
-            const wpn = game.player ? WEAPONS[game.player.weapon] : WEAPONS[0];
-            const wpnLabel = currentLang === 'zh' ? wpn.name : wpn.nameEn;
-            ctx.fillStyle = 'rgba(255,255,255,0.05)';
-            ctx.font = '12px sans-serif';
-            ctx.fillText(`⚔️ ${wpnLabel}  |  🔫 ${btLabel}`, 14, 66);
-
-            // Boss血条
-            if (game.isBoss && game.boss && game.boss.hp > 0) {
-                const b = game.boss;
-                const pct = Math.max(0, (b.hp / b.maxHp) * 100);
-                const bossName = currentLang === 'zh' ? (b.type?.name || 'Boss') : (b.type?.nameEn || 'Boss');
-                ctx.fillStyle = '#ff333388';
-                ctx.font = '14px sans-serif';
-                ctx.fillText(`👹 ${bossName}`, W / 2 - 80, 22);
-                ctx.fillStyle = '#2a1a1a';
-                ctx.fillRect(W / 2 - 80, 26, 160, 12);
-                ctx.fillStyle = '#ff3333';
-                ctx.fillRect(W / 2 - 80, 26, 160 * (pct / 100), 12);
-                ctx.fillStyle = '#fff';
-                ctx.font = '10px sans-serif';
-                ctx.fillText(Math.ceil(b.hp) + '/' + Math.ceil(b.maxHp), W / 2 + 40, 36);
-            }
-
-            // 消息覆盖层
-            if (msgOverlay && msgOverlay.classList.contains('show')) {
-                // 由CSS控制
-            }
         }
 
         // 辅助函数
@@ -1204,22 +1497,31 @@
         // ---------- 主循环 ----------
         function gameLoop() {
             if (game && game.running && !game.gameOver) {
-                // 简单更新：移动玩家（演示）
                 const p = game.player;
                 if (p) {
-                    if (game.keysPressed?.left) p.x -= p.speed * 0.5;
-                    if (game.keysPressed?.right) p.x += p.speed * 0.5;
-                    // 简单跳跃
+                    if (game.keysPressed?.left) {
+                        p.x -= p.speed * 0.5;
+                        p.facing = -1;
+                    }
+                    if (game.keysPressed?.right) {
+                        p.x += p.speed * 0.5;
+                        p.facing = 1;
+                    }
                     if (game.keysPressed?.up && p.onGround) {
-                        p.vy = -6;
+                        p.vy = p.jumpPower;
                         p.onGround = false;
+                        p.jumpCount++;
+                        playSound('jump');
+                        updateGameUI();
                     }
                     p.vy += 0.4;
                     p.y += p.vy;
-                    if (p.y > 400) { p.y = 400;
+                    if (p.y > 400) {
+                        p.y = 400;
                         p.vy = 0;
-                        p.onGround = true; }
-                    // 边界
+                        p.onGround = true;
+                        p.jumpCount = 0;
+                    }
                     if (p.x < 0) p.x = 0;
                     if (p.x + p.w > W) p.x = W - p.w;
                 }
@@ -1240,21 +1542,19 @@
                     const shake = game.screenShake * 0.3;
                     canvas.style.transform = `translate(${(Math.random()-0.5)*shake*2}px, ${(Math.random()-0.5)*shake*2}px)`;
                     game.screenShake *= 0.9;
-                    if (game.screenShake < 0.1) { game.screenShake = 0;
-                        canvas.style.transform = ''; }
+                    if (game.screenShake < 0.1) {
+                        game.screenShake = 0;
+                        canvas.style.transform = '';
+                    }
                 }
+                // 更新 UI
+                updateGameUI();
             }
             draw();
             requestAnimationFrame(gameLoop);
         }
 
-        // ---------- 启动 ----------
-        loadSettings();
-        updateUIStrings();
-        initGame();
-        gameLoop();
-
-        // 键盘支持 (PC)
+        // ---------- 键盘支持 ----------
         document.addEventListener('keydown', (e) => {
             if (!game.keysPressed) return;
             if (e.key === 'ArrowLeft' || e.key === 'a') game.keysPressed.left = true;
@@ -1267,22 +1567,22 @@
                 if (game.player) {
                     game.player.weapon = (game.player.weapon + 1) % WEAPONS.length;
                     playSound('weapon');
+                    updateGameUI();
                 }
                 e.preventDefault();
             }
             if (e.key === 'r' || e.key === 'R') {
-                // 切换子弹
                 const types = ['normal', 'pierce', 'explode', 'homing', 'spread'];
                 const avail = types.filter(t => unlockedSkills[t] || t === 'normal');
                 if (avail.length > 1) {
                     const idx = (avail.indexOf(getCurrentBulletType()) + 1) % avail.length;
                     currentBulletIdx = types.indexOf(avail[idx]);
                     playSound('weapon');
+                    updateGameUI();
                 }
                 e.preventDefault();
             }
             if (e.key === 'e' || e.key === 'E') {
-                // 技能(简化)
                 if (game && game.running && game.skillCooldown <= 0) {
                     game.skillActive = true;
                     game.skillTimer = 90;
@@ -1300,9 +1600,9 @@
             if (e.key === 'ArrowUp' || e.key === 'w' || e.key === ' ') game.keysPressed.up = false;
         });
 
-        // 鼠标射击 (PC)
+        // 鼠标射击
         canvas.addEventListener('mousedown', (e) => {
-            if (!game || !game.running) return;
+            if (!game || !game.running || game.gameOver) return;
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
             const scaleY = canvas.height / rect.height;
@@ -1318,17 +1618,14 @@
             }
         }, 30000);
 
-        // 额外功能：获取当前子弹类型
-        function getCurrentBulletType() {
-            const types = ['normal', 'pierce', 'explode', 'homing', 'spread'];
-            const avail = types.filter(t => unlockedSkills[t] || t === 'normal');
-            if (currentBulletIdx >= avail.length) currentBulletIdx = 0;
-            return avail[currentBulletIdx] || 'normal';
-        }
+        // ---------- 启动 ----------
+        loadSettings();
+        updateUIStrings();
+        initGame();
+        gameLoop();
 
-        // 初始化完成
         console.log('👻 暗影勇者 · 中英双语移动版 已启动！');
-        console.log('🔥 活力全开！');
+        console.log('🔥 全部 UI 已补全！');
     </script>
 
 </body>
