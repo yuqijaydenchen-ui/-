@@ -290,6 +290,23 @@
         #wrapper {
             position: relative;
         }
+        /* 升级提示 - 左上角不挡视野 */
+        #levelUpMsg {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            color: #f7d44a;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 0 0 40px #f7d44a88;
+            pointer-events: none;
+            z-index: 15;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        #levelUpMsg.show {
+            opacity: 1;
+        }
         @media (max-width: 760px) {
             #wrapper {
                 padding: 10px;
@@ -324,6 +341,11 @@
                 min-width: 180px;
                 font-size: 12px;
             }
+            #levelUpMsg {
+                font-size: 20px;
+                top: 20px;
+                left: 20px;
+            }
         }
     </style>
 </head>
@@ -333,6 +355,7 @@
         <div id="msgOverlay">
             <div id="msgText">🎉<div id="msgSub"></div></div>
         </div>
+        <div id="levelUpMsg">⬆ Lv.1</div>
         <div id="statPanel">
             <h3>📊 属性分配</h3>
             <div class="points-remaining" id="pointsRemaining">剩余: 0</div>
@@ -363,8 +386,8 @@
 
     <script>
         // ================================================================
-        //  👻 暗影勇者 · 无尽Boss版
-        //  5种Boss、动态地图、升级系统、无限模式
+        //  👻 暗影勇者 · 无尽Boss版 v2
+        //  6种子弹、缓慢回血、升级提示不挡视野
         // ================================================================
 
         const canvas = document.getElementById('gameCanvas');
@@ -389,6 +412,7 @@
         const statBtn = document.getElementById('statBtn');
         const statPanel = document.getElementById('statPanel');
         const pointsRemaining = document.getElementById('pointsRemaining');
+        const levelUpMsg = document.getElementById('levelUpMsg');
 
         const GRAVITY = 0.55;
         const FRICTION = 0.80;
@@ -399,70 +423,28 @@
             { name: '地狱深渊', bg1: '#0a0000', bg2: '#1a0000', plat: '#3a0a0a', scary: 2 }
         ];
 
+        // ---------- 6种武器/子弹 ----------
         const WEAPONS = [
-            { name: '普通', damage: 1, speed: 9, color: '#6bcbff', spread: 1, icon: '🔫' },
-            { name: '速射', damage: 1, speed: 14, color: '#ffaa44', spread: 1, icon: '⚡' },
-            { name: '重炮', damage: 3, speed: 5, color: '#ff4444', spread: 1, icon: '💥' },
-            { name: '散射', damage: 1, speed: 7, color: '#44ff88', spread: 3, icon: '🔱' }
+            { name: '普通', damage: 1, speed: 9, color: '#6bcbff', spread: 1, icon: '🔫', type: 'normal' },
+            { name: '速射', damage: 1, speed: 14, color: '#ffaa44', spread: 1, icon: '⚡', type: 'normal' },
+            { name: '重炮', damage: 3, speed: 5, color: '#ff4444', spread: 1, icon: '💥', type: 'normal' },
+            { name: '散射', damage: 1, speed: 7, color: '#44ff88', spread: 3, icon: '🔱', type: 'normal' },
+            { name: '穿透', damage: 2, speed: 10, color: '#ff66ff', spread: 1, icon: '➡️', type: 'pierce' },
+            { name: '爆炸', damage: 2, speed: 6, color: '#ff8833', spread: 1, icon: '💣', type: 'explode' }
         ];
 
-        // ---------- 5种Boss定义 ----------
+        // ---------- 5种Boss ----------
         const BOSS_TYPES = [
-            {
-                id: '腐化巨兽',
-                color: '#44aa44',
-                glow: '#88ff88',
-                shape: 'beast',
-                desc: '腐化巨兽',
-                hpMult: 1.0,
-                speed: 0.6,
-                bulletColor: '#44ff44',
-                attackType: 'spray'
-            },
-            {
-                id: '暗影幽灵',
-                color: '#aa44ff',
-                glow: '#cc88ff',
-                shape: 'ghost',
-                desc: '暗影幽灵',
-                hpMult: 0.8,
-                speed: 1.2,
-                bulletColor: '#cc66ff',
-                attackType: 'scatter'
-            },
-            {
-                id: '火焰领主',
-                color: '#ff6622',
-                glow: '#ff8844',
-                shape: 'fire',
-                desc: '火焰领主',
-                hpMult: 1.2,
-                speed: 0.5,
-                bulletColor: '#ff6633',
-                attackType: 'ring'
-            },
-            {
-                id: '冰霜女王',
-                color: '#44ccff',
-                glow: '#88ddff',
-                shape: 'ice',
-                desc: '冰霜女王',
-                hpMult: 0.9,
-                speed: 0.7,
-                bulletColor: '#66ddff',
-                attackType: 'cone'
-            },
-            {
-                id: '虚空使者',
-                color: '#8833cc',
-                glow: '#bb66ff',
-                shape: 'void',
-                desc: '虚空使者',
-                hpMult: 1.4,
-                speed: 0.4,
-                bulletColor: '#aa44ff',
-                attackType: 'nova'
-            }
+            { id: '腐化巨兽', color: '#44aa44', glow: '#88ff88', shape: 'beast', desc: '腐化巨兽', hpMult: 1.0, speed: 0.6,
+                bulletColor: '#44ff44', attackType: 'spray' },
+            { id: '暗影幽灵', color: '#aa44ff', glow: '#cc88ff', shape: 'ghost', desc: '暗影幽灵', hpMult: 0.8, speed: 1.2,
+                bulletColor: '#cc66ff', attackType: 'scatter' },
+            { id: '火焰领主', color: '#ff6622', glow: '#ff8844', shape: 'fire', desc: '火焰领主', hpMult: 1.2, speed: 0.5,
+                bulletColor: '#ff6633', attackType: 'ring' },
+            { id: '冰霜女王', color: '#44ccff', glow: '#88ddff', shape: 'ice', desc: '冰霜女王', hpMult: 0.9, speed: 0.7,
+                bulletColor: '#66ddff', attackType: 'cone' },
+            { id: '虚空使者', color: '#8833cc', glow: '#bb66ff', shape: 'void', desc: '虚空使者', hpMult: 1.4, speed: 0.4,
+                bulletColor: '#aa44ff', attackType: 'nova' }
         ];
 
         // ---------- 音频 ----------
@@ -591,6 +573,7 @@
         let level = 1;
         let exp = 0;
         let expToNext = 20;
+        let levelUpTimer = 0;
 
         function initStats() {
             stats = {};
@@ -612,13 +595,19 @@
                 expToNext = Math.floor(20 + level * 15);
                 statPoints += 3;
                 playSound('levelup');
-                showMessage('⬆ 升级！', `等级 ${level}！获得 3 个属性点`);
-                setTimeout(() => msgOverlay.classList.remove('show'), 1200);
+                // 左上角提示（不挡视野）
+                showLevelUp(level);
                 updateStatUI();
                 updateUI();
             }
             updateStatUI();
             updateUI();
+        }
+
+        function showLevelUp(lv) {
+            levelUpMsg.textContent = '⬆ Lv.' + lv;
+            levelUpMsg.classList.add('show');
+            levelUpTimer = 120;
         }
 
         function upgradeStat(key) {
@@ -704,6 +693,8 @@
                     weapon: 0,
                     trail: [],
                     maxHp: stats.maxHp,
+                    healTimer: 0,
+                    healAmount: 0,
                 },
                 platforms: [],
                 enemies: [],
@@ -725,8 +716,6 @@
                 skillDuration: 90,
                 bossSpawned: false,
                 bossType: null,
-                bossPhase: 0,
-                bossTimer: 0,
             };
             loadLevel(0);
             updateUI();
@@ -750,10 +739,8 @@
             const keys = [];
             const items = [];
 
-            // 地面
             platforms.push({ x: 0, y: game.mapHeight - 40, w: game.mapWidth, h: 40 });
 
-            // 动态平台
             const platCount = 6 + Math.floor(difficulty / 2);
             const baseY = [420, 380, 340, 300, 260, 220, 180, 140];
             for (let i = 0; i < platCount; i++) {
@@ -769,7 +756,6 @@
             const exitX = Math.min(game.mapWidth - 50, lastPlat.x + lastPlat.w / 2 - 15);
             const exitY = lastPlat.y - 40;
 
-            // 敌人
             const enemyCount = 3 + Math.floor(difficulty * 0.6);
             for (let i = 0; i < enemyCount; i++) {
                 let plat = platforms[1 + (i * 3) % (platforms.length - 1)];
@@ -797,7 +783,6 @@
                 });
             }
 
-            // 钥匙
             const keyCount = 2 + Math.floor(difficulty / 2);
             const usedPlats = platforms.slice(1);
             for (let i = 0; i < Math.min(keyCount, usedPlats.length); i++) {
@@ -809,7 +794,7 @@
                 keys.push({ x: plat.x + 30 + keys.length * 20, y: plat.y - 28, collected: false, r: 9 });
             }
 
-            // 物品
+            // 血包改为缓慢回血（HoT）
             const healCount = 1 + Math.floor(difficulty / 3);
             for (let i = 0; i < healCount; i++) {
                 let plat = platforms[1 + (i * 7 + levelIdx) % (platforms.length - 1)];
@@ -819,13 +804,14 @@
                     x: plat.x + 20 + i * 25,
                     y: plat.y - 30,
                     r: 12,
-                    value: 20,
+                    value: 20, // 总量，分4秒回完
+                    healTimer: 0,
                 });
             }
             if ((levelIdx % 2 === 1) && difficulty > 0) {
                 let plat = platforms[2 % (platforms.length - 1)];
                 if (!plat) plat = platforms[1];
-                const wIdx = Math.min(3, Math.floor(difficulty / 2) + 1);
+                const wIdx = Math.min(5, Math.floor(difficulty / 2) + 1);
                 items.push({
                     type: 'weapon',
                     weaponIdx: wIdx,
@@ -835,7 +821,6 @@
                 });
             }
 
-            // Boss：每5关出现一次
             let isBoss = (levelIdx % 5 === 4);
             let boss = null;
             let bossType = null;
@@ -858,7 +843,6 @@
                     expReward: 80 + cycle * 15 + levelIdx * 5,
                     type: bossType,
                     phase: 0,
-                    phaseTimer: 0,
                 };
                 enemies.splice(0, Math.floor(enemies.length / 2));
                 game.bossType = bossType;
@@ -895,6 +879,8 @@
             p.speed = stats.speed;
             p.jumpPower = -stats.jumpPower;
             p.maxHp = stats.maxHp;
+            p.healTimer = 0;
+            p.healAmount = 0;
             if (game.hp > p.maxHp) game.hp = p.maxHp;
 
             if (game.isBoss && game.boss) {
@@ -963,6 +949,23 @@
             }
         }
 
+        function spawnExplosion(x, y, color, count = 40) {
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 1 + Math.random() * 6;
+                game.particles.push({
+                    x,
+                    y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 1,
+                    life: 30 + Math.random() * 30,
+                    maxLife: 60,
+                    color: Math.random() > 0.5 ? color : '#ffaa44',
+                    size: 3 + Math.random() * 8,
+                });
+            }
+        }
+
         function spawnBlood(x, y, count = 20) {
             for (let i = 0; i < count; i++) {
                 const angle = Math.random() * Math.PI * 2;
@@ -992,7 +995,7 @@
             if (game.particles.length > 500) game.particles.splice(0, 150);
         }
 
-        // ---------- 射击 ----------
+        // ---------- 射击（支持6种子弹） ----------
         let lastShootTime = 0;
         let shootSoundCooldown = 0;
 
@@ -1014,6 +1017,9 @@
             const weapon = WEAPONS[p.weapon];
             const count = weapon.spread || 1;
             const damageBonus = 1 + stats.damageBonus;
+            const isPierce = weapon.type === 'pierce';
+            const isExplode = weapon.type === 'explode';
+
             for (let i = 0; i < count; i++) {
                 const angle = Math.atan2(dy, dx) + (i - (count - 1) / 2) * 0.25;
                 const speed = game.skillActive ? weapon.speed * 0.4 : weapon.speed;
@@ -1024,10 +1030,12 @@
                     y: cy,
                     vx: vx,
                     vy: vy,
-                    r: 5,
-                    life: 130,
+                    r: isPierce ? 4 : (isExplode ? 7 : 5),
+                    life: isPierce ? 200 : 130,
                     damage: Math.ceil(weapon.damage * damageBonus),
                     color: weapon.color,
+                    type: weapon.type || 'normal',
+                    pierceCount: isPierce ? 5 : 1,
                 });
             }
             spawnParticles(cx, cy, weapon.color, 4);
@@ -1046,264 +1054,21 @@
             spawnParticles(game.player.x + game.player.w / 2, game.player.y + game.player.h / 2, '#44ff88', 30, 2);
         }
 
-        // ---------- 绘制Boss (5种不同形状) ----------
-        function drawBoss(b, p) {
-            const type = b.type || BOSS_TYPES[0];
-            const flash = b.hitCooldown > 0;
-            const pulse = 0.95 + Math.sin(game.frame * 0.05) * 0.05;
-
-            // 光晕
-            ctx.shadowColor = type.glow || '#ff4444';
-            ctx.shadowBlur = 60 * pulse;
-            ctx.fillStyle = type.glow + '33';
-            ctx.beginPath();
-            ctx.arc(b.x + b.w / 2, b.y + b.h / 2, 60 * pulse, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.shadowBlur = 30;
-            ctx.shadowColor = type.color || '#ff4444';
-
-            switch (type.shape) {
-                case 'beast':
-                    // 腐化巨兽 - 四足怪物
-                    ctx.fillStyle = flash ? '#ffffff' : type.color;
-                    ctx.beginPath();
-                    ctx.ellipse(b.x + b.w / 2, b.y + b.h / 2 + 10, 30, 25, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                    // 腿
-                    ctx.fillRect(b.x + 8, b.y + b.h - 10, 12, 10);
-                    ctx.fillRect(b.x + b.w - 20, b.y + b.h - 10, 12, 10);
-                    ctx.fillRect(b.x + 5, b.y + b.h - 12, 10, 12);
-                    ctx.fillRect(b.x + b.w - 15, b.y + b.h - 12, 10, 12);
-                    // 眼睛
-                    ctx.fillStyle = '#ff0000';
-                    ctx.shadowBlur = 20;
-                    ctx.beginPath();
-                    ctx.arc(b.x + 20, b.y + 25, 8, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.arc(b.x + b.w - 20, b.y + 25, 8, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = '#000';
-                    const dx = p.x + p.w / 2 - (b.x + 20);
-                    const dy = p.y + p.h / 2 - (b.y + 25);
-                    const d = Math.hypot(dx, dy);
-                    if (d > 0) {
-                        ctx.beginPath();
-                        ctx.arc(b.x + 20 + (dx / d) * 4, b.y + 25 + (dy / d) * 4, 4, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.beginPath();
-                        ctx.arc(b.x + b.w - 20 + (dx / d) * 4, b.y + 25 + (dy / d) * 4, 4, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                    // 毒液腺体
-                    ctx.fillStyle = type.glow + '66';
-                    ctx.shadowBlur = 40;
-                    ctx.beginPath();
-                    ctx.arc(b.x + b.w / 2, b.y + 50, 12 + Math.sin(game.frame * 0.03) * 2, 0, Math.PI * 2);
-                    ctx.fill();
-                    break;
-
-                case 'ghost':
-                    // 暗影幽灵 - 半透明灵体
-                    const alpha = 0.6 + Math.sin(game.frame * 0.04) * 0.2;
-                    ctx.globalAlpha = alpha;
-                    ctx.fillStyle = flash ? '#ffffff' : type.color;
-                    ctx.beginPath();
-                    ctx.arc(b.x + b.w / 2, b.y + b.h / 2 - 5, 28, 0, Math.PI * 2);
-                    ctx.fill();
-                    // 飘带
-                    for (let i = -2; i <= 2; i++) {
-                        const wx = b.x + b.w / 2 + i * 12 + Math.sin(game.frame * 0.06 + i) * 5;
-                        const wy = b.y + b.h - 5 + Math.sin(game.frame * 0.05 + i * 2) * 8;
-                        ctx.beginPath();
-                        ctx.moveTo(b.x + b.w / 2 + i * 10, b.y + b.h - 5);
-                        ctx.quadraticCurveTo(wx + 5, wy + 10, wx, wy + 20 + Math.sin(game.frame * 0.04 + i) * 5);
-                        ctx.lineWidth = 6;
-                        ctx.strokeStyle = type.color;
-                        ctx.shadowBlur = 30;
-                        ctx.stroke();
-                    }
-                    ctx.globalAlpha = 1;
-                    // 眼睛
-                    ctx.fillStyle = '#ff66ff';
-                    ctx.shadowBlur = 30;
-                    ctx.beginPath();
-                    ctx.arc(b.x + 18, b.y + 25, 10, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.arc(b.x + b.w - 18, b.y + 25, 10, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = '#000';
-                    const dx2 = p.x + p.w / 2 - (b.x + 18);
-                    const dy2 = p.y + p.h / 2 - (b.y + 25);
-                    const d2 = Math.hypot(dx2, dy2);
-                    if (d2 > 0) {
-                        ctx.beginPath();
-                        ctx.arc(b.x + 18 + (dx2 / d2) * 5, b.y + 25 + (dy2 / d2) * 5, 5, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.beginPath();
-                        ctx.arc(b.x + b.w - 18 + (dx2 / d2) * 5, b.y + 25 + (dy2 / d2) * 5, 5, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                    break;
-
-                case 'fire':
-                    // 火焰领主 - 火焰巨人
-                    ctx.fillStyle = flash ? '#ffffff' : type.color;
-                    ctx.shadowBlur = 50;
-                    // 身体
-                    ctx.beginPath();
-                    ctx.roundRect(b.x + 10, b.y + 10, b.w - 20, b.h - 10, 10);
-                    ctx.fill();
-                    // 火焰头发
-                    for (let i = 0; i < 7; i++) {
-                        const fx = b.x + 10 + i * 9 + Math.sin(game.frame * 0.05 + i) * 3;
-                        const fy = b.y + 5 + Math.sin(game.frame * 0.07 + i * 2) * 8;
-                        ctx.fillStyle = type.glow + '88';
-                        ctx.shadowBlur = 40;
-                        ctx.beginPath();
-                        ctx.arc(fx, fy - 5, 10 + Math.sin(game.frame * 0.06 + i) * 3, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                    // 眼睛
-                    ctx.fillStyle = '#ffff00';
-                    ctx.shadowBlur = 30;
-                    ctx.beginPath();
-                    ctx.arc(b.x + 22, b.y + 30, 8, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.arc(b.x + b.w - 22, b.y + 30, 8, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = '#ff4400';
-                    const dx3 = p.x + p.w / 2 - (b.x + 22);
-                    const dy3 = p.y + p.h / 2 - (b.y + 30);
-                    const d3 = Math.hypot(dx3, dy3);
-                    if (d3 > 0) {
-                        ctx.beginPath();
-                        ctx.arc(b.x + 22 + (dx3 / d3) * 4, b.y + 30 + (dy3 / d3) * 4, 4, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.beginPath();
-                        ctx.arc(b.x + b.w - 22 + (dx3 / d3) * 4, b.y + 30 + (dy3 / d3) * 4, 4, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                    // 火焰核心
-                    ctx.fillStyle = type.glow + '55';
-                    ctx.shadowBlur = 60;
-                    ctx.beginPath();
-                    ctx.arc(b.x + b.w / 2, b.y + 55, 15 + Math.sin(game.frame * 0.05) * 3, 0, Math.PI * 2);
-                    ctx.fill();
-                    break;
-
-                case 'ice':
-                    // 冰霜女王 - 冰晶女性
-                    ctx.fillStyle = flash ? '#ffffff' : type.color;
-                    ctx.shadowBlur = 40;
-                    // 身体
-                    ctx.beginPath();
-                    ctx.roundRect(b.x + 15, b.y + 15, b.w - 30, b.h - 20, 8);
-                    ctx.fill();
-                    // 冰晶冠
-                    for (let i = 0; i < 5; i++) {
-                        const cx = b.x + 15 + i * 12 + Math.sin(game.frame * 0.03 + i) * 2;
-                        ctx.fillStyle = type.glow + '88';
-                        ctx.shadowBlur = 30;
-                        ctx.beginPath();
-                        ctx.moveTo(cx, b.y);
-                        ctx.lineTo(cx + 6, b.y - 12);
-                        ctx.lineTo(cx + 12, b.y);
-                        ctx.fill();
-                    }
-                    // 眼睛
-                    ctx.fillStyle = '#88ddff';
-                    ctx.shadowBlur = 25;
-                    ctx.beginPath();
-                    ctx.arc(b.x + 22, b.y + 28, 8, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.arc(b.x + b.w - 22, b.y + 28, 8, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = '#004466';
-                    const dx4 = p.x + p.w / 2 - (b.x + 22);
-                    const dy4 = p.y + p.h / 2 - (b.y + 28);
-                    const d4 = Math.hypot(dx4, dy4);
-                    if (d4 > 0) {
-                        ctx.beginPath();
-                        ctx.arc(b.x + 22 + (dx4 / d4) * 4, b.y + 28 + (dy4 / d4) * 4, 4, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.beginPath();
-                        ctx.arc(b.x + b.w - 22 + (dx4 / d4) * 4, b.y + 28 + (dy4 / d4) * 4, 4, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                    // 冰晶飘动
-                    for (let i = 0; i < 6; i++) {
-                        const fx = b.x + 10 + i * 12 + Math.sin(game.frame * 0.04 + i * 2) * 4;
-                        const fy = b.y + 40 + Math.sin(game.frame * 0.05 + i * 1.5) * 6;
-                        ctx.fillStyle = type.glow + '44';
-                        ctx.shadowBlur = 20;
-                        ctx.beginPath();
-                        ctx.arc(fx, fy, 4 + Math.sin(game.frame * 0.03 + i) * 2, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                    break;
-
-                case 'void':
-                    // 虚空使者 - 虚空生物
-                    ctx.fillStyle = flash ? '#ffffff' : type.color;
-                    ctx.shadowBlur = 50;
-                    // 核心球体
-                    ctx.beginPath();
-                    ctx.arc(b.x + b.w / 2, b.y + b.h / 2, 28 + Math.sin(game.frame * 0.03) * 3, 0, Math.PI * 2);
-                    ctx.fill();
-                    // 触手
-                    for (let i = 0; i < 8; i++) {
-                        const ang = i / 8 * Math.PI * 2 + game.frame * 0.02;
-                        const len = 20 + Math.sin(game.frame * 0.04 + i * 1.5) * 10;
-                        ctx.fillStyle = type.glow + '66';
-                        ctx.shadowBlur = 40;
-                        ctx.beginPath();
-                        ctx.moveTo(b.x + b.w / 2 + Math.cos(ang) * 28, b.y + b.h / 2 + Math.sin(ang) * 28);
-                        ctx.quadraticCurveTo(
-                            b.x + b.w / 2 + Math.cos(ang + 0.2) * (28 + len),
-                            b.y + b.h / 2 + Math.sin(ang + 0.2) * (28 + len),
-                            b.x + b.w / 2 + Math.cos(ang + 0.1) * (28 + len * 1.2),
-                            b.y + b.h / 2 + Math.sin(ang + 0.1) * (28 + len * 1.2)
-                        );
-                        ctx.lineWidth = 6;
-                        ctx.stroke();
-                    }
-                    // 眼睛
-                    ctx.fillStyle = '#ff44ff';
-                    ctx.shadowBlur = 40;
-                    ctx.beginPath();
-                    ctx.arc(b.x + 20, b.y + 25, 10, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.arc(b.x + b.w - 20, b.y + 25, 10, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = '#220044';
-                    const dx5 = p.x + p.w / 2 - (b.x + 20);
-                    const dy5 = p.y + p.h / 2 - (b.y + 25);
-                    const d5 = Math.hypot(dx5, dy5);
-                    if (d5 > 0) {
-                        ctx.beginPath();
-                        ctx.arc(b.x + 20 + (dx5 / d5) * 5, b.y + 25 + (dy5 / d5) * 5, 5, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.beginPath();
-                        ctx.arc(b.x + b.w - 20 + (dx5 / d5) * 5, b.y + 25 + (dy5 / d5) * 5, 5, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                    break;
-            }
-            ctx.shadowBlur = 0;
-        }
-
         // ---------- 玩家更新 ----------
         function updatePlayer() {
             const p = game.player;
             const keys = game.keysPressed;
 
             if (p.invincible > 0) p.invincible--;
+
+            // 缓慢回血（HoT）
+            if (p.healTimer > 0) {
+                p.healTimer--;
+                if (p.healTimer % 10 === 0) { // 每10帧回5点
+                    game.hp = Math.min(p.maxHp, game.hp + 5);
+                    spawnParticles(p.x + p.w / 2, p.y + p.h / 2, '#44ff88', 2);
+                }
+            }
 
             if (game.skillActive) {
                 game.skillTimer--;
@@ -1381,7 +1146,8 @@
                 const item = game.items[i];
                 if (dist(p.x + p.w / 2, p.y + p.h / 2, item.x, item.y) < 25) {
                     if (item.type === 'heal') {
-                        game.hp = Math.min(game.player.maxHp, game.hp + item.value);
+                        // 缓慢回血：持续4秒，每秒回5点
+                        p.healTimer = 240; // 4秒 @ 60fps
                         spawnParticles(item.x, item.y, '#44ff88', 15);
                         playSound('heal');
                         addExp(5);
@@ -1469,6 +1235,7 @@
                 updateBossAI();
             }
 
+            // 子弹更新（支持穿透和爆炸）
             const timeScale = game.skillActive ? 0.6 : 1.0;
             for (let i = game.bullets.length - 1; i >= 0; i--) {
                 const bull = game.bullets[i];
@@ -1481,6 +1248,44 @@
                     continue;
                 }
                 let hit = false;
+
+                // 爆炸子弹：命中后产生AOE
+                if (bull.type === 'explode') {
+                    let exploded = false;
+                    for (const e of game.enemies) {
+                        if (e.y > game.mapHeight + 50) continue;
+                        if (dist(bull.x, bull.y, e.x + e.w / 2, e.y + e.h / 2) < bull.r + 20) {
+                            e.hp -= bull.damage;
+                            if (e.hp <= 0) {
+                                e.y = game.mapHeight + 100;
+                                spawnBlood(e.x + e.w / 2, e.y + e.h / 2, 20);
+                                playSound('kill');
+                                game.totalKills++;
+                                addExp(e.expReward || 10);
+                            } else {
+                                e.hitFlash = 10;
+                            }
+                            exploded = true;
+                        }
+                    }
+                    if (exploded) {
+                        spawnExplosion(bull.x, bull.y, '#ff8833', 30);
+                        game.screenShake = 6;
+                        // 对Boss也造成伤害
+                        if (game.isBoss && game.boss && game.boss.hp > 0) {
+                            const b = game.boss;
+                            if (dist(bull.x, bull.y, b.x + b.w / 2, b.y + b.h / 2) < 60) {
+                                b.hp -= bull.damage;
+                                updateBossUI();
+                                if (b.hp <= 0) bossDefeated();
+                            }
+                        }
+                        game.bullets.splice(i, 1);
+                        continue;
+                    }
+                }
+
+                // 普通/穿透子弹
                 for (const e of game.enemies) {
                     if (e.y > game.mapHeight + 50) continue;
                     if (dist(bull.x, bull.y, e.x + e.w / 2, e.y + e.h / 2) < bull.r + 12) {
@@ -1499,10 +1304,28 @@
                             spawnParticles(bull.x, bull.y, '#ffaa44', 5);
                         }
                         hit = true;
-                        break;
+                        if (bull.type !== 'pierce') {
+                            break;
+                        }
+                        // 穿透子弹：继续穿透
+                        bull.pierceCount--;
+                        if (bull.pierceCount <= 0) {
+                            hit = true;
+                            break;
+                        }
                     }
                 }
-                if (!hit && game.isBoss && game.boss && game.boss.hp > 0) {
+                if (hit && bull.type === 'pierce') {
+                    // 穿透子弹继续飞行
+                    continue;
+                }
+                if (hit) {
+                    game.bullets.splice(i, 1);
+                    continue;
+                }
+
+                // Boss伤害（普通子弹）
+                if (!hit && game.isBoss && game.boss && game.boss.hp > 0 && bull.type !== 'explode') {
                     const b = game.boss;
                     if (bull.x > b.x && bull.x < b.x + b.w && bull.y > b.y && bull.y < b.y + b.h) {
                         b.hp -= bull.damage;
@@ -1513,9 +1336,20 @@
                         updateBossUI();
                         hit = true;
                         if (b.hp <= 0) bossDefeated();
+                        if (bull.type !== 'pierce') {
+                            game.bullets.splice(i, 1);
+                        }
                     }
                 }
-                if (hit) game.bullets.splice(i, 1);
+                if (hit && bull.type === 'pierce') {
+                    // 穿透子弹继续
+                    bull.pierceCount--;
+                    if (bull.pierceCount <= 0) {
+                        game.bullets.splice(i, 1);
+                    }
+                } else if (hit) {
+                    game.bullets.splice(i, 1);
+                }
             }
 
             const enemyTimeScale = game.skillActive ? 0.4 : 1.0;
@@ -1547,7 +1381,7 @@
             }
         }
 
-        // ---------- Boss AI (5种不同攻击) ----------
+        // ---------- Boss AI ----------
         function updateBossAI() {
             const b = game.boss;
             if (!b || b.hp <= 0) return;
@@ -1558,7 +1392,6 @@
             const timeScale = game.skillActive ? 0.5 : 1.0;
             const type = b.type || BOSS_TYPES[0];
 
-            // Boss移动
             if (d > 120) {
                 b.x += Math.sign(dx) * 0.5 * timeScale;
                 b.y += Math.sign(dy) * 0.3 * timeScale;
@@ -1577,7 +1410,6 @@
 
                 switch (type.attackType) {
                     case 'spray':
-                        // 腐化巨兽：喷吐毒液
                         for (let i = -3; i <= 3; i++) {
                             const a = angle + i * 0.15;
                             b.bullets.push({
@@ -1590,9 +1422,7 @@
                             });
                         }
                         break;
-
                     case 'scatter':
-                        // 暗影幽灵：散射暗影弹
                         for (let i = 0; i < 6; i++) {
                             const a = (i / 6) * Math.PI * 2 + game.frame * 0.02;
                             b.bullets.push({
@@ -1605,9 +1435,7 @@
                             });
                         }
                         break;
-
                     case 'ring':
-                        // 火焰领主：环形火球
                         for (let i = 0; i < 10; i++) {
                             const a = (i / 10) * Math.PI * 2 + game.frame * 0.015;
                             b.bullets.push({
@@ -1620,9 +1448,7 @@
                             });
                         }
                         break;
-
                     case 'cone':
-                        // 冰霜女王：扇形冰锥
                         for (let i = -4; i <= 4; i++) {
                             const a = angle + i * 0.12;
                             b.bullets.push({
@@ -1635,10 +1461,8 @@
                             });
                         }
                         break;
-
                     case 'nova':
                     default:
-                        // 虚空使者：星爆
                         for (let i = 0; i < 12; i++) {
                             const a = (i / 12) * Math.PI * 2 + game.frame * 0.025;
                             b.bullets.push({
@@ -1653,7 +1477,6 @@
                         break;
                 }
 
-                // Boss低血量额外攻击
                 if (b.hp < b.maxHp * 0.3) {
                     for (let i = 0; i < 6; i++) {
                         const a = (i / 6) * Math.PI * 2 + game.frame * 0.03;
@@ -1669,7 +1492,6 @@
                 }
             }
 
-            // Boss子弹更新
             for (let i = b.bullets.length - 1; i >= 0; i--) {
                 const bull = b.bullets[i];
                 bull.x += bull.vx;
@@ -1692,14 +1514,15 @@
         function bossDefeated() {
             const b = game.boss;
             spawnBlood(b.x + b.w / 2, b.y + b.h / 2, 80);
-            spawnParticles(b.x + b.w / 2, b.y + b.h / 2, '#ff8833', 50);
+            spawnExplosion(b.x + b.w / 2, b.y + b.h / 2, '#ff8833', 50);
             game.screenShake = 25;
             playSound('death');
             addExp(b.expReward || 50);
             game.boss = null;
             game.isBoss = false;
-            game.items.push({ type: 'heal', x: b.x + 20, y: b.y + 10, r: 12, value: 50 });
-            game.items.push({ type: 'weapon', weaponIdx: 3, x: b.x + b.w - 30, y: b.y + 10, r: 14 });
+            game.items.push({ type: 'heal', x: b.x + 20, y: b.y + 10, r: 12, value: 20 });
+            game.items.push({ type: 'weapon', weaponIdx: Math.floor(Math.random() * WEAPONS.length), x: b.x + b.w - 30, y: b
+                    .y + 10, r: 14 });
             bossHpBar.style.display = 'none';
             bossNameSpan.style.display = 'none';
             showMessage('💀 Boss击败！', `${b.type?.desc || 'Boss'} 已被消灭！`);
@@ -1731,6 +1554,232 @@
             msgOverlay.classList.add('show');
         }
 
+        // ---------- Boss绘制（同之前5种） ----------
+        function drawBoss(b, p) {
+            const type = b.type || BOSS_TYPES[0];
+            const flash = b.hitCooldown > 0;
+            const pulse = 0.95 + Math.sin(game.frame * 0.05) * 0.05;
+
+            ctx.shadowColor = type.glow || '#ff4444';
+            ctx.shadowBlur = 60 * pulse;
+            ctx.fillStyle = type.glow + '33';
+            ctx.beginPath();
+            ctx.arc(b.x + b.w / 2, b.y + b.h / 2, 60 * pulse, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = type.color || '#ff4444';
+
+            switch (type.shape) {
+                case 'beast':
+                    ctx.fillStyle = flash ? '#ffffff' : type.color;
+                    ctx.beginPath();
+                    ctx.ellipse(b.x + b.w / 2, b.y + b.h / 2 + 10, 30, 25, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillRect(b.x + 8, b.y + b.h - 10, 12, 10);
+                    ctx.fillRect(b.x + b.w - 20, b.y + b.h - 10, 12, 10);
+                    ctx.fillRect(b.x + 5, b.y + b.h - 12, 10, 12);
+                    ctx.fillRect(b.x + b.w - 15, b.y + b.h - 12, 10, 12);
+                    ctx.fillStyle = '#ff0000';
+                    ctx.shadowBlur = 20;
+                    ctx.beginPath();
+                    ctx.arc(b.x + 20, b.y + 25, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w - 20, b.y + 25, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#000';
+                    const dx = p.x + p.w / 2 - (b.x + 20);
+                    const dy = p.y + p.h / 2 - (b.y + 25);
+                    const d = Math.hypot(dx, dy);
+                    if (d > 0) {
+                        ctx.beginPath();
+                        ctx.arc(b.x + 20 + (dx / d) * 4, b.y + 25 + (dy / d) * 4, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(b.x + b.w - 20 + (dx / d) * 4, b.y + 25 + (dy / d) * 4, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.fillStyle = type.glow + '66';
+                    ctx.shadowBlur = 40;
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w / 2, b.y + 50, 12 + Math.sin(game.frame * 0.03) * 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+                case 'ghost':
+                    const alpha = 0.6 + Math.sin(game.frame * 0.04) * 0.2;
+                    ctx.globalAlpha = alpha;
+                    ctx.fillStyle = flash ? '#ffffff' : type.color;
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w / 2, b.y + b.h / 2 - 5, 28, 0, Math.PI * 2);
+                    ctx.fill();
+                    for (let i = -2; i <= 2; i++) {
+                        const wx = b.x + b.w / 2 + i * 12 + Math.sin(game.frame * 0.06 + i) * 5;
+                        const wy = b.y + b.h - 5 + Math.sin(game.frame * 0.05 + i * 2) * 8;
+                        ctx.beginPath();
+                        ctx.moveTo(b.x + b.w / 2 + i * 10, b.y + b.h - 5);
+                        ctx.quadraticCurveTo(wx + 5, wy + 10, wx, wy + 20 + Math.sin(game.frame * 0.04 + i) * 5);
+                        ctx.lineWidth = 6;
+                        ctx.strokeStyle = type.color;
+                        ctx.shadowBlur = 30;
+                        ctx.stroke();
+                    }
+                    ctx.globalAlpha = 1;
+                    ctx.fillStyle = '#ff66ff';
+                    ctx.shadowBlur = 30;
+                    ctx.beginPath();
+                    ctx.arc(b.x + 18, b.y + 25, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w - 18, b.y + 25, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#000';
+                    const dx2 = p.x + p.w / 2 - (b.x + 18);
+                    const dy2 = p.y + p.h / 2 - (b.y + 25);
+                    const d2 = Math.hypot(dx2, dy2);
+                    if (d2 > 0) {
+                        ctx.beginPath();
+                        ctx.arc(b.x + 18 + (dx2 / d2) * 5, b.y + 25 + (dy2 / d2) * 5, 5, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(b.x + b.w - 18 + (dx2 / d2) * 5, b.y + 25 + (dy2 / d2) * 5, 5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    break;
+                case 'fire':
+                    ctx.fillStyle = flash ? '#ffffff' : type.color;
+                    ctx.shadowBlur = 50;
+                    ctx.beginPath();
+                    ctx.roundRect(b.x + 10, b.y + 10, b.w - 20, b.h - 10, 10);
+                    ctx.fill();
+                    for (let i = 0; i < 7; i++) {
+                        const fx = b.x + 10 + i * 9 + Math.sin(game.frame * 0.05 + i) * 3;
+                        const fy = b.y + 5 + Math.sin(game.frame * 0.07 + i * 2) * 8;
+                        ctx.fillStyle = type.glow + '88';
+                        ctx.shadowBlur = 40;
+                        ctx.beginPath();
+                        ctx.arc(fx, fy - 5, 10 + Math.sin(game.frame * 0.06 + i) * 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.fillStyle = '#ffff00';
+                    ctx.shadowBlur = 30;
+                    ctx.beginPath();
+                    ctx.arc(b.x + 22, b.y + 30, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w - 22, b.y + 30, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#ff4400';
+                    const dx3 = p.x + p.w / 2 - (b.x + 22);
+                    const dy3 = p.y + p.h / 2 - (b.y + 30);
+                    const d3 = Math.hypot(dx3, dy3);
+                    if (d3 > 0) {
+                        ctx.beginPath();
+                        ctx.arc(b.x + 22 + (dx3 / d3) * 4, b.y + 30 + (dy3 / d3) * 4, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(b.x + b.w - 22 + (dx3 / d3) * 4, b.y + 30 + (dy3 / d3) * 4, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.fillStyle = type.glow + '55';
+                    ctx.shadowBlur = 60;
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w / 2, b.y + 55, 15 + Math.sin(game.frame * 0.05) * 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+                case 'ice':
+                    ctx.fillStyle = flash ? '#ffffff' : type.color;
+                    ctx.shadowBlur = 40;
+                    ctx.beginPath();
+                    ctx.roundRect(b.x + 15, b.y + 15, b.w - 30, b.h - 20, 8);
+                    ctx.fill();
+                    for (let i = 0; i < 5; i++) {
+                        const cx = b.x + 15 + i * 12 + Math.sin(game.frame * 0.03 + i) * 2;
+                        ctx.fillStyle = type.glow + '88';
+                        ctx.shadowBlur = 30;
+                        ctx.beginPath();
+                        ctx.moveTo(cx, b.y);
+                        ctx.lineTo(cx + 6, b.y - 12);
+                        ctx.lineTo(cx + 12, b.y);
+                        ctx.fill();
+                    }
+                    ctx.fillStyle = '#88ddff';
+                    ctx.shadowBlur = 25;
+                    ctx.beginPath();
+                    ctx.arc(b.x + 22, b.y + 28, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w - 22, b.y + 28, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#004466';
+                    const dx4 = p.x + p.w / 2 - (b.x + 22);
+                    const dy4 = p.y + p.h / 2 - (b.y + 28);
+                    const d4 = Math.hypot(dx4, dy4);
+                    if (d4 > 0) {
+                        ctx.beginPath();
+                        ctx.arc(b.x + 22 + (dx4 / d4) * 4, b.y + 28 + (dy4 / d4) * 4, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(b.x + b.w - 22 + (dx4 / d4) * 4, b.y + 28 + (dy4 / d4) * 4, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    for (let i = 0; i < 6; i++) {
+                        const fx = b.x + 10 + i * 12 + Math.sin(game.frame * 0.04 + i * 2) * 4;
+                        const fy = b.y + 40 + Math.sin(game.frame * 0.05 + i * 1.5) * 6;
+                        ctx.fillStyle = type.glow + '44';
+                        ctx.shadowBlur = 20;
+                        ctx.beginPath();
+                        ctx.arc(fx, fy, 4 + Math.sin(game.frame * 0.03 + i) * 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    break;
+                case 'void':
+                    ctx.fillStyle = flash ? '#ffffff' : type.color;
+                    ctx.shadowBlur = 50;
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w / 2, b.y + b.h / 2, 28 + Math.sin(game.frame * 0.03) * 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    for (let i = 0; i < 8; i++) {
+                        const ang = i / 8 * Math.PI * 2 + game.frame * 0.02;
+                        const len = 20 + Math.sin(game.frame * 0.04 + i * 1.5) * 10;
+                        ctx.fillStyle = type.glow + '66';
+                        ctx.shadowBlur = 40;
+                        ctx.beginPath();
+                        ctx.moveTo(b.x + b.w / 2 + Math.cos(ang) * 28, b.y + b.h / 2 + Math.sin(ang) * 28);
+                        ctx.quadraticCurveTo(
+                            b.x + b.w / 2 + Math.cos(ang + 0.2) * (28 + len),
+                            b.y + b.h / 2 + Math.sin(ang + 0.2) * (28 + len),
+                            b.x + b.w / 2 + Math.cos(ang + 0.1) * (28 + len * 1.2),
+                            b.y + b.h / 2 + Math.sin(ang + 0.1) * (28 + len * 1.2)
+                        );
+                        ctx.lineWidth = 6;
+                        ctx.stroke();
+                    }
+                    ctx.fillStyle = '#ff44ff';
+                    ctx.shadowBlur = 40;
+                    ctx.beginPath();
+                    ctx.arc(b.x + 20, b.y + 25, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.w - 20, b.y + 25, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#220044';
+                    const dx5 = p.x + p.w / 2 - (b.x + 20);
+                    const dy5 = p.y + p.h / 2 - (b.y + 25);
+                    const d5 = Math.hypot(dx5, dy5);
+                    if (d5 > 0) {
+                        ctx.beginPath();
+                        ctx.arc(b.x + 20 + (dx5 / d5) * 5, b.y + 25 + (dy5 / d5) * 5, 5, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(b.x + b.w - 20 + (dx5 / d5) * 5, b.y + 25 + (dy5 / d5) * 5, 5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    break;
+            }
+            ctx.shadowBlur = 0;
+        }
+
         // ---------- 绘制 ----------
         function draw() {
             const w = game.world % 3;
@@ -1739,14 +1788,12 @@
 
             ctx.clearRect(0, 0, W, H);
 
-            // 背景（适配地图宽度）
             const grad = ctx.createLinearGradient(0, 0, 0, H);
             grad.addColorStop(0, theme.bg1);
             grad.addColorStop(1, theme.bg2);
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, W, H);
 
-            // 视口偏移（地图大于屏幕时跟随玩家）
             let offsetX = 0;
             if (game.mapWidth > W) {
                 const p = game.player;
@@ -1756,7 +1803,6 @@
             ctx.save();
             ctx.translate(-offsetX, 0);
 
-            // 恐怖特效
             if (scary >= 1) {
                 const fog = ctx.createRadialGradient(W / 2 + offsetX, H / 2, 30, W / 2 + offsetX, H / 2, 500);
                 fog.addColorStop(0, 'rgba(0,0,0,0)');
@@ -1782,7 +1828,6 @@
                 }
             }
 
-            // 平台
             for (const plat of game.platforms) {
                 ctx.fillStyle = theme.plat;
                 ctx.shadowColor = scary >= 2 ? '#ff333355' : 'rgba(0,0,0,0.3)';
@@ -1798,7 +1843,6 @@
             }
             ctx.shadowBlur = 0;
 
-            // 出口
             const ex = game.exit.x,
                 ey = game.exit.y;
             const canEnter = game.keysCollected >= game.totalKeys;
@@ -1832,7 +1876,6 @@
             }
             ctx.shadowBlur = 0;
 
-            // 钥匙
             for (const key of game.keys) {
                 if (key.collected) continue;
                 const bob = Math.sin(game.frame * 0.04 + key.x) * 3;
@@ -1854,7 +1897,6 @@
             }
             ctx.shadowBlur = 0;
 
-            // 物品
             for (const item of game.items) {
                 if (item.type === 'heal') {
                     const bob = Math.sin(game.frame * 0.04 + item.x) * 3;
@@ -1867,7 +1909,7 @@
                     ctx.shadowBlur = 0;
                     ctx.fillStyle = '#fff';
                     ctx.font = '18px sans-serif';
-                    ctx.fillText('+', item.x - 6, item.y + bob + 7);
+                    ctx.fillText('💚', item.x - 8, item.y + bob + 7);
                 } else if (item.type === 'weapon') {
                     const bob = Math.sin(game.frame * 0.05 + item.x * 1.2) * 4;
                     ctx.shadowColor = '#ffaa44';
@@ -1884,7 +1926,6 @@
             }
             ctx.shadowBlur = 0;
 
-            // 敌人
             for (const e of game.enemies) {
                 if (e.y > game.mapHeight + 50) continue;
                 const flash = e.hitFlash > 0;
@@ -1923,17 +1964,14 @@
             }
             ctx.shadowBlur = 0;
 
-            // Boss绘制
             if (game.isBoss && game.boss && game.boss.hp > 0) {
                 drawBoss(game.boss, game.player);
-                // Boss血条（低血量闪烁）
                 if (game.boss.hp < game.boss.maxHp * 0.3 && Math.floor(game.frame / 8) % 2 === 0) {
                     ctx.fillStyle = 'rgba(255,0,0,0.1)';
                     ctx.fillRect(offsetX, 0, W, H);
                 }
             }
 
-            // 子弹
             for (const bull of game.bullets) {
                 ctx.shadowColor = bull.color || '#6bcbff';
                 ctx.shadowBlur = 30;
@@ -1946,10 +1984,25 @@
                 ctx.beginPath();
                 ctx.arc(bull.x - 2, bull.y - 2, bull.r * 0.3, 0, Math.PI * 2);
                 ctx.fill();
+                // 穿透子弹特效
+                if (bull.type === 'pierce') {
+                    ctx.shadowBlur = 20;
+                    ctx.strokeStyle = '#ff66ff66';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(bull.x, bull.y, bull.r + 4, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+                if (bull.type === 'explode') {
+                    ctx.shadowBlur = 40;
+                    ctx.fillStyle = '#ff883344';
+                    ctx.beginPath();
+                    ctx.arc(bull.x, bull.y, bull.r + 6, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             }
             ctx.shadowBlur = 0;
 
-            // 玩家
             const p = game.player;
             for (const t of p.trail) {
                 ctx.globalAlpha = t.life / 20 * 0.2;
@@ -2044,7 +2097,6 @@
             ctx.shadowBlur = 0;
             ctx.globalAlpha = 1;
 
-            // 粒子
             for (const pt of game.particles) {
                 ctx.shadowBlur = 20;
                 ctx.shadowColor = pt.color;
@@ -2059,7 +2111,6 @@
 
             ctx.restore();
 
-            // 屏幕震动（在视口之后）
             if (game.screenShake > 0) {
                 const shake = game.screenShake * 0.5;
                 ctx.save();
@@ -2069,7 +2120,6 @@
                 ctx.restore();
             }
 
-            // HUD
             ctx.fillStyle = 'rgba(255,255,255,0.08)';
             ctx.font = '14px sans-serif';
             const expPct = Math.floor((exp / expToNext) * 100);
@@ -2079,7 +2129,6 @@
                 ctx.fillStyle = 'rgba(255,0,0,0.12)';
                 ctx.fillRect(0, 0, W, H);
             }
-            // Boss名字在顶部
             if (game.isBoss && game.boss && game.boss.hp > 0 && game.bossType) {
                 ctx.fillStyle = '#ff444466';
                 ctx.font = '18px sans-serif';
@@ -2186,6 +2235,17 @@
 
         // ---------- 主循环 ----------
         function gameLoop() {
+            // 升级提示淡出
+            if (levelUpTimer > 0) {
+                levelUpTimer--;
+                if (levelUpTimer < 30) {
+                    levelUpMsg.style.opacity = levelUpTimer / 30;
+                }
+                if (levelUpTimer <= 0) {
+                    levelUpMsg.classList.remove('show');
+                }
+            }
+
             if (game.running && !game.gameOver && !game.levelComplete) {
                 game.frame++;
                 updatePlayer();
