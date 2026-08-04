@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8" />
-    <title>👻 暗影勇者 · 移动版</title>
+    <title>👻 暗影勇者 · 特色怪物</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <style>
         * {
@@ -95,6 +95,10 @@
             padding: 2px 12px;
             border-radius: 30px;
             border: 1px solid #44ff8866;
+            cursor: pointer;
+        }
+        #skillDisplay:hover {
+            background: #1a2a22;
         }
         #levelDisplay {
             color: #f7d44a;
@@ -127,7 +131,7 @@
             width: 100%;
             background: linear-gradient(90deg, #ff3333, #ff8833);
             border-radius: 10px;
-            transition: width 0.15s;
+            transition: width .15s;
         }
         .btn {
             background: #2a1a3a;
@@ -138,7 +142,7 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 14px;
-            transition: 0.2s;
+            transition: .2s;
             touch-action: manipulation;
         }
         .btn:hover {
@@ -157,7 +161,7 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 14px;
-            transition: 0.2s;
+            transition: .2s;
             touch-action: manipulation;
         }
         .btn-stat:hover {
@@ -194,7 +198,7 @@
             font-size: 48px;
             font-weight: bold;
             text-shadow: 0 0 80px #ff000066;
-            animation: pop 0.5s ease;
+            animation: pop .5s ease;
             text-align: center;
             line-height: 1.4;
             padding: 20px;
@@ -208,7 +212,7 @@
         }
         @keyframes pop {
             0% {
-                transform: scale(0.2) rotate(-10deg);
+                transform: scale(.2) rotate(-10deg);
                 opacity: 0;
             }
             100% {
@@ -259,25 +263,25 @@
             color: #6bcbff;
             border: 1px solid #6bcbff;
             border-radius: 30px;
-            padding: 0px 14px;
+            padding: 0 14px;
             font-weight: bold;
             cursor: pointer;
             font-size: 14px;
-            transition: 0.2s;
+            transition: .2s;
             touch-action: manipulation;
         }
         #statPanel .stat-row button:hover {
             background: #3a4a6a;
         }
         #statPanel .stat-row button:disabled {
-            opacity: 0.3;
+            opacity: .3;
             cursor: not-allowed;
         }
         #statPanel .points-remaining {
             text-align: center;
             color: #44ff88;
             font-size: 18px;
-            margin: 10px 0 8px 0;
+            margin: 10px 0 8px;
             padding: 6px;
             background: #0a1a12;
             border-radius: 10px;
@@ -285,7 +289,7 @@
         }
         #statPanel .close-btn {
             display: block;
-            margin: 10px auto 0 auto;
+            margin: 10px auto 0;
             background: #3a1a1a;
             color: #ff6666;
             border: 1px solid #ff6666;
@@ -294,7 +298,7 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 14px;
-            transition: 0.2s;
+            transition: .2s;
             touch-action: manipulation;
         }
         #statPanel .close-btn:hover {
@@ -314,12 +318,11 @@
             pointer-events: none;
             z-index: 15;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity .3s;
         }
         #levelUpMsg.show {
             opacity: 1;
         }
-        /* 移动端控制按钮 - 浮动在canvas上 */
         #mobileControls {
             position: absolute;
             bottom: 30px;
@@ -344,16 +347,16 @@
             width: 140px;
             height: 140px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.08);
-            border: 2px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, .08);
+            border: 2px solid rgba(255, 255, 255, .15);
         }
         #joystickKnob {
             position: absolute;
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: rgba(100, 200, 255, 0.4);
-            border: 2px solid rgba(100, 200, 255, 0.6);
+            background: rgba(100, 200, 255, .4);
+            border: 2px solid rgba(100, 200, 255, .6);
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -365,12 +368,12 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: rgba(255, 100, 100, 0.15);
-            border: 2px solid rgba(255, 100, 100, 0.3);
+            background: rgba(255, 100, 100, .15);
+            border: 2px solid rgba(255, 100, 100, .3);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, .4);
             font-size: 14px;
             font-weight: bold;
             pointer-events: auto;
@@ -382,9 +385,9 @@
             width: 70px;
             height: 70px;
             border-radius: 50%;
-            background: rgba(155, 107, 255, 0.25);
-            border: 2px solid rgba(155, 107, 255, 0.4);
-            color: rgba(255, 255, 255, 0.5);
+            background: rgba(155, 107, 255, .25);
+            border: 2px solid rgba(155, 107, 255, .4);
+            color: rgba(255, 255, 255, .5);
             font-size: 16px;
             font-weight: bold;
             display: flex;
@@ -400,9 +403,9 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: rgba(255, 170, 68, 0.2);
-            border: 2px solid rgba(255, 170, 68, 0.3);
-            color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 170, 68, .2);
+            border: 2px solid rgba(255, 170, 68, .3);
+            color: rgba(255, 255, 255, .4);
             font-size: 18px;
             display: flex;
             align-items: center;
@@ -417,9 +420,9 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: rgba(68, 255, 136, 0.2);
-            border: 2px solid rgba(68, 255, 136, 0.3);
-            color: rgba(255, 255, 255, 0.4);
+            background: rgba(68, 255, 136, .2);
+            border: 2px solid rgba(68, 255, 136, .3);
+            color: rgba(255, 255, 255, .4);
             font-size: 16px;
             display: flex;
             align-items: center;
@@ -427,7 +430,7 @@
             pointer-events: auto;
             touch-action: manipulation;
         }
-        @media (max-width: 760px) {
+        @media(max-width:760px) {
             #wrapper {
                 padding: 10px;
             }
@@ -466,16 +469,13 @@
             #mobileControls.active {
                 display: block !important;
             }
-            .btn {
-                font-size: 12px;
-                padding: 3px 12px;
-            }
+            .btn,
             .btn-stat {
                 font-size: 12px;
                 padding: 3px 12px;
             }
         }
-        @media (pointer: coarse) {
+        @media(pointer:coarse) {
             #mobileControls.active {
                 display: block !important;
             }
@@ -483,7 +483,7 @@
                 display: none;
             }
         }
-        @media (pointer: fine) {
+        @media(pointer:fine) {
             #mobileControls.active {
                 display: none !important;
             }
@@ -493,54 +493,291 @@
 <body>
     <div id="wrapper">
         <canvas id="gameCanvas" width="800" height="550"></canvas>
-        <div id="msgOverlay">
-            <div id="msgText">🎉<div id="msgSub"></div></div>
-        </div>
+        <div id="msgOverlay"><div id="msgText">🎉<div id="msgSub"></div></div></div>
         <div id="levelUpMsg">⬆ Lv.1</div>
         <div id="mobileControls">
-            <div id="joystickZone" class="ctrl-zone">
-                <div id="joystickKnob"></div>
-            </div>
+            <div id="joystickZone" class="ctrl-zone"><div id="joystickKnob"></div></div>
             <div id="shootZone" class="ctrl-zone">🔫</div>
             <div id="jumpBtn" class="ctrl-zone">⬆</div>
             <div id="mobileWeaponBtn" class="ctrl-zone">⚔</div>
             <div id="mobileSkillBtn" class="ctrl-zone">⏳</div>
         </div>
         <div id="statPanel">
-            <h3 id="statTitle">📊 属性分配</h3>
+            <h3>📊 属性分配</h3>
             <div class="points-remaining" id="pointsRemaining">剩余: 0</div>
-            <div class="stat-row"><span class="stat-name" id="sHp">❤️ 生命</span><span class="stat-val" id="statHp">100</span><button onclick="upgradeStat('maxHp')">+</button></div>
-            <div class="stat-row"><span class="stat-name" id="sSpeed">🏃 速度</span><span class="stat-val" id="statSpeed">4.2</span><button onclick="upgradeStat('speed')">+</button></div>
-            <div class="stat-row"><span class="stat-name" id="sJump">🦘 跳跃</span><span class="stat-val" id="statJump">10.8</span><button onclick="upgradeStat('jumpPower')">+</button></div>
-            <div class="stat-row"><span class="stat-name" id="sDamage">⚔️ 伤害</span><span class="stat-val" id="statDamage">+0</span><button onclick="upgradeStat('damageBonus')">+</button></div>
-            <div class="stat-row"><span class="stat-name" id="sFireRate">🔫 射速</span><span class="stat-val" id="statFireRate">1.0</span><button onclick="upgradeStat('fireRate')">+</button></div>
-            <button class="close-btn" onclick="toggleStatPanel()" id="statClose">✕ 关闭</button>
+            <div class="stat-row"><span class="stat-name">❤️ 生命</span><span class="stat-val" id="statHp">100</span><button onclick="upgradeStat('maxHp')">+</button></div>
+            <div class="stat-row"><span class="stat-name">🏃 速度</span><span class="stat-val" id="statSpeed">4.2</span><button onclick="upgradeStat('speed')">+</button></div>
+            <div class="stat-row"><span class="stat-name">🦘 跳跃</span><span class="stat-val" id="statJump">10.8</span><button onclick="upgradeStat('jumpPower')">+</button></div>
+            <div class="stat-row"><span class="stat-name">⚔️ 伤害</span><span class="stat-val" id="statDamage">+0</span><button onclick="upgradeStat('damageBonus')">+</button></div>
+            <div class="stat-row"><span class="stat-name">🔫 射速</span><span class="stat-val" id="statFireRate">1.0</span><button onclick="upgradeStat('fireRate')">+</button></div>
+            <button class="close-btn" onclick="toggleStatPanel()">✕ 关闭</button>
         </div>
         <div id="ui">
             <div id="uiLeft">
-                <span><span class="label" id="lHp">❤️</span> <span id="hpDisplay">100</span></span>
-                <span><span class="label" id="lLevel">⭐</span> <span id="levelDisplay">Lv.1</span></span>
-                <span><span class="label" id="lWorld">🌍</span> <span id="worldDisplay">1-1</span></span>
-                <span><span class="label" id="lKey">🔑</span> <span id="keyDisplay">0 / 0</span></span>
-                <span><span class="label" id="lJump">🦘</span> <span id="jumpDisplay">3</span></span>
-                <span><span class="label" id="lWeapon">⚔️</span> <span id="weaponDisplay">普通</span></span>
-                <span id="skillDisplay">⏳ 技能: 就绪</span>
+                <span><span class="label">❤️</span> <span id="hpDisplay">100</span></span>
+                <span><span class="label">⭐</span> <span id="levelDisplay">Lv.1</span></span>
+                <span><span class="label">🌍</span> <span id="worldDisplay">1-1</span></span>
+                <span><span class="label">🔑</span> <span id="keyDisplay">0 / 0</span></span>
+                <span><span class="label">🦘</span> <span id="jumpDisplay">3</span></span>
+                <span><span class="label">⚔️</span> <span id="weaponDisplay">普通</span></span>
+                <span id="skillDisplay">⏳ 技能: 凝滞</span>
                 <span id="bossNameDisplay">👹 Boss</span>
                 <span id="bossHpBar"><span class="bar"><span class="fill" id="bossFill"></span></span></span>
                 <button class="btn" id="infiniteToggle">♾️ 无尽</button>
                 <button class="btn-stat" id="statBtn">📊 属性</button>
                 <button class="btn" id="langToggle">🌐 EN</button>
             </div>
-            <span id="hint">🖱️射击 &nbsp;|&nbsp; ← → 移动 &nbsp;|&nbsp; 空格跳 &nbsp;|&nbsp; Q切武器 &nbsp;|&nbsp; E技能 &nbsp;|&nbsp; F属性</span>
+            <span id="hint">🖱️射击 | ← → 移动 | 空格跳 | Q切武器 | E切换技能 | F属性</span>
         </div>
     </div>
 
     <script>
         // ================================================================
-        //  👻 暗影勇者 · 移动版 + 双语
-        //  ================================================================
+        //  👻 暗影勇者 · 特色怪物最终版
+        //  8种独特怪物 + 6种地形 + 4技能 + 5Boss + 无尽模式
+        // ================================================================
 
-        // ---------- 多语言文本 ----------
+        // ----- 常量与UI -----
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let W = 800,
+            H = 550;
+
+        // UI引用
+        const hpSpan = document.getElementById('hpDisplay');
+        const worldSpan = document.getElementById('worldDisplay');
+        const keySpan = document.getElementById('keyDisplay');
+        const jumpSpan = document.getElementById('jumpDisplay');
+        const weaponSpan = document.getElementById('weaponDisplay');
+        const skillSpan = document.getElementById('skillDisplay');
+        const levelSpan = document.getElementById('levelDisplay');
+        const bossNameSpan = document.getElementById('bossNameDisplay');
+        const bossHpBar = document.getElementById('bossHpBar');
+        const bossFill = document.getElementById('bossFill');
+        const msgOverlay = document.getElementById('msgOverlay');
+        const msgText = document.getElementById('msgText');
+        const msgSub = document.getElementById('msgSub');
+        const infiniteBtn = document.getElementById('infiniteToggle');
+        const statBtn = document.getElementById('statBtn');
+        const statPanel = document.getElementById('statPanel');
+        const pointsRemaining = document.getElementById('pointsRemaining');
+        const levelUpMsg = document.getElementById('levelUpMsg');
+
+        const GRAVITY = 0.55;
+        const FRICTION = 0.80;
+
+        // ----- 世界主题 -----
+        const WORLDS = [
+            { name: '翡翠森林', bg1: '#1a3a2a', bg2: '#2a5a3a', plat: '#4a8a4a', scary: 0 },
+            { name: '暗影沼泽', bg1: '#0a0a1a', bg2: '#1a0a2a', plat: '#2a1a3a', scary: 1 },
+            { name: '地狱深渊', bg1: '#0a0000', bg2: '#1a0000', plat: '#3a0a0a', scary: 2 }
+        ];
+
+        // ----- 6种武器 -----
+        const WEAPONS = [
+            { name: '普通', damage: 1, speed: 9, color: '#6bcbff', spread: 1, icon: '🔫', type: 'normal' },
+            { name: '速射', damage: 1, speed: 14, color: '#ffaa44', spread: 1, icon: '⚡', type: 'normal' },
+            { name: '重炮', damage: 3, speed: 5, color: '#ff4444', spread: 1, icon: '💥', type: 'normal' },
+            { name: '散射', damage: 1, speed: 7, color: '#44ff88', spread: 3, icon: '🔱', type: 'normal' },
+            { name: '穿透', damage: 2, speed: 10, color: '#ff66ff', spread: 1, icon: '➡️', type: 'pierce' },
+            { name: '爆炸', damage: 2, speed: 6, color: '#ff8833', spread: 1, icon: '💣', type: 'explode' }
+        ];
+
+        // ----- 8种特色怪物（完全重做） -----
+        const MONSTER_TYPES = [{
+            id: 'slime',
+            name: '腐化史莱姆',
+            color: '#44aa44',
+            glow: '#88ff88',
+            size: 24,
+            speed: 0.6,
+            hp: 4,
+            damage: 8,
+            exp: 15,
+            aggro: 120,
+            split: true,
+            ranged: false,
+            stealth: false,
+            explode: false,
+            slow: false,
+            desc: '跳着移动，死亡分裂'
+        }, {
+            id: 'frost',
+            name: '冰霜行者',
+            color: '#44ccff',
+            glow: '#88ddff',
+            size: 22,
+            speed: 0.7,
+            hp: 5,
+            damage: 14,
+            exp: 18,
+            aggro: 180,
+            split: false,
+            ranged: false,
+            stealth: false,
+            explode: false,
+            slow: true,
+            desc: '近战攻击，附带减速'
+        }, {
+            id: 'assassin',
+            name: '暗影刺客',
+            color: '#6633cc',
+            glow: '#9966ff',
+            size: 20,
+            speed: 1.8,
+            hp: 3,
+            damage: 25,
+            exp: 22,
+            aggro: 300,
+            split: false,
+            ranged: false,
+            stealth: true,
+            explode: false,
+            slow: false,
+            desc: '隐身闪现，背刺攻击'
+        }, {
+            id: 'imp',
+            name: '烈焰小鬼',
+            color: '#ff6622',
+            glow: '#ff8844',
+            size: 18,
+            speed: 0.8,
+            hp: 3,
+            damage: 12,
+            exp: 16,
+            aggro: 200,
+            split: false,
+            ranged: true,
+            stealth: false,
+            explode: false,
+            slow: false,
+            desc: '远程投掷火球'
+        }, {
+            id: 'bomber',
+            name: '毒爆虫',
+            color: '#88cc33',
+            glow: '#aadd44',
+            size: 22,
+            speed: 0.9,
+            hp: 3,
+            damage: 20,
+            exp: 20,
+            aggro: 100,
+            split: false,
+            ranged: false,
+            stealth: false,
+            explode: true,
+            slow: false,
+            desc: '死亡时爆炸，喷出毒液'
+        }, {
+            id: 'crystal',
+            name: '水晶构造体',
+            color: '#aa66ff',
+            glow: '#cc88ff',
+            size: 24,
+            speed: 0.5,
+            hp: 6,
+            damage: 10,
+            exp: 20,
+            aggro: 250,
+            split: false,
+            ranged: true,
+            stealth: false,
+            explode: false,
+            slow: false,
+            desc: '发射追踪光弹'
+        }, {
+            id: 'skeleton',
+            name: '枯骨守卫',
+            color: '#ccbb88',
+            glow: '#eeddbb',
+            size: 26,
+            speed: 0.5,
+            hp: 7,
+            damage: 15,
+            exp: 20,
+            aggro: 200,
+            split: false,
+            ranged: false,
+            stealth: false,
+            explode: false,
+            slow: false,
+            desc: '防御姿态，硬直低'
+        }, {
+            id: 'wraith',
+            name: '迷雾幽灵',
+            color: '#ccccdd',
+            glow: '#ffffff',
+            size: 20,
+            speed: 0.8,
+            hp: 4,
+            damage: 18,
+            exp: 18,
+            aggro: 220,
+            split: false,
+            ranged: true,
+            stealth: false,
+            explode: false,
+            slow: false,
+            desc: '远程散射暗影弹'
+        }];
+
+        // ----- 5种Boss -----
+        const BOSS_TYPES = [
+            { id: '腐化巨兽', color: '#44aa44', glow: '#88ff88', shape: 'beast', desc: '腐化巨兽', hpMult: 1.0, speed: 0.6,
+                bulletColor: '#44ff44', attackType: 'spray' },
+            { id: '暗影幽灵', color: '#aa44ff', glow: '#cc88ff', shape: 'ghost', desc: '暗影幽灵', hpMult: 0.8, speed: 1.2,
+                bulletColor: '#cc66ff', attackType: 'scatter' },
+            { id: '火焰领主', color: '#ff6622', glow: '#ff8844', shape: 'fire', desc: '火焰领主', hpMult: 1.2, speed: 0.5,
+                bulletColor: '#ff6633', attackType: 'ring' },
+            { id: '冰霜女王', color: '#44ccff', glow: '#88ddff', shape: 'ice', desc: '冰霜女王', hpMult: 0.9, speed: 0.7,
+                bulletColor: '#66ddff', attackType: 'cone' },
+            { id: '虚空使者', color: '#8833cc', glow: '#bb66ff', shape: 'void', desc: '虚空使者', hpMult: 1.4, speed: 0.4,
+                bulletColor: '#aa44ff', attackType: 'nova' }
+        ];
+
+        // ----- 4种技能 -----
+        const SKILLS = [
+            { id: 0, name: '凝滞', cooldown: 480, duration: 90, icon: '⏳' },
+            { id: 1, name: '突袭', cooldown: 360, duration: 10, icon: '⚡' },
+            { id: 2, name: '治疗波', cooldown: 600, duration: 20, icon: '💚' },
+            { id: 3, name: '雷电风暴', cooldown: 720, duration: 60, icon: '🌩️' },
+        ];
+        let currentSkill = 0;
+
+        // ----- 6种地形模板（保持不变） -----
+        const TERRAIN_TEMPLATES = [
+            function(seed) { const p = []; for (let i = 0; i < 6; i++) { const x = 80 + i * 100 + Math.sin(seed + i * 0.7) *
+                    25; const y = 420 - i * 45 - Math.sin(seed + i * 1.2) * 10; const w = 80 + Math.sin(seed * 2 + i * 1.5) *
+                    20 + 40; p.push({ x: Math.max(10, Math.min(W - 80, x)), y: Math.max(80, Math.min(440, y)), w: Math.max(
+                        60, Math.min(120, w)), h: 14 }); } return p; },
+            function(seed) { const p = []; for (let i = 0; i < 7; i++) { const t = i / 6; const x = 30 + i * 115 + Math
+                    .sin(seed + i * 0.5) * 20; const y = 400 - 80 * Math.sin(t * Math.PI) - Math.sin(seed + i * 1.8) *
+                    15; const w = 70 + Math.sin(seed * 1.5 + i * 2) * 20 + 30; p.push({ x: Math.max(10, Math.min(W -
+                        60, x)), y: Math.max(60, Math.min(440, y)), w: Math.max(50, Math.min(110, w)), h: 14 }); }
+                return p; },
+            function(seed) { const p = []; for (let i = 0; i < 8; i++) { const x = 40 + i * 85 + Math.sin(seed * 2 + i *
+                    1.3) * 40; const y = 120 + i * 35 + Math.sin(seed + i * 2.1) * 35; const w = 60 + Math.sin(seed *
+                    3 + i * 1.7) * 25 + 30; p.push({ x: Math.max(10, Math.min(W - 60, x)), y: Math.max(40, Math.min(
+                        440, y)), w: Math.max(50, Math.min(110, w)), h: 14 }); } return p; },
+            function(seed) { const p = []; for (let i = 0; i < 5; i++) { const x = 40 + i * 140 + Math.sin(seed + i *
+                    0.6) * 20; const y = 380 + Math.sin(seed * 1.5 + i * 2) * 20; const w = 80 + Math.sin(seed * 2 + i *
+                    1.4) * 20; p.push({ x: Math.max(10, Math.min(W - 70, x)), y: Math.max(340, Math.min(440, y)), w: Math
+                        .max(60, Math.min(120, w)), h: 14 }); } for (let i = 0; i < 4; i++) { const x = 80 + i * 160 +
+                    Math.sin(seed + i * 0.8) * 30; const y = 140 + Math.sin(seed * 1.2 + i * 2.2) * 25; const w = 70 +
+                    Math.sin(seed + i * 1.8) * 20; p.push({ x: Math.max(10, Math.min(W - 60, x)), y: Math.max(60, Math
+                        .min(200, y)), w: Math.max(50, Math.min(110, w)), h: 14 }); } return p; },
+            function(seed) { const p = []; for (let i = 0; i < 8; i++) { const x = 20 + i * 85 + Math.sin(seed + i *
+                    0.3) * 10; const y = 350 + Math.sin(seed * 1.5 + i * 0.8) * 30; const w = 50 + Math.sin(seed * 2 + i *
+                    1.2) * 15 + 30; p.push({ x: Math.max(10, Math.min(W - 50, x)), y: Math.max(200, Math.min(440, y)),
+                        w: Math.max(40, Math.min(80, w)), h: 14 }); } return p; },
+            function(seed) { const p = []; for (let i = 0; i < 7; i++) { const x = 30 + i * 95 + Math.sin(seed + i *
+                    0.4) * 15; const y = 420 - i * 40 + Math.sin(seed * 1.8 + i * 1.5) * 12; const w = 70 + Math.sin(
+                    seed * 2.5 + i * 1.3) * 15 + 30; p.push({ x: Math.max(10, Math.min(W - 60, x)), y: Math.max(100,
+                        Math.min(440, y)), w: Math.max(50, Math.min(110, w)), h: 14 }); } return p; }
+        ];
+
+        // ----- 多语言（简化） -----
         const LANG = {
             zh: {
                 hp: '❤️',
@@ -549,9 +786,6 @@
                 key: '🔑',
                 jump: '🦘',
                 weapon: '⚔️',
-                skillReady: '⏳ 技能: 就绪',
-                skillActive: '⏳ 技能: 激活中',
-                skillCD: '⏳ 技能: {s}s',
                 boss: '👹 Boss',
                 statTitle: '📊 属性分配',
                 statHp: '❤️ 生命',
@@ -565,7 +799,7 @@
                 infiniteOff: '♾️ 无尽 (关)',
                 statBtn: '📊 属性',
                 langBtn: '🌐 EN',
-                hint: '🖱️射击 | ← → 移动 | 空格跳 | Q切武器 | E技能 | F属性',
+                hint: '🖱️射击 | ← → 移动 | 空格跳 | Q切武器 | E切换技能 | F属性',
                 levelUp: '⬆ Lv.{lv}',
                 gameOver: '💀 死亡',
                 restart: '按 空格键 重新开始',
@@ -577,6 +811,7 @@
                 levelCompleteSub: '进入第 {n} 关',
                 infiniteStart: '♾️ 无尽模式已开启',
                 infiniteSub: '每5关随机Boss，地图越来越大！',
+                skillNames: ['凝滞', '突袭', '治疗波', '雷电风暴'],
             },
             en: {
                 hp: '❤️',
@@ -585,9 +820,6 @@
                 key: '🔑',
                 jump: '🦘',
                 weapon: '⚔️',
-                skillReady: '⏳ Skill: Ready',
-                skillActive: '⏳ Skill: Active',
-                skillCD: '⏳ Skill: {s}s',
                 boss: '👹 Boss',
                 statTitle: '📊 Stats',
                 statHp: '❤️ HP',
@@ -613,9 +845,9 @@
                 levelCompleteSub: 'Enter Level {n}',
                 infiniteStart: '♾️ Infinite Mode ON',
                 infiniteSub: 'Random Boss every 5 levels, maps grow!',
+                skillNames: ['Time Stop', 'Shadow Strike', 'Heal Wave', 'Thunder Storm'],
             }
         };
-
         let currentLang = 'zh';
 
         function t(key, params) {
@@ -628,131 +860,12 @@
             return text;
         }
 
-        function updateAllUI() {
-            // 顶部标签
-            document.getElementById('lHp').textContent = t('hp');
-            document.getElementById('lLevel').textContent = t('level');
-            document.getElementById('lWorld').textContent = t('world');
-            document.getElementById('lKey').textContent = t('key');
-            document.getElementById('lJump').textContent = t('jump');
-            document.getElementById('lWeapon').textContent = t('weapon');
-            document.getElementById('statTitle').textContent = t('statTitle');
-            document.getElementById('sHp').textContent = t('statHp');
-            document.getElementById('sSpeed').textContent = t('statSpeed');
-            document.getElementById('sJump').textContent = t('statJump');
-            document.getElementById('sDamage').textContent = t('statDamage');
-            document.getElementById('sFireRate').textContent = t('statFireRate');
-            document.getElementById('statClose').textContent = t('statClose');
-            document.getElementById('statBtn').textContent = t('statBtn');
-            document.getElementById('langToggle').textContent = currentLang === 'zh' ? '🌐 EN' : '🌐 中文';
-            document.getElementById('hint').textContent = t('hint');
-
-            const infBtn = document.getElementById('infiniteToggle');
-            if (game && game.infiniteMode) {
-                infBtn.textContent = t('infiniteOn');
-            } else {
-                infBtn.textContent = t('infiniteOff');
-            }
-
-            // 更新技能显示
-            updateSkillUI();
-            // 更新统计面板
-            updateStatUI();
-            // 更新世界显示
-            updateWorldUI();
+        function getSkillName(idx) {
+            const names = LANG[currentLang].skillNames || ['凝滞', '突袭', '治疗波', '雷电风暴'];
+            return names[idx] || names[0];
         }
 
-        function updateSkillUI() {
-            const el = document.getElementById('skillDisplay');
-            if (!game) return;
-            if (game.skillCooldown > 0) {
-                const cdSec = Math.ceil(game.skillCooldown / 60);
-                el.textContent = t('skillCD', { s: cdSec });
-                el.style.color = '#ff6666';
-            } else if (game.skillActive) {
-                el.textContent = t('skillActive');
-                el.style.color = '#44ff88';
-            } else {
-                el.textContent = t('skillReady');
-                el.style.color = '#44ff88';
-            }
-        }
-
-        function updateWorldUI() {
-            const el = document.getElementById('worldDisplay');
-            if (!game) return;
-            const displayLvl = game.level + 1 + game.totalCycles * 5;
-            el.textContent = `${displayLvl}`;
-        }
-
-        // 语言切换
-        document.getElementById('langToggle').addEventListener('click', function() {
-            currentLang = currentLang === 'zh' ? 'en' : 'zh';
-            updateAllUI();
-            // 重写当前显示的消息
-            if (game && game.running === false && game.gameOver) {
-                showMessage(t('gameOver'), t('restart'));
-            }
-        });
-
-        // ---------- 其余核心代码 (与之前相同，但整合了语言和移动端) ----------
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        let W = 800,
-            H = 550;
-
-        // UI元素 (部分已经通过ID引用)
-        const hpSpan = document.getElementById('hpDisplay');
-        const worldSpan = document.getElementById('worldDisplay');
-        const keySpan = document.getElementById('keyDisplay');
-        const jumpSpan = document.getElementById('jumpDisplay');
-        const weaponSpan = document.getElementById('weaponDisplay');
-        const skillSpan = document.getElementById('skillDisplay');
-        const levelSpan = document.getElementById('levelDisplay');
-        const bossNameSpan = document.getElementById('bossNameDisplay');
-        const bossHpBar = document.getElementById('bossHpBar');
-        const bossFill = document.getElementById('bossFill');
-        const msgOverlay = document.getElementById('msgOverlay');
-        const msgText = document.getElementById('msgText');
-        const msgSub = document.getElementById('msgSub');
-        const infiniteBtn = document.getElementById('infiniteToggle');
-        const statBtn = document.getElementById('statBtn');
-        const statPanel = document.getElementById('statPanel');
-        const pointsRemaining = document.getElementById('pointsRemaining');
-        const levelUpMsg = document.getElementById('levelUpMsg');
-
-        const GRAVITY = 0.55;
-        const FRICTION = 0.80;
-
-        const WORLDS = [
-            { name: '翡翠森林', bg1: '#1a3a2a', bg2: '#2a5a3a', plat: '#4a8a4a', scary: 0 },
-            { name: '暗影沼泽', bg1: '#0a0a1a', bg2: '#1a0a2a', plat: '#2a1a3a', scary: 1 },
-            { name: '地狱深渊', bg1: '#0a0000', bg2: '#1a0000', plat: '#3a0a0a', scary: 2 }
-        ];
-
-        const WEAPONS = [
-            { name: '普通', damage: 1, speed: 9, color: '#6bcbff', spread: 1, icon: '🔫', type: 'normal' },
-            { name: '速射', damage: 1, speed: 14, color: '#ffaa44', spread: 1, icon: '⚡', type: 'normal' },
-            { name: '重炮', damage: 3, speed: 5, color: '#ff4444', spread: 1, icon: '💥', type: 'normal' },
-            { name: '散射', damage: 1, speed: 7, color: '#44ff88', spread: 3, icon: '🔱', type: 'normal' },
-            { name: '穿透', damage: 2, speed: 10, color: '#ff66ff', spread: 1, icon: '➡️', type: 'pierce' },
-            { name: '爆炸', damage: 2, speed: 6, color: '#ff8833', spread: 1, icon: '💣', type: 'explode' }
-        ];
-
-        const BOSS_TYPES = [
-            { id: '腐化巨兽', color: '#44aa44', glow: '#88ff88', shape: 'beast', desc: '腐化巨兽', hpMult: 1.0, speed: 0.6,
-                bulletColor: '#44ff44', attackType: 'spray' },
-            { id: '暗影幽灵', color: '#aa44ff', glow: '#cc88ff', shape: 'ghost', desc: '暗影幽灵', hpMult: 0.8, speed: 1.2,
-                bulletColor: '#cc66ff', attackType: 'scatter' },
-            { id: '火焰领主', color: '#ff6622', glow: '#ff8844', shape: 'fire', desc: '火焰领主', hpMult: 1.2, speed: 0.5,
-                bulletColor: '#ff6633', attackType: 'ring' },
-            { id: '冰霜女王', color: '#44ccff', glow: '#88ddff', shape: 'ice', desc: '冰霜女王', hpMult: 0.9, speed: 0.7,
-                bulletColor: '#66ddff', attackType: 'cone' },
-            { id: '虚空使者', color: '#8833cc', glow: '#bb66ff', shape: 'void', desc: '虚空使者', hpMult: 1.4, speed: 0.4,
-                bulletColor: '#aa44ff', attackType: 'nova' }
-        ];
-
-        // ---------- 音频 ----------
+        // ----- 音频（保留） -----
         let audioCtx = null;
 
         function initAudio() {
@@ -860,11 +973,19 @@
                         osc.start(now);
                         osc.stop(now + 0.35);
                         break;
+                    case 'thunder':
+                        osc.frequency.setValueAtTime(80, now);
+                        osc.frequency.exponentialRampToValueAtTime(30, now + 0.15);
+                        gain.gain.setValueAtTime(0.4, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                        osc.start(now);
+                        osc.stop(now + 0.2);
+                        break;
                 }
             } catch (e) {}
         }
 
-        // ---------- 升级系统 ----------
+        // ----- 升级系统 -----
         const STAT_CONFIG = {
             maxHp: { label: '生命上限', base: 100, cost: 2, inc: 10, min: 100 },
             speed: { label: '移动速度', base: 4.2, cost: 2, inc: 0.15, min: 3.0 },
@@ -960,11 +1081,54 @@
         window.upgradeStat = upgradeStat;
         window.toggleStatPanel = toggleStatPanel;
 
-        // ---------- 游戏状态 ----------
+        // ----- 语言切换 -----
+        document.getElementById('langToggle').addEventListener('click', function() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            this.textContent = currentLang === 'zh' ? '🌐 EN' : '🌐 中文';
+            updateAllUI();
+            if (game && game.running === false && game.gameOver) {
+                showMessage(t('gameOver'), t('restart'));
+            }
+        });
+
+        function updateAllUI() {
+            document.getElementById('statTitle') && (document.getElementById('statTitle').textContent = t('statTitle'));
+            document.getElementById('statClose') && (document.getElementById('statClose').textContent = t('statClose'));
+            document.getElementById('statBtn').textContent = t('statBtn');
+            document.getElementById('hint').textContent = t('hint');
+            const infBtn = document.getElementById('infiniteToggle');
+            if (game && game.infiniteMode) {
+                infBtn.textContent = t('infiniteOn');
+            } else {
+                infBtn.textContent = t('infiniteOff');
+            }
+            updateSkillUI();
+            updateStatUI();
+        }
+
+        function updateSkillUI() {
+            const el = document.getElementById('skillDisplay');
+            if (!game) return;
+            const name = getSkillName(currentSkill);
+            if (game.skillCooldown > 0) {
+                const cdSec = Math.ceil(game.skillCooldown / 60);
+                el.textContent = `⏳ 技能: ${name} ${cdSec}s`;
+                el.style.color = '#ff6666';
+            } else if (game.skillActive) {
+                el.textContent = `⏳ 技能: ${name} 激活中`;
+                el.style.color = '#44ff88';
+            } else {
+                el.textContent = `⏳ 技能: ${name} 就绪`;
+                el.style.color = '#44ff88';
+            }
+        }
+
+        // ----- 游戏状态 -----
         let game = {};
 
         function initGame() {
             initStats();
+            currentSkill = 0;
             game = {
                 world: 0,
                 level: 0,
@@ -998,7 +1162,6 @@
                     trail: [],
                     maxHp: stats.maxHp,
                     healTimer: 0,
-                    healAmount: 0,
                 },
                 platforms: [],
                 enemies: [],
@@ -1020,13 +1183,15 @@
                 skillDuration: 90,
                 bossSpawned: false,
                 bossType: null,
-                // 移动端触摸
                 touchLeft: false,
                 touchRight: false,
                 touchJump: false,
                 touchShoot: false,
                 touchX: 0,
                 touchY: 0,
+                thunderTimer: 0,
+                skillType: 0,
+                terrainType: 0,
             };
             loadLevel(0);
             updateUI();
@@ -1039,8 +1204,7 @@
             updateAllUI();
         }
 
-        // ---------- 移动端控制 ----------
-        let joystickActive = false;
+        // ----- 移动端控制 -----
         let joystickDX = 0,
             joystickDY = 0;
 
@@ -1061,9 +1225,7 @@
 
             let joystickTouchId = null;
             let shootTouchId = null;
-            let jumpTouchId = null;
 
-            // 摇杆
             joystickZone.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 const touch = e.changedTouches[0];
@@ -1088,6 +1250,7 @@
                 knob.style.transform = 'translate(-50%, -50%)';
                 game.touchLeft = false;
                 game.touchRight = false;
+                game.keysPressed.up = false;
             });
 
             function updateJoystick(touch) {
@@ -1106,7 +1269,6 @@
                 knob.style.transform = 'translate(-50%, -50%)';
                 game.touchLeft = dx < -0.3;
                 game.touchRight = dx > 0.3;
-                // 上方向映射到跳跃
                 if (dy < -0.5) {
                     game.keysPressed.up = true;
                 } else {
@@ -1114,13 +1276,11 @@
                 }
             }
 
-            // 射击
             shootZone.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 const touch = e.changedTouches[0];
                 shootTouchId = touch.identifier;
                 game.touchShoot = true;
-                // 射击位置：屏幕中心偏上
                 const rect = canvas.getBoundingClientRect();
                 const scaleX = canvas.width / rect.width;
                 const scaleY = canvas.height / rect.height;
@@ -1128,7 +1288,6 @@
                 const cy = (touch.clientY - rect.top) * scaleY;
                 game.touchX = cx;
                 game.touchY = cy;
-                // 尝试射击
                 tryShootMobile(cx, cy);
             });
             shootZone.addEventListener('touchmove', (e) => {
@@ -1154,17 +1313,11 @@
 
             function tryShootMobile(cx, cy) {
                 if (!game.running || game.gameOver || game.levelComplete) return;
-                // 使用玩家位置到触摸点的方向
-                const p = game.player;
-                const targetX = cx;
-                const targetY = cy;
-                // 用mouseX/mouseY模拟
-                game._mouseX = targetX;
-                game._mouseY = targetY;
-                shootBullet(targetX, targetY);
+                game._mouseX = cx;
+                game._mouseY = cy;
+                shootBullet(cx, cy);
             }
 
-            // 跳跃按钮
             jumpBtn.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 game.keysPressed.up = true;
@@ -1180,7 +1333,6 @@
                 game.touchJump = false;
             });
 
-            // 武器切换
             weaponBtn.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 game.player.weapon = (game.player.weapon + 1) % WEAPONS.length;
@@ -1188,20 +1340,18 @@
                 updateUI();
             });
 
-            // 技能
             skillBtn.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 activateSkill();
                 updateUI();
             });
 
-            // 防止页面滚动
             document.addEventListener('touchmove', (e) => {
                 if (e.target.closest('#wrapper')) e.preventDefault();
             }, { passive: false });
         }
 
-        // ---------- 加载关卡 (与之前相同) ----------
+        // ----- 加载关卡 -----
         function loadLevel(levelIdx) {
             const cycle = game.totalCycles;
             const difficulty = levelIdx + cycle * 3;
@@ -1209,55 +1359,80 @@
             game.mapWidth = Math.min(1200, Math.floor(W * mapScale));
             game.mapHeight = H;
 
-            const platforms = [];
-            const enemies = [];
-            const keys = [];
-            const items = [];
+            // 地形
+            const terrainIdx = (levelIdx + cycle * 7) % TERRAIN_TEMPLATES.length;
+            game.terrainType = terrainIdx;
+            const seed = levelIdx * 100 + cycle * 33;
 
+            let platforms = [];
             platforms.push({ x: 0, y: game.mapHeight - 40, w: game.mapWidth, h: 40 });
-
-            const platCount = 6 + Math.floor(difficulty / 2);
-            const baseY = [420, 380, 340, 300, 260, 220, 180, 140];
-            for (let i = 0; i < platCount; i++) {
-                let x = 60 + i * 80 + (levelIdx * 17) % 120;
-                if (x > game.mapWidth - 80) x = game.mapWidth - 80;
-                let y = baseY[i % baseY.length] - (i % 3) * 15;
-                let w = 70 + (i * 7 + levelIdx) % 50;
-                platforms.push({ x, y, w, h: 14 });
+            const extraPlats = TERRAIN_TEMPLATES[terrainIdx](seed);
+            for (const p of extraPlats) {
+                if (p.x + p.w < game.mapWidth - 20) {
+                    platforms.push(p);
+                }
+            }
+            if (platforms.length < 3) {
+                for (let i = 0; i < 5; i++) {
+                    const x = 60 + i * 130 + Math.sin(seed + i) * 30;
+                    const y = 350 - i * 50 + Math.sin(seed * 1.5 + i * 2) * 15;
+                    platforms.push({ x: Math.max(10, Math.min(game.mapWidth - 70, x)), y: Math.max(60, Math.min(440, y)),
+                        w: 70 + Math.sin(seed + i * 1.5) * 20, h: 14 });
+                }
             }
             platforms.sort((a, b) => a.y - b.y);
 
-            const lastPlat = platforms[platforms.length - 1];
+            const lastPlat = platforms[platforms.length - 1] || platforms[0];
             const exitX = Math.min(game.mapWidth - 50, lastPlat.x + lastPlat.w / 2 - 15);
             const exitY = lastPlat.y - 40;
 
-            const enemyCount = 3 + Math.floor(difficulty * 0.6);
+            // ---- 怪物（8种混合，每关随机） ----
+            const enemies = [];
+            const enemyCount = 4 + Math.floor(difficulty * 0.7);
             for (let i = 0; i < enemyCount; i++) {
                 let plat = platforms[1 + (i * 3) % (platforms.length - 1)];
-                if (!plat) plat = platforms[1];
-                let lvl = Math.min(2, Math.floor((difficulty + i) / 3));
-                const size = 20 + lvl * 6;
-                const type = (i % 3 === 0) ? 'mushroom' : (i % 3 === 1) ? 'ghost' : 'bat';
+                if (!plat) plat = platforms[1] || platforms[0];
+                // 从8种怪物中随机选，保证多样性
+                const typeIdx = (levelIdx + i * 3 + cycle * 5) % MONSTER_TYPES.length;
+                const mType = MONSTER_TYPES[typeIdx];
+                const lvl = Math.min(2, Math.floor((difficulty + i) / 3));
+                const size = (mType.size || 20) + lvl * 4;
+                const hp = mType.hp + lvl + Math.floor(cycle * 0.5);
+                const dmg = mType.damage + lvl * 3 + Math.floor(cycle * 1.5);
                 enemies.push({
                     x: plat.x + 10 + i * 20,
                     y: plat.y - size,
                     w: size,
                     h: size,
-                    type: type,
+                    type: mType.id,
+                    name: mType.name,
+                    color: mType.color,
+                    glow: mType.glow,
                     level: lvl,
-                    hp: 2 + lvl + Math.floor(cycle * 0.5),
+                    hp: hp,
+                    maxHp: hp,
                     vx: (0.6 + lvl * 0.2) * (i % 2 === 0 ? 1 : -1),
-                    speed: 0.8 + lvl * 0.2 + cycle * 0.03,
+                    speed: mType.speed + lvl * 0.05 + cycle * 0.02,
                     minX: Math.max(0, plat.x + 5),
                     maxX: Math.min(game.mapWidth, plat.x + plat.w - size - 5),
                     startY: plat.y - size,
-                    damage: 10 + lvl * 10 + Math.floor(cycle * 2),
+                    damage: dmg,
                     hitFlash: 0,
-                    aggroRange: 150 + lvl * 50 + cycle * 10,
-                    expReward: 10 + lvl * 5 + Math.floor(cycle * 2),
+                    aggroRange: mType.aggro + lvl * 20 + cycle * 5,
+                    expReward: mType.exp + lvl * 2 + Math.floor(cycle * 2),
+                    split: mType.split || false,
+                    ranged: mType.ranged || false,
+                    stealth: mType.stealth || false,
+                    explode: mType.explode || false,
+                    slow: mType.slow || false,
+                    shootTimer: 0,
+                    stealthTimer: 0,
+                    isStealthed: false,
                 });
             }
 
+            // ---- 钥匙 ----
+            const keys = [];
             const keyCount = 2 + Math.floor(difficulty / 2);
             const usedPlats = platforms.slice(1);
             for (let i = 0; i < Math.min(keyCount, usedPlats.length); i++) {
@@ -1265,14 +1440,16 @@
                 keys.push({ x: plat.x + 15 + i * 20, y: plat.y - 28, collected: false, r: 9 });
             }
             while (keys.length < 2) {
-                const plat = platforms[1 + keys.length % (platforms.length - 1)];
+                const plat = platforms[1 + keys.length % (platforms.length - 1)] || platforms[0];
                 keys.push({ x: plat.x + 30 + keys.length * 20, y: plat.y - 28, collected: false, r: 9 });
             }
 
+            // ---- 物品 ----
+            const items = [];
             const healCount = 1 + Math.floor(difficulty / 3);
             for (let i = 0; i < healCount; i++) {
                 let plat = platforms[1 + (i * 7 + levelIdx) % (platforms.length - 1)];
-                if (!plat) plat = platforms[1];
+                if (!plat) plat = platforms[1] || platforms[0];
                 items.push({
                     type: 'heal',
                     x: plat.x + 20 + i * 25,
@@ -1283,7 +1460,7 @@
             }
             if ((levelIdx % 2 === 1) && difficulty > 0) {
                 let plat = platforms[2 % (platforms.length - 1)];
-                if (!plat) plat = platforms[1];
+                if (!plat) plat = platforms[1] || platforms[0];
                 const wIdx = Math.min(5, Math.floor(difficulty / 2) + 1);
                 items.push({
                     type: 'weapon',
@@ -1294,6 +1471,7 @@
                 });
             }
 
+            // ---- Boss ----
             let isBoss = (levelIdx % 5 === 4);
             let boss = null;
             let bossType = null;
@@ -1339,6 +1517,7 @@
             game.boss = boss ? { ...boss, bullets: [], hitCooldown: 0, timer: 0 } : null;
             game.screenShake = 0;
             game.bossSpawned = isBoss;
+            game.thunderTimer = 0;
 
             const p = game.player;
             p.x = 40;
@@ -1353,7 +1532,6 @@
             p.jumpPower = -stats.jumpPower;
             p.maxHp = stats.maxHp;
             p.healTimer = 0;
-            p.healAmount = 0;
             if (game.hp > p.maxHp) game.hp = p.maxHp;
 
             if (game.isBoss && game.boss) {
@@ -1393,7 +1571,7 @@
             return Math.hypot(x2 - x1, y2 - y1);
         }
 
-        // ---------- 粒子 ----------
+        // ----- 粒子 -----
         function spawnParticles(x, y, color, count = 12, speedMult = 1) {
             for (let i = 0; i < count; i++) {
                 const angle = Math.random() * Math.PI * 2;
@@ -1457,7 +1635,7 @@
             if (game.particles.length > 500) game.particles.splice(0, 150);
         }
 
-        // ---------- 射击 ----------
+        // ----- 射击 -----
         let lastShootTime = 0;
         let shootSoundCooldown = 0;
 
@@ -1484,7 +1662,7 @@
 
             for (let i = 0; i < count; i++) {
                 const angle = Math.atan2(dy, dx) + (i - (count - 1) / 2) * 0.25;
-                const speed = game.skillActive ? weapon.speed * 0.4 : weapon.speed;
+                const speed = game.skillActive && game.skillType === 0 ? weapon.speed * 0.4 : weapon.speed;
                 const vx = Math.cos(angle) * speed;
                 const vy = Math.sin(angle) * speed;
                 game.bullets.push({
@@ -1507,24 +1685,96 @@
             }
         }
 
-        // ---------- 技能 ----------
+        // ----- 技能 -----
         function activateSkill() {
             if (game.skillCooldown > 0 || game.skillActive) return;
+            const skill = SKILLS[currentSkill];
             game.skillActive = true;
-            game.skillTimer = game.skillDuration;
+            game.skillTimer = skill.duration;
+            game.skillCooldown = skill.cooldown;
+            game.skillType = currentSkill;
             playSound('skill');
-            spawnParticles(game.player.x + game.player.w / 2, game.player.y + game.player.h / 2, '#44ff88', 30, 2);
+
+            switch (currentSkill) {
+                case 0:
+                    spawnParticles(game.player.x + game.player.w / 2, game.player.y + game.player.h / 2, '#44ff88', 30, 2);
+                    break;
+                case 1:
+                    const p = game.player;
+                    const dashDist = 80;
+                    const dir = p.facing;
+                    p.x += dir * dashDist;
+                    p.x = Math.max(0, Math.min(game.mapWidth - p.w, p.x));
+                    spawnParticles(p.x + p.w / 2, p.y + p.h / 2, '#aa44ff', 30, 3);
+                    for (const e of game.enemies) {
+                        if (e.y > game.mapHeight + 50) continue;
+                        if (Math.abs(e.x - p.x) < 120 && Math.abs(e.y - p.y) < 60) {
+                            e.hp -= 5 + stats.damageBonus * 2;
+                            if (e.hp <= 0) {
+                                e.y = game.mapHeight + 100;
+                                spawnBlood(e.x + e.w / 2, e.y + e.h / 2, 20);
+                                playSound('kill');
+                                game.totalKills++;
+                                addExp(e.expReward || 10);
+                            } else {
+                                e.hitFlash = 15;
+                            }
+                        }
+                    }
+                    break;
+                case 2:
+                    game.hp = Math.min(game.player.maxHp, game.hp + 20);
+                    spawnParticles(game.player.x + game.player.w / 2, game.player.y + game.player.h / 2, '#44ff88', 40, 2);
+                    playSound('heal');
+                    break;
+                case 3:
+                    spawnParticles(game.player.x + game.player.w / 2, game.player.y + game.player.h / 2, '#ffff44', 40, 3);
+                    game.thunderTimer = 60;
+                    playSound('thunder');
+                    thunderStrike();
+                    break;
+            }
             updateUI();
         }
 
-        // ---------- 玩家更新 (同之前，但整合移动端按键) ----------
+        function thunderStrike() {
+            for (const e of game.enemies) {
+                if (e.y > game.mapHeight + 50) continue;
+                const tx = e.x + Math.random() * 60 - 30;
+                const ty = e.y - 20;
+                spawnExplosion(tx, ty, '#ffff44', 20);
+                if (dist(game.player.x + game.player.w / 2, game.player.y + game.player.h / 2, tx, ty) < 100) {
+                    e.hp -= 8 + stats.damageBonus * 2;
+                    if (e.hp <= 0) {
+                        e.y = game.mapHeight + 100;
+                        spawnBlood(e.x + e.w / 2, e.y + e.h / 2, 20);
+                        playSound('kill');
+                        game.totalKills++;
+                        addExp(e.expReward || 10);
+                    } else {
+                        e.hitFlash = 15;
+                    }
+                }
+            }
+            if (game.isBoss && game.boss && game.boss.hp > 0) {
+                const b = game.boss;
+                const tx = b.x + b.w / 2 + Math.random() * 40 - 20;
+                const ty = b.y + b.h / 2;
+                spawnExplosion(tx, ty, '#ffff44', 30);
+                b.hp -= 5 + stats.damageBonus * 1.5;
+                updateBossUI();
+                if (b.hp <= 0) bossDefeated();
+            }
+            game.screenShake = 8;
+        }
+
+        // ----- 玩家更新（包含怪物特色行为） -----
         function updatePlayer() {
             const p = game.player;
             const keys = game.keysPressed;
 
             if (p.invincible > 0) p.invincible--;
 
-            // 缓慢回血
             if (p.healTimer > 0) {
                 p.healTimer--;
                 if (p.healTimer % 10 === 0) {
@@ -1533,22 +1783,29 @@
                 }
             }
 
+            if (game.skillCooldown > 0) {
+                game.skillCooldown--;
+            }
             if (game.skillActive) {
                 game.skillTimer--;
                 if (game.skillTimer <= 0) {
                     game.skillActive = false;
-                    game.skillCooldown = game.skillMaxCooldown;
+                    if (game.skillType === 3) {
+                        game.thunderTimer = 0;
+                    }
                 }
             }
-            if (game.skillCooldown > 0) {
-                game.skillCooldown--;
+
+            if (game.thunderTimer > 0) {
+                game.thunderTimer--;
+                if (game.thunderTimer % 10 === 0) {
+                    thunderStrike();
+                }
             }
 
-            // 移动：键盘 + 摇杆
             let moveX = 0;
             if (keys.left || game.touchLeft) moveX = -1;
             if (keys.right || game.touchRight) moveX = 1;
-            // 摇杆精细控制
             if (Math.abs(joystickDX) > 0.1) {
                 moveX = joystickDX;
             }
@@ -1557,7 +1814,6 @@
                 p.facing = -1; } else if (moveX > 0) { p.vx = p.speed * Math.min(1, Math.abs(moveX));
                 p.facing = 1; } else { p.vx *= FRICTION; if (Math.abs(p.vx) < 0.1) p.vx = 0; }
 
-            // 跳跃（键盘 + 摇杆上推 + 跳跃按钮）
             const jumpRequest = keys.up || game.touchJump || (joystickDY < -0.5);
             if (jumpRequest) {
                 if (p.jumpCount < p.maxJumps) {
@@ -1567,7 +1823,6 @@
                     p.onGround = false;
                     spawnParticles(p.x + p.w / 2, p.y + p.h, '#9b6bff', 6);
                     playSound('jump');
-                    // 防止连跳
                     if (keys.up) game.keysPressed.up = false;
                     if (game.touchJump) game.touchJump = false;
                 }
@@ -1670,11 +1925,29 @@
                 }
             }
 
-            // 敌人碰撞
+            // ---- 怪物碰撞（特色行为） ----
             for (const e of game.enemies) {
                 if (e.y > game.mapHeight + 50) continue;
+
+                // 毒爆虫：死亡爆炸
+                if (e.explode && e.hp > 0) {
+                    const d = dist(p.x + p.w / 2, p.y + p.h / 2, e.x + e.w / 2, e.y + e.h / 2);
+                    if (d < 60) {
+                        spawnExplosion(e.x + e.w / 2, e.y + e.h / 2, '#88cc33', 40);
+                        game.screenShake = 10;
+                        if (d < 45) {
+                            takeDamage(e.damage);
+                            if (game.hp <= 0) { gameOver(); return; }
+                        }
+                        e.y = game.mapHeight + 100;
+                        playSound('kill');
+                        continue;
+                    }
+                }
+
                 if (rectCollide(p, e)) {
                     if (p.vy > 0 && p.y + p.h - e.y < 20) {
+                        // 踩扁
                         e.y = game.mapHeight + 100;
                         p.vy = p.jumpPower * 0.6;
                         p.jumpCount = 0;
@@ -1682,6 +1955,42 @@
                         playSound('kill');
                         game.totalKills++;
                         addExp(e.expReward || 10);
+                        // 史莱姆分裂
+                        if (e.split && e.hp > 1) {
+                            for (let s = 0; s < 2; s++) {
+                                const size2 = e.w * 0.6;
+                                game.enemies.push({
+                                    x: e.x + s * 30 - 10,
+                                    y: e.y + 20,
+                                    w: size2,
+                                    h: size2,
+                                    type: e.type,
+                                    name: e.name,
+                                    color: e.color,
+                                    glow: e.glow,
+                                    level: e.level,
+                                    hp: Math.ceil(e.maxHp / 2),
+                                    maxHp: Math.ceil(e.maxHp / 2),
+                                    vx: (0.4 + Math.random() * 0.4) * (s === 0 ? 1 : -1),
+                                    speed: e.speed * 1.2,
+                                    minX: 10,
+                                    maxX: game.mapWidth - 10,
+                                    startY: e.y + 20,
+                                    damage: e.damage * 0.6,
+                                    hitFlash: 0,
+                                    aggroRange: e.aggroRange,
+                                    expReward: Math.ceil(e.expReward / 2),
+                                    split: false,
+                                    ranged: false,
+                                    stealth: false,
+                                    explode: false,
+                                    slow: false,
+                                    shootTimer: 0,
+                                    stealthTimer: 0,
+                                    isStealthed: false,
+                                });
+                            }
+                        }
                         if (Math.random() < 0.2) {
                             game.items.push({ type: 'heal', x: e.x + e.w / 2, y: e.y - 30, r: 12, value: 20 });
                         }
@@ -1715,7 +2024,7 @@
             }
 
             // 子弹更新
-            const timeScale = game.skillActive ? 0.6 : 1.0;
+            const timeScale = game.skillActive && game.skillType === 0 ? 0.6 : 1.0;
             for (let i = game.bullets.length - 1; i >= 0; i--) {
                 const bull = game.bullets[i];
                 bull.x += bull.vx * timeScale;
@@ -1740,6 +2049,42 @@
                                 playSound('kill');
                                 game.totalKills++;
                                 addExp(e.expReward || 10);
+                                if (e.split && e.hp > 1) {
+                                    // 分裂逻辑（同上）
+                                    for (let s = 0; s < 2; s++) {
+                                        const size2 = e.w * 0.6;
+                                        game.enemies.push({
+                                            x: e.x + s * 30 - 10,
+                                            y: e.y + 20,
+                                            w: size2,
+                                            h: size2,
+                                            type: e.type,
+                                            name: e.name,
+                                            color: e.color,
+                                            glow: e.glow,
+                                            level: e.level,
+                                            hp: Math.ceil(e.maxHp / 2),
+                                            maxHp: Math.ceil(e.maxHp / 2),
+                                            vx: (0.4 + Math.random() * 0.4) * (s === 0 ? 1 : -1),
+                                            speed: e.speed * 1.2,
+                                            minX: 10,
+                                            maxX: game.mapWidth - 10,
+                                            startY: e.y + 20,
+                                            damage: e.damage * 0.6,
+                                            hitFlash: 0,
+                                            aggroRange: e.aggroRange,
+                                            expReward: Math.ceil(e.expReward / 2),
+                                            split: false,
+                                            ranged: false,
+                                            stealth: false,
+                                            explode: false,
+                                            slow: false,
+                                            shootTimer: 0,
+                                            stealthTimer: 0,
+                                            isStealthed: false,
+                                        });
+                                    }
+                                }
                             } else {
                                 e.hitFlash = 10;
                             }
@@ -1772,6 +2117,41 @@
                             playSound('kill');
                             game.totalKills++;
                             addExp(e.expReward || 10);
+                            if (e.split && e.hp > 1) {
+                                for (let s = 0; s < 2; s++) {
+                                    const size2 = e.w * 0.6;
+                                    game.enemies.push({
+                                        x: e.x + s * 30 - 10,
+                                        y: e.y + 20,
+                                        w: size2,
+                                        h: size2,
+                                        type: e.type,
+                                        name: e.name,
+                                        color: e.color,
+                                        glow: e.glow,
+                                        level: e.level,
+                                        hp: Math.ceil(e.maxHp / 2),
+                                        maxHp: Math.ceil(e.maxHp / 2),
+                                        vx: (0.4 + Math.random() * 0.4) * (s === 0 ? 1 : -1),
+                                        speed: e.speed * 1.2,
+                                        minX: 10,
+                                        maxX: game.mapWidth - 10,
+                                        startY: e.y + 20,
+                                        damage: e.damage * 0.6,
+                                        hitFlash: 0,
+                                        aggroRange: e.aggroRange,
+                                        expReward: Math.ceil(e.expReward / 2),
+                                        split: false,
+                                        ranged: false,
+                                        stealth: false,
+                                        explode: false,
+                                        slow: false,
+                                        shootTimer: 0,
+                                        stealthTimer: 0,
+                                        isStealthed: false,
+                                    });
+                                }
+                            }
                             if (Math.random() < 0.15) {
                                 game.items.push({ type: 'heal', x: e.x + e.w / 2, y: e.y - 30, r: 12, value: 20 });
                             }
@@ -1810,36 +2190,133 @@
                 }
             }
 
-            const enemyTimeScale = game.skillActive ? 0.4 : 1.0;
+            const enemyTimeScale = game.skillActive && game.skillType === 0 ? 0.4 : 1.0;
             updateEnemies(enemyTimeScale);
             updateParticles();
             updateUI();
         }
 
-        // ---------- 敌人AI ----------
+        // ----- 敌人AI（包含特色行为） -----
         function updateEnemies(timeScale = 1.0) {
             const p = game.player;
             for (const e of game.enemies) {
                 if (e.y > game.mapHeight + 50) continue;
+
+                // 暗影刺客：隐身闪现
+                if (e.stealth) {
+                    e.stealthTimer--;
+                    if (e.stealthTimer <= 0) {
+                        e.isStealthed = !e.isStealthed;
+                        e.stealthTimer = 60 + Math.random() * 60;
+                        if (e.isStealthed) {
+                            const angle = Math.random() * Math.PI * 2;
+                            const dist2 = 60 + Math.random() * 80;
+                            e.x = p.x + p.w / 2 + Math.cos(angle) * dist2 - e.w / 2;
+                            e.y = p.y + p.h / 2 + Math.sin(angle) * dist2 - e.h / 2;
+                            e.x = Math.max(0, Math.min(game.mapWidth - e.w, e.x));
+                            e.y = Math.max(20, Math.min(game.mapHeight - 40, e.y));
+                            spawnParticles(e.x + e.w / 2, e.y + e.h / 2, '#6633cc', 15);
+                        }
+                    }
+                    if (e.isStealthed) continue;
+                }
+
+                // 远程怪物攻击
+                if (e.ranged) {
+                    const d = dist(p.x + p.w / 2, p.y + p.h / 2, e.x + e.w / 2, e.y + e.h / 2);
+                    if (d < e.aggroRange) {
+                        e.shootTimer--;
+                        if (e.shootTimer <= 0) {
+                            e.shootTimer = 35 + Math.random() * 30;
+                            const angle = Math.atan2(p.y + p.h / 2 - (e.y + e.h / 2), p.x + p.w / 2 - (e.x + e.w / 2));
+                            const speed = 2.5 + e.level * 0.4;
+                            const color = e.type === 'imp' ? '#ff6633' : (e.type === 'crystal' ? '#aa66ff' : '#ccccdd');
+                            const size = e.type === 'crystal' ? 6 : 5;
+                            // 水晶构造体：追踪弹
+                            let vx = Math.cos(angle) * speed;
+                            let vy = Math.sin(angle) * speed;
+                            if (e.type === 'crystal') {
+                                // 追踪效果：稍微瞄准玩家当前位置
+                                const dx2 = p.x + p.w / 2 - (e.x + e.w / 2);
+                                const dy2 = p.y + p.h / 2 - (e.y + e.h / 2);
+                                const d2 = Math.hypot(dx2, dy2);
+                                if (d2 > 0) {
+                                    vx = (dx2 / d2) * speed;
+                                    vy = (dy2 / d2) * speed;
+                                }
+                            }
+                            game.bullets.push({
+                                x: e.x + e.w / 2,
+                                y: e.y + e.h / 2,
+                                vx: vx,
+                                vy: vy,
+                                r: size,
+                                life: 120,
+                                damage: e.damage * 0.4,
+                                color: color,
+                                type: 'normal',
+                                isEnemy: true,
+                            });
+                            spawnParticles(e.x + e.w / 2, e.y + e.h / 2, color, 5);
+                        }
+                    }
+                }
+
+                // 普通移动
                 const dx = p.x + p.w / 2 - (e.x + e.w / 2);
                 const dy = p.y + p.h / 2 - (e.y + e.h / 2);
                 const d = Math.hypot(dx, dy);
+                const slowMult = (e.slow && p.invincible <= 0) ? 0.5 : 1.0;
+
                 if (d < e.aggroRange && d > 20) {
-                    e.x += Math.sign(dx) * e.speed * 0.6 * timeScale;
+                    e.x += Math.sign(dx) * e.speed * 0.6 * timeScale * slowMult;
                     if (e.level >= 1 && Math.random() < 0.01 * timeScale) e.y -= 4 * timeScale;
                     if (e.x < 0) e.x = 0;
                     if (e.x > game.mapWidth - e.w) e.x = game.mapWidth - e.w;
                 } else {
-                    e.x += e.vx * e.speed * timeScale;
+                    e.x += e.vx * e.speed * timeScale * slowMult;
                     if (e.x < e.minX || e.x > e.maxX) e.vx *= -1;
                 }
-                if (e.type === 'bat') e.y += Math.sin(game.frame * 0.05 + e.x) * 0.4 * timeScale;
-                else if (e.type === 'ghost') e.y = e.startY + Math.sin(game.frame * 0.04 + e.x * 0.1) * 10 * timeScale;
+                // 特殊浮动
+                if (e.type === 'frost') {
+                    // 冰霜行者走路带冰霜特效
+                    if (game.frame % 10 === 0) {
+                        spawnParticles(e.x + e.w / 2, e.y + e.h, '#88ddff', 2);
+                    }
+                }
+                if (e.type === 'wraith') {
+                    e.y = e.startY + Math.sin(game.frame * 0.04 + e.x * 0.1) * 8;
+                }
+                if (e.type === 'slime') {
+                    // 史莱姆跳着移动
+                    if (game.frame % 8 === 0 && d < 200) {
+                        e.y -= 2;
+                    }
+                }
                 if (e.hitFlash > 0) e.hitFlash--;
+            }
+
+            // 敌方子弹碰撞
+            for (let i = game.bullets.length - 1; i >= 0; i--) {
+                const bull = game.bullets[i];
+                if (!bull.isEnemy) continue;
+                if (bull.x < -20 || bull.x > game.mapWidth + 20 || bull.y < -20 || bull.y > game.mapHeight + 20 || bull
+                    .life <= 0) {
+                    game.bullets.splice(i, 1);
+                    continue;
+                }
+                const p = game.player;
+                if (dist(p.x + p.w / 2, p.y + p.h / 2, bull.x, bull.y) < bull.r + 12) {
+                    if (p.invincible <= 0) {
+                        takeDamage(bull.damage || 10);
+                        if (game.hp <= 0) { gameOver(); return; }
+                    }
+                    game.bullets.splice(i, 1);
+                }
             }
         }
 
-        // ---------- Boss AI ----------
+        // ----- Boss AI（保留） -----
         function updateBossAI() {
             const b = game.boss;
             if (!b || b.hp <= 0) return;
@@ -1847,7 +2324,7 @@
             const dx = p.x + p.w / 2 - (b.x + b.w / 2);
             const dy = p.y + p.h / 2 - (b.y + b.h / 2);
             const d = Math.hypot(dx, dy);
-            const timeScale = game.skillActive ? 0.5 : 1.0;
+            const timeScale = game.skillActive && game.skillType === 0 ? 0.5 : 1.0;
             const type = b.type || BOSS_TYPES[0];
 
             if (d > 120) {
@@ -1988,7 +2465,7 @@
             setTimeout(() => { msgOverlay.classList.remove('show'); }, 1500);
         }
 
-        // ---------- 伤害/死亡 ----------
+        // ----- 伤害/死亡 -----
         function takeDamage(amount) {
             if (game.player.invincible > 0) return;
             game.hp -= amount;
@@ -2013,7 +2490,344 @@
             msgOverlay.classList.add('show');
         }
 
-        // ---------- 绘制 (与之前相同) ----------
+        // ----- 绘制怪物（8种特色外观） -----
+        function drawMonster(e) {
+            const flash = e.hitFlash > 0;
+            const size = e.w;
+            const cx = e.x + size / 2;
+            const cy = e.y + size / 2;
+
+            // 隐身刺客：隐身状态半透明
+            if (e.stealth && e.isStealthed) {
+                ctx.globalAlpha = 0.2;
+            }
+
+            ctx.shadowColor = e.glow || '#ff4444';
+            ctx.shadowBlur = 20;
+
+            switch (e.type) {
+                case 'slime':
+                    // 腐化史莱姆 - 绿色粘液球
+                    ctx.fillStyle = flash ? '#88ff88' : (e.color || '#44aa44');
+                    ctx.beginPath();
+                    ctx.arc(cx, cy + 2, size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    // 眼睛
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath();
+                    ctx.arc(cx - 5, cy - 2, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 5, cy - 2, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#1a1a2e';
+                    ctx.beginPath();
+                    ctx.arc(cx - 4, cy - 1, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 6, cy - 1, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    // 粘液滴
+                    ctx.fillStyle = e.color + '66';
+                    ctx.shadowBlur = 10;
+                    for (let i = 0; i < 3; i++) {
+                        const dx = Math.sin(game.frame * 0.05 + i * 2) * 6;
+                        const dy = 4 + Math.sin(game.frame * 0.07 + i * 3) * 2;
+                        ctx.beginPath();
+                        ctx.arc(cx + dx - 6 + i * 6, cy + size / 2 + dy, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    break;
+
+                case 'frost':
+                    // 冰霜行者 - 冰蓝色，带冰晶
+                    ctx.fillStyle = flash ? '#88ddff' : (e.color || '#44ccff');
+                    ctx.beginPath();
+                    ctx.roundRect(e.x + 2, e.y + 2, size - 4, size - 4, 6);
+                    ctx.fill();
+                    // 冰晶装饰
+                    ctx.shadowBlur = 15;
+                    ctx.fillStyle = '#88ddff66';
+                    for (let i = 0; i < 4; i++) {
+                        const angle = i * Math.PI / 2 + game.frame * 0.02;
+                        const dx = Math.cos(angle) * size * 0.4;
+                        const dy = Math.sin(angle) * size * 0.4;
+                        ctx.beginPath();
+                        ctx.arc(cx + dx, cy + dy, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    // 眼睛
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#004466';
+                    ctx.beginPath();
+                    ctx.arc(cx - 5, cy - 2, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 5, cy - 2, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#88ddff';
+                    ctx.beginPath();
+                    ctx.arc(cx - 4, cy - 3, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 6, cy - 3, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                case 'assassin':
+                    // 暗影刺客 - 紫色半透明，飘动
+                    ctx.fillStyle = flash ? '#9966ff' : (e.color || '#6633cc');
+                    ctx.globalAlpha = e.isStealthed ? 0.2 : 0.8;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, size / 2 - 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    // 飘带
+                    ctx.shadowBlur = 25;
+                    ctx.fillStyle = e.color + '88';
+                    for (let i = -1; i <= 1; i++) {
+                        const wx = cx + i * 10 + Math.sin(game.frame * 0.06 + i) * 4;
+                        const wy = cy + size / 2 + Math.sin(game.frame * 0.05 + i * 2) * 6;
+                        ctx.beginPath();
+                        ctx.moveTo(cx + i * 8, cy + size / 2 - 2);
+                        ctx.quadraticCurveTo(wx + 3, wy + 4, wx, wy + 10);
+                        ctx.lineWidth = 4;
+                        ctx.strokeStyle = e.color + '88';
+                        ctx.stroke();
+                    }
+                    // 红色眼睛
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = '#ff0000';
+                    ctx.fillStyle = '#ff0000';
+                    ctx.beginPath();
+                    ctx.arc(cx - 5, cy - 3, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 5, cy - 3, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#000';
+                    ctx.beginPath();
+                    ctx.arc(cx - 4, cy - 2, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 6, cy - 2, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                    break;
+
+                case 'imp':
+                    // 烈焰小鬼 - 燃烧的火焰
+                    ctx.fillStyle = flash ? '#ff8844' : (e.color || '#ff6622');
+                    ctx.shadowBlur = 35;
+                    ctx.shadowColor = '#ff4400';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy + 2, size / 2 - 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    // 火焰头发
+                    for (let i = 0; i < 5; i++) {
+                        const fx = cx - 8 + i * 4 + Math.sin(game.frame * 0.06 + i) * 3;
+                        const fy = cy - size / 2 + 2 + Math.sin(game.frame * 0.07 + i * 2) * 4;
+                        ctx.fillStyle = '#ff883366';
+                        ctx.shadowBlur = 25;
+                        ctx.beginPath();
+                        ctx.arc(fx, fy, 5 + Math.sin(game.frame * 0.05 + i) * 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    // 眼睛
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#ffff00';
+                    ctx.fillStyle = '#ffff00';
+                    ctx.beginPath();
+                    ctx.arc(cx - 5, cy - 2, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 5, cy - 2, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#ff4400';
+                    ctx.beginPath();
+                    ctx.arc(cx - 4, cy - 1, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 6, cy - 1, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                case 'bomber':
+                    // 毒爆虫 - 黄绿色，鼓胀
+                    ctx.fillStyle = flash ? '#aadd44' : (e.color || '#88cc33');
+                    ctx.shadowBlur = 25;
+                    ctx.shadowColor = '#88cc33';
+                    const swell = 1 + Math.sin(game.frame * 0.04) * 0.05;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, size / 2 * swell, 0, Math.PI * 2);
+                    ctx.fill();
+                    // 毒囊斑点
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#66aa22';
+                    for (let i = 0; i < 5; i++) {
+                        const angle = i * 1.2 + game.frame * 0.01;
+                        const dx = Math.cos(angle) * size * 0.3;
+                        const dy = Math.sin(angle) * size * 0.3;
+                        ctx.beginPath();
+                        ctx.arc(cx + dx, cy + dy, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    // 眼睛
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath();
+                    ctx.arc(cx - 5, cy - 3, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 5, cy - 3, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#1a1a2e';
+                    ctx.beginPath();
+                    ctx.arc(cx - 4, cy - 2, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 6, cy - 2, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                case 'crystal':
+                    // 水晶构造体 - 紫色发光晶体
+                    ctx.fillStyle = flash ? '#cc88ff' : (e.color || '#aa66ff');
+                    ctx.shadowBlur = 30;
+                    ctx.shadowColor = '#aa66ff';
+                    // 菱形
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy - size / 2);
+                    ctx.lineTo(cx + size / 2, cy);
+                    ctx.lineTo(cx, cy + size / 2);
+                    ctx.lineTo(cx - size / 2, cy);
+                    ctx.closePath();
+                    ctx.fill();
+                    // 内部发光
+                    ctx.shadowBlur = 20;
+                    ctx.fillStyle = '#ffffff44';
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy - size / 4);
+                    ctx.lineTo(cx + size / 4, cy);
+                    ctx.lineTo(cx, cy + size / 4);
+                    ctx.lineTo(cx - size / 4, cy);
+                    ctx.closePath();
+                    ctx.fill();
+                    // 核心
+                    ctx.shadowBlur = 40;
+                    ctx.fillStyle = '#ffffff88';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                case 'skeleton':
+                    // 枯骨守卫 - 暗金色骨架
+                    ctx.fillStyle = flash ? '#eeddbb' : (e.color || '#ccbb88');
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#ccbb88';
+                    // 身体（矩形骨架）
+                    ctx.beginPath();
+                    ctx.roundRect(e.x + 4, e.y + 6, size - 8, size - 12, 3);
+                    ctx.fill();
+                    // 肋骨线条
+                    ctx.shadowBlur = 0;
+                    ctx.strokeStyle = '#aa9966';
+                    ctx.lineWidth = 1.5;
+                    for (let i = 0; i < 3; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(e.x + 6, e.y + 10 + i * 6);
+                        ctx.lineTo(e.x + size - 6, e.y + 10 + i * 6);
+                        ctx.stroke();
+                    }
+                    // 头骨
+                    ctx.fillStyle = flash ? '#eeddbb' : (e.color || '#ccbb88');
+                    ctx.shadowBlur = 15;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy - 4, size * 0.3, 0, Math.PI * 2);
+                    ctx.fill();
+                    // 眼洞
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#1a1a2e';
+                    ctx.beginPath();
+                    ctx.arc(cx - 4, cy - 6, 2.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 4, cy - 6, 2.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    // 盾牌
+                    ctx.shadowBlur = 10;
+                    ctx.fillStyle = '#aa8844';
+                    ctx.beginPath();
+                    ctx.roundRect(e.x + size - 10, e.y + 4, 8, 12, 3);
+                    ctx.fill();
+                    ctx.fillStyle = '#886633';
+                    ctx.beginPath();
+                    ctx.roundRect(e.x + size - 8, e.y + 6, 4, 8, 2);
+                    ctx.fill();
+                    break;
+
+                case 'wraith':
+                    // 迷雾幽灵 - 白色半透明
+                    ctx.fillStyle = flash ? '#ffffff' : (e.color || '#ccccdd');
+                    ctx.globalAlpha = 0.7 + Math.sin(game.frame * 0.03) * 0.15;
+                    ctx.shadowBlur = 30;
+                    ctx.shadowColor = '#ffffff44';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    // 锁链
+                    ctx.globalAlpha = 0.4;
+                    ctx.shadowBlur = 0;
+                    ctx.strokeStyle = '#888899';
+                    ctx.lineWidth = 2;
+                    for (let i = 0; i < 3; i++) {
+                        const wx = cx - size / 2 + i * 8 + Math.sin(game.frame * 0.04 + i) * 4;
+                        const wy = cy + size / 2 - 2 + Math.sin(game.frame * 0.05 + i * 2) * 4;
+                        ctx.beginPath();
+                        ctx.moveTo(cx - size / 2 + i * 6, cy + size / 2 - 2);
+                        ctx.quadraticCurveTo(wx + 2, wy + 6, wx, wy + 12);
+                        ctx.stroke();
+                    }
+                    // 眼睛
+                    ctx.globalAlpha = 0.8;
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = '#ff66ff';
+                    ctx.fillStyle = '#ff66ff';
+                    ctx.beginPath();
+                    ctx.arc(cx - 5, cy - 3, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 5, cy - 3, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                    break;
+
+                default:
+                    // 默认圆形
+                    ctx.fillStyle = flash ? '#ff6666' : (e.color || '#2d1a1a');
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+            }
+
+            ctx.shadowBlur = 0;
+            ctx.globalAlpha = 1;
+
+            // 血条
+            ctx.fillStyle = 'rgba(0,0,0,0.6)';
+            ctx.fillRect(e.x, e.y - 8, size, 4);
+            ctx.fillStyle = e.hp > 0 ? '#44ff44' : '#ff4444';
+            ctx.fillRect(e.x, e.y - 8, size * (e.hp / (e.maxHp || 1)), 4);
+
+            // 怪物名称缩写
+            ctx.fillStyle = 'rgba(255,255,255,0.3)';
+            ctx.font = '8px sans-serif';
+            ctx.fillText(e.name ? e.name.substring(0, 2) : '??', e.x + 2, e.y + size + 10);
+        }
+
+        // ----- 绘制Boss（保留） -----
         function drawBoss(b, p) {
             const type = b.type || BOSS_TYPES[0];
             const flash = b.hitCooldown > 0;
@@ -2239,7 +3053,7 @@
             ctx.shadowBlur = 0;
         }
 
-        // ---------- 绘图循环 ----------
+        // ----- 主绘制 -----
         function draw() {
             const w = game.world % 3;
             const theme = WORLDS[w] || WORLDS[0];
@@ -2302,6 +3116,7 @@
             }
             ctx.shadowBlur = 0;
 
+            // 出口
             const ex = game.exit.x,
                 ey = game.exit.y;
             const canEnter = game.keysCollected >= game.totalKeys;
@@ -2335,6 +3150,7 @@
             }
             ctx.shadowBlur = 0;
 
+            // 钥匙
             for (const key of game.keys) {
                 if (key.collected) continue;
                 const bob = Math.sin(game.frame * 0.04 + key.x) * 3;
@@ -2356,6 +3172,7 @@
             }
             ctx.shadowBlur = 0;
 
+            // 物品
             for (const item of game.items) {
                 if (item.type === 'heal') {
                     const bob = Math.sin(game.frame * 0.04 + item.x) * 3;
@@ -2385,44 +3202,14 @@
             }
             ctx.shadowBlur = 0;
 
+            // 绘制怪物（使用特色绘制函数）
             for (const e of game.enemies) {
                 if (e.y > game.mapHeight + 50) continue;
-                const flash = e.hitFlash > 0;
-                ctx.shadowColor = '#ff4444';
-                ctx.shadowBlur = 25;
-                const col = ['#2d1a1a', '#4a1a1a', '#6a1a1a'][e.level] || '#2d1a1a';
-                ctx.fillStyle = flash ? '#ff6666' : col;
-                const size = e.w;
-                ctx.beginPath();
-                ctx.arc(e.x + size / 2, e.y + size / 2, size / 2, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = '#ff0000';
-                ctx.fillStyle = '#ff0000';
-                ctx.beginPath();
-                ctx.arc(e.x + size * 0.3, e.y + size * 0.35, size * 0.15, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(e.x + size * 0.7, e.y + size * 0.35, size * 0.15, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.shadowBlur = 0;
-                ctx.fillStyle = '#0a0a0a';
-                ctx.beginPath();
-                ctx.arc(e.x + size * 0.35, e.y + size * 0.4, size * 0.07, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(e.x + size * 0.75, e.y + size * 0.4, size * 0.07, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = '#fff';
-                ctx.font = '10px sans-serif';
-                ctx.fillText('Lv' + e.level, e.x + 2, e.y + size + 14);
-                ctx.fillStyle = 'rgba(0,0,0,0.6)';
-                ctx.fillRect(e.x, e.y - 8, size, 4);
-                ctx.fillStyle = e.hp > 0 ? '#44ff44' : '#ff4444';
-                ctx.fillRect(e.x, e.y - 8, size * (e.hp / (1 + e.level)), 4);
+                drawMonster(e);
             }
             ctx.shadowBlur = 0;
 
+            // Boss
             if (game.isBoss && game.boss && game.boss.hp > 0) {
                 drawBoss(game.boss, game.player);
                 if (game.boss.hp < game.boss.maxHp * 0.3 && Math.floor(game.frame / 8) % 2 === 0) {
@@ -2431,7 +3218,18 @@
                 }
             }
 
+            // 子弹
             for (const bull of game.bullets) {
+                if (bull.isEnemy) {
+                    ctx.shadowColor = '#ff4444';
+                    ctx.shadowBlur = 20;
+                    ctx.fillStyle = '#ff4444';
+                    ctx.beginPath();
+                    ctx.arc(bull.x, bull.y, bull.r, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    continue;
+                }
                 ctx.shadowColor = bull.color || '#6bcbff';
                 ctx.shadowBlur = 30;
                 ctx.fillStyle = bull.color || '#6bcbff';
@@ -2461,6 +3259,7 @@
             }
             ctx.shadowBlur = 0;
 
+            // 玩家
             const p = game.player;
             for (const t of p.trail) {
                 ctx.globalAlpha = t.life / 20 * 0.2;
@@ -2582,7 +3381,8 @@
             ctx.font = '14px sans-serif';
             const expPct = Math.floor((exp / expToNext) * 100);
             const mapInfo = game.mapWidth > W ? ` 🌍 ${Math.floor(game.mapWidth/W*100)}%` : '';
-            ctx.fillText(`🗡️ ${game.totalKills}杀  |  EXP ${exp}/${expToNext} (${expPct}%)${mapInfo}`, 14, 28);
+            const terrainNames = ['塔楼', '峡谷', '浮岛', '洞穴', '桥梁', '阶梯'];
+            ctx.fillText(`🗡️ ${game.totalKills}杀  |  EXP ${exp}/${expToNext} (${expPct}%)  |  ${terrainNames[game.terrainType] || ''}${mapInfo}`, 14, 28);
             if (game.hp < 30) {
                 ctx.fillStyle = 'rgba(255,0,0,0.12)';
                 ctx.fillRect(0, 0, W, H);
@@ -2610,8 +3410,7 @@
             return this;
         };
 
-        // ---------- 事件绑定 ----------
-        // 键盘
+        // ----- 事件绑定 -----
         document.addEventListener('keydown', (e) => {
             const key = e.key;
             if (key === 'ArrowLeft' || key === 'a' || key === 'A') { game.keysPressed.left = true;
@@ -2629,7 +3428,7 @@
                 e.preventDefault();
             }
             if (key === 'e' || key === 'E') {
-                activateSkill();
+                currentSkill = (currentSkill + 1) % SKILLS.length;
                 updateUI();
                 e.preventDefault();
             }
@@ -2656,7 +3455,11 @@
             }
         });
 
-        // 按钮事件
+        document.getElementById('skillDisplay').addEventListener('click', function() {
+            currentSkill = (currentSkill + 1) % SKILLS.length;
+            updateUI();
+        });
+
         infiniteBtn.addEventListener('click', function() {
             game.infiniteMode = !game.infiniteMode;
             this.classList.toggle('active');
@@ -2673,7 +3476,6 @@
 
         statBtn.addEventListener('click', toggleStatPanel);
 
-        // 鼠标射击
         canvas.addEventListener('mousedown', (e) => {
             if (!game.running || game.gameOver || game.levelComplete) return;
             const rect = canvas.getBoundingClientRect();
@@ -2693,7 +3495,7 @@
             game._mouseY = (e.clientY - rect.top) * scaleY;
         });
 
-        // ---------- 主循环 ----------
+        // ----- 主循环 -----
         function gameLoop() {
             if (levelUpTimer > 0) {
                 levelUpTimer--;
@@ -2714,7 +3516,7 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // ---------- 启动 ----------
+        // ----- 启动 -----
         initGame();
         setupMobileControls();
         gameLoop();
@@ -2727,10 +3529,13 @@
         });
         document.addEventListener('click', () => { initAudio(); }, { once: true });
 
-        // 窗口变化时重新适配
         window.addEventListener('resize', () => {
             setupMobileControls();
         });
+
+        console.log('✅ 特色怪物版加载完成！8种怪物各具特色！');
+        console.log('👾 腐化史莱姆 | 冰霜行者 | 暗影刺客 | 烈焰小鬼');
+        console.log('👾 毒爆虫 | 水晶构造体 | 枯骨守卫 | 迷雾幽灵');
     </script>
 </body>
 </html>
