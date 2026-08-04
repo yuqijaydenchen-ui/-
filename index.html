@@ -49,7 +49,6 @@
             box-shadow: 0 0 40px #6bcbff22;
             z-index: 15;
             pointer-events: auto;
-            transition: opacity 0.3s;
         }
         #miniStatPanel .title {
             color: #6bcbff;
@@ -93,7 +92,6 @@
             cursor: pointer;
             font-size: 12px;
             line-height: 18px;
-            transition: 0.15s;
         }
         #miniStatPanel .row button:hover {
             background: #3a4a6a;
@@ -139,7 +137,6 @@
             cursor: pointer;
             font-size: 11px;
             line-height: 18px;
-            transition: 0.15s;
         }
         #miniStatPanel .skill-row button:hover {
             background: #3a4a3a;
@@ -404,7 +401,7 @@
 
     <script>
         // ================================================================
-        //  暗影勇者 · 终极进化版 (完整修复)
+        //  暗影勇者 · 终极进化版 (地图多样化 + 子弹特效修复)
         // ================================================================
 
         const W = 800,
@@ -414,6 +411,7 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
+        // ---- DOM ----
         const hpSpan = document.getElementById('hpDisplay');
         const worldSpan = document.getElementById('worldDisplay');
         const keySpan = document.getElementById('keyDisplay');
@@ -459,17 +457,18 @@
             { name: '散射', damage: 1, speed: 7, color: '#44ff88', spread: 3, icon: '🔱' }
         ];
 
+        // ---- 子弹类型（颜色+特效定义） ----
         const BULLET_TYPES = {
-            normal: { label: '普通', color: '#6bcbff', damage: 1, speed: 1, pierce: 0, explode: false, homing: false,
-                spread: 1 },
-            pierce: { label: '穿透', color: '#44ddff', damage: 1.2, speed: 1.1, pierce: 3, explode: false, homing: false,
-                spread: 1 },
-            explode: { label: '爆炸', color: '#ff6633', damage: 1.5, speed: 0.8, pierce: 0, explode: true, homing: false,
-                spread: 1 },
-            homing: { label: '跟踪', color: '#ff44ff', damage: 0.8, speed: 0.7, pierce: 0, explode: false, homing: true,
-                spread: 1 },
-            spread: { label: '散射+', color: '#44ffaa', damage: 1, speed: 0.9, pierce: 0, explode: false, homing: false,
-                spread: 5 }
+            normal: { label: '普通', color: '#6bcbff', glow: '#6bcbff', damage: 1, speed: 1, pierce: 0, explode: false,
+                homing: false, spread: 1, trail: false },
+            pierce: { label: '穿透', color: '#44ddff', glow: '#44ddff', damage: 1.2, speed: 1.1, pierce: 3, explode: false,
+                homing: false, spread: 1, trail: true },
+            explode: { label: '爆炸', color: '#ff6633', glow: '#ff4400', damage: 1.5, speed: 0.8, pierce: 0, explode: true,
+                homing: false, spread: 1, trail: true },
+            homing: { label: '跟踪', color: '#ff44ff', glow: '#cc44ff', damage: 0.8, speed: 0.7, pierce: 0, explode: false,
+                homing: true, spread: 1, trail: true },
+            spread: { label: '散射+', color: '#44ffaa', glow: '#44ff88', damage: 1, speed: 0.9, pierce: 0, explode: false,
+                homing: false, spread: 5, trail: true }
         };
 
         let unlockedSkills = { pierce: false, explode: false, homing: false, spread: false };
@@ -604,9 +603,7 @@
             } catch (e) {}
         }
 
-        // ================================================================
-        //  BOSS 定义
-        // ================================================================
+        // ---- Boss定义 ----
         const BOSS_TYPES = [{
             id: 'flesh',
             name: '腐肉聚合体',
@@ -663,9 +660,7 @@
             attackPattern: 'omnidirectional'
         }];
 
-        // ================================================================
-        //  升级系统
-        // ================================================================
+        // ---- 升级系统 ----
         const STAT_CONFIG = {
             maxHp: { label: '生命上限', base: 100, cost: 2, inc: 10, min: 100 },
             speed: { label: '移动速度', base: 4.2, cost: 2, inc: 0.12, min: 3.0 },
@@ -702,7 +697,8 @@
                 statPoints += 2 + bonus;
                 if (level % 3 === 0) skillPoints++;
                 playSound('levelup');
-                showMessage('⬆ 升级！', `等级 ${level}！获得 ${2+bonus} 属性点` + (level % 3 === 0 ? ' +1技能点' : ''));
+                showMessage('⬆ 升级！', '等级 ' + level + '！获得 ' + (2 + bonus) + ' 属性点' + (level % 3 === 0 ? ' +1技能点' :
+                ''));
                 setTimeout(() => msgOverlay.classList.remove('show'), 1000);
                 updateMiniUI();
                 updateUI();
@@ -766,9 +762,7 @@
             updateUI();
         }
 
-        // ================================================================
-        //  微型面板
-        // ================================================================
+        // ---- 微型面板 ----
         function updateMiniUI() {
             miniPoints.textContent = '剩余点数: ' + statPoints;
             mHp.textContent = stats.maxHp;
@@ -796,41 +790,93 @@
         window.unlockSkill = unlockSkill;
 
         // ================================================================
-        //  关卡生成
+        //  地图生成器（多样化布局）
         // ================================================================
-        function generateInfiniteLevel(cycle, branch, level) {
+        function generateLevel(cycle, branch, level, isInfinite) {
             const platforms = [];
             const enemies = [];
             const keys = [];
             const items = [];
-            const difficulty = cycle * 1.8 + branch + level;
+            const difficulty = (isInfinite ? cycle * 1.8 : cycle * 0.5) + branch + level;
 
-            const platCount = 7 + Math.floor(difficulty * 0.9) + Math.floor(cycle * 0.8);
-            platforms.push({ x: 0, y: 460, w: W, h: 40 });
+            // ---- 布局模板选择 ----
+            const layoutIdx = (cycle * 7 + branch * 13 + level * 31) % 5;
+            // layout: 0=垂直塔, 1=空中连桥, 2=多层迷宫, 3=随机破碎, 4=阶梯上升
+
+            const groundY = 460;
+            platforms.push({ x: 0, y: groundY, w: W, h: 40 });
 
             const baseY = [420, 380, 340, 300, 260, 220, 180, 140, 100, 60];
-            for (let i = 0; i < platCount; i++) {
-                const offset = (i * 73 + cycle * 137 + level * 53) % 160;
-                let x = 30 + i * 75 * (0.8 + cycle * 0.01) + offset * 0.6;
-                if (x > W - 120) x = W - 120 - (i * 17) % 90;
-                const yIdx = i % baseY.length;
-                let y = baseY[yIdx] - (i % 5) * 12 - cycle * 3;
-                if (y < 40) y = 40;
-                let w = 60 + ((i * 7 + cycle * 11 + level * 13) % 100) + cycle * 4;
-                if (w > 180) w = 180;
-                platforms.push({ x, y, w, h: 14 });
-            }
-            platforms.sort((a, b) => a.y - b.y);
+            const platCount = 6 + Math.floor(difficulty * 0.7) + (isInfinite ? Math.floor(cycle * 0.6) : 0);
 
-            const lastPlat = platforms[platforms.length - 1];
+            // ---- 根据模板生成平台 ----
+            let platPositions = [];
+
+            if (layoutIdx === 0) {
+                // 垂直塔：平台集中在中间，逐层上升
+                for (let i = 0; i < platCount; i++) {
+                    const y = 420 - i * 38 - Math.floor(cycle * 1.5);
+                    if (y < 50) break;
+                    const x = 300 + Math.sin(i * 1.7 + cycle) * 180;
+                    const w = 70 + Math.sin(i * 0.9 + cycle * 1.3) * 30;
+                    platPositions.push({ x: Math.max(20, Math.min(W - 120, x)), y: Math.max(40, y), w: Math.max(50, w) });
+                }
+            } else if (layoutIdx === 1) {
+                // 空中连桥：水平长条平台
+                for (let i = 0; i < platCount; i++) {
+                    const y = 400 - (i % 4) * 70 - Math.floor(cycle * 1.2);
+                    if (y < 50) break;
+                    const x = 40 + i * 90 + Math.sin(i * 1.1 + cycle * 0.7) * 60;
+                    const w = 100 + Math.sin(i * 0.5 + cycle) * 30;
+                    platPositions.push({ x: Math.max(10, Math.min(W - 110, x)), y: Math.max(40, y), w: Math.max(60, w) });
+                }
+            } else if (layoutIdx === 2) {
+                // 多层迷宫：左右交替
+                for (let i = 0; i < platCount; i++) {
+                    const y = 420 - i * 32 - Math.floor(cycle * 1.8);
+                    if (y < 50) break;
+                    const side = (i % 2 === 0) ? 60 : 380;
+                    const x = side + Math.sin(i * 2.3 + cycle * 1.1) * 120;
+                    const w = 80 + Math.sin(i * 0.7 + cycle * 0.5) * 20;
+                    platPositions.push({ x: Math.max(10, Math.min(W - 100, x)), y: Math.max(40, y), w: Math.max(50, w) });
+                }
+            } else if (layoutIdx === 3) {
+                // 随机破碎：不规则的碎片平台
+                for (let i = 0; i < platCount; i++) {
+                    const y = 430 - i * 30 - Math.floor(cycle * 1.5) + Math.sin(i * 2.7 + cycle * 0.3) * 20;
+                    if (y < 50) break;
+                    const x = 40 + (i * 70 + cycle * 17 + level * 23) % (W - 140);
+                    const w = 50 + ((i * 11 + cycle * 7) % 70);
+                    platPositions.push({ x: Math.max(10, Math.min(W - 80, x)), y: Math.max(40, y), w: Math.max(40, w) });
+                }
+            } else {
+                // 阶梯上升：规整的阶梯
+                for (let i = 0; i < platCount; i++) {
+                    const y = 430 - i * 28 - Math.floor(cycle * 1.2);
+                    if (y < 50) break;
+                    const x = 60 + i * 55 + Math.sin(i * 0.3 + cycle) * 30;
+                    const w = 70 + Math.sin(i * 0.6 + cycle * 0.8) * 20;
+                    platPositions.push({ x: Math.max(10, Math.min(W - 90, x)), y: Math.max(40, y), w: Math.max(50, w) });
+                }
+            }
+
+            // 去重 + 排序
+            platPositions.sort((a, b) => a.y - b.y);
+            for (const p of platPositions) {
+                platforms.push({ x: p.x, y: p.y, w: p.w, h: 14 });
+            }
+
+            // 确保出口在最高处
+            const lastPlat = platforms[platforms.length - 1] || platforms[0];
             const exitX = lastPlat.x + lastPlat.w / 2 - 15;
             const exitY = lastPlat.y - 40;
 
-            const enemyCount = 4 + Math.floor(difficulty * 0.6) + Math.floor(cycle * 0.9);
+            // ---- 敌人 ----
+            const enemyCount = 3 + Math.floor(difficulty * 0.5) + (isInfinite ? Math.floor(cycle * 0.8) : 0);
             for (let i = 0; i < enemyCount; i++) {
                 let plat = platforms[1 + (i * 3 + cycle * 7) % (platforms.length - 1)];
                 if (!plat) plat = platforms[1];
-                let lv = Math.min(4, Math.floor((difficulty + i + cycle * 0.6) / 2));
+                let lv = Math.min(4, Math.floor((difficulty + i + cycle * 0.5) / 2));
                 const size = 18 + lv * 5;
                 const type = ['mushroom', 'ghost', 'bat', 'mushroom', 'ghost', 'bat'][(i + cycle) % 6];
                 enemies.push({
@@ -840,21 +886,22 @@
                     h: size,
                     type: type,
                     level: lv,
-                    hp: 2 + lv + Math.floor(cycle * 0.4),
+                    hp: 2 + lv + Math.floor(cycle * 0.3),
                     vx: (0.5 + lv * 0.2) * (i % 2 === 0 ? 1 : -1),
-                    speed: 0.7 + lv * 0.2 + cycle * 0.03,
+                    speed: 0.7 + lv * 0.2 + cycle * 0.02,
                     minX: plat.x + 3,
                     maxX: plat.x + plat.w - size - 3,
                     startY: plat.y - size,
-                    damage: 10 + lv * 8 + Math.floor(cycle * 1.5),
+                    damage: 10 + lv * 8 + Math.floor(cycle * 1.2),
                     hitFlash: 0,
-                    aggroRange: 160 + lv * 40 + cycle * 10,
+                    aggroRange: 160 + lv * 40 + cycle * 8,
                     jumpTimer: 0,
-                    expReward: 10 + lv * 4 + Math.floor(cycle * 2),
+                    expReward: 10 + lv * 4 + Math.floor(cycle * 1.5),
                 });
             }
 
-            const keyCount = 2 + Math.floor(difficulty / 3) + Math.floor(cycle * 0.4);
+            // ---- 钥匙 ----
+            const keyCount = 2 + Math.floor(difficulty / 3) + (isInfinite ? Math.floor(cycle * 0.3) : 0);
             const usedPlats = platforms.slice(1);
             for (let i = 0; i < Math.min(keyCount, usedPlats.length); i++) {
                 const plat = usedPlats[i % usedPlats.length];
@@ -865,7 +912,8 @@
                 keys.push({ x: plat.x + 30 + keys.length * 20, y: plat.y - 28, collected: false, r: 9 });
             }
 
-            const healCount = 1 + Math.floor(difficulty / 4) + Math.floor(cycle * 0.25);
+            // ---- 血包 ----
+            const healCount = 1 + Math.floor(difficulty / 4) + (isInfinite ? Math.floor(cycle * 0.2) : 0);
             for (let i = 0; i < Math.min(healCount, 6); i++) {
                 let plat = platforms[1 + (i * 7 + cycle * 13) % (platforms.length - 1)];
                 if (!plat) plat = platforms[1];
@@ -874,10 +922,11 @@
                     x: plat.x + 15 + i * 22,
                     y: plat.y - 30,
                     r: 12,
-                    value: 20 + Math.floor(cycle * 3),
+                    value: 20 + Math.floor(cycle * 2),
                 });
             }
 
+            // ---- 武器 ----
             if ((cycle + level + branch) % 2 === 1) {
                 let plat = platforms[2 % (platforms.length - 1)];
                 if (!plat) plat = platforms[1];
@@ -891,9 +940,10 @@
                 });
             }
 
+            // ---- Boss ----
             const bossType = BOSS_TYPES[Math.floor(Math.random() * BOSS_TYPES.length)];
             const bossPlat = platforms[Math.floor(platforms.length / 2)] || platforms[0];
-            const baseHp = 40 + cycle * 28 + Math.floor(difficulty * 4);
+            const baseHp = 40 + cycle * 25 + Math.floor(difficulty * 3);
             const bossHp = Math.floor(baseHp * bossType.hpMult);
             const boss = {
                 x: bossPlat.x + bossPlat.w / 2 - 35,
@@ -905,10 +955,10 @@
                 timer: 0,
                 bullets: [],
                 hitCooldown: 0,
-                expReward: 80 + cycle * 20,
+                expReward: 80 + cycle * 15,
                 type: bossType,
                 phase: 0,
-                speed: 1.2 + cycle * 0.06,
+                speed: 1.2 + cycle * 0.05,
                 attackTimer: 0,
                 spawnY: bossPlat.y - 75,
                 teleportTimer: 0,
@@ -920,9 +970,11 @@
             };
 
             enemies.splice(0, Math.floor(enemies.length / 3));
+
             return { platforms, enemies, keys, items, exit: { x: exitX, y: exitY, w: 30, h: 38 }, isBoss: true, boss };
         }
 
+        // ---- 普通模式（前27关） ----
         function generateNormalLevel(worldIdx, branchIdx, levelIdx, cycleOffset) {
             const idx = worldIdx * 9 + branchIdx * 3 + levelIdx;
             const difficulty = worldIdx + branchIdx + levelIdx + cycleOffset * 0.5;
@@ -1039,9 +1091,7 @@
             return { platforms, enemies, keys, items, exit: { x: exitX, y: exitY, w: 30, h: 38 }, isBoss, boss };
         }
 
-        // ================================================================
-        //  游戏状态
-        // ================================================================
+        // ---- 游戏状态 ----
         let game = {};
 
         function initGame() {
@@ -1102,6 +1152,7 @@
                 currentBossType: null,
                 _mouseX: 0,
                 _mouseY: 0,
+                layoutHistory: [],
             };
             loadLevel(0, 0, 0);
             updateUI();
@@ -1119,7 +1170,7 @@
 
             let data;
             if (isInfinite) {
-                data = generateInfiniteLevel(cycle, b, l);
+                data = generateLevel(cycle, b, l, true);
                 if (data.boss) {
                     bossNameDisplay.style.display = 'inline';
                     bossNameDisplay.textContent = '👹 ' + data.boss.type.name;
@@ -1188,8 +1239,8 @@
             const w = game.displayWorld || (game.world + 1);
             const b = game.displayBranch || (game.branch + 1);
             const l = game.displayLevel || (game.level + 1);
-            worldSpan.textContent = `${w}-${b}-${l}`;
-            keySpan.textContent = `${game.keysCollected} / ${game.totalKeys}`;
+            worldSpan.textContent = w + '-' + b + '-' + l;
+            keySpan.textContent = game.keysCollected + ' / ' + game.totalKeys;
             const rem = Math.max(0, game.player.maxJumps - game.player.jumpCount);
             jumpSpan.textContent = rem;
             const bt = getCurrentBulletType();
@@ -1229,9 +1280,7 @@
 
         function dist(x1, y1, x2, y2) { return Math.hypot(x2 - x1, y2 - y1); }
 
-        // ================================================================
-        //  粒子
-        // ================================================================
+        // ---- 粒子 ----
         function spawnParticles(x, y, color, count = 12, speedMult = 1) {
             for (let i = 0; i < count; i++) {
                 const angle = Math.random() * Math.PI * 2;
@@ -1243,7 +1292,7 @@
                     vy: Math.sin(angle) * speed - 1,
                     life: 30 + Math.random() * 30,
                     maxLife: 60,
-                    color,
+                    color: color,
                     size: 3 + Math.random() * 5,
                 });
             }
@@ -1278,9 +1327,7 @@
             if (game.particles.length > 500) game.particles.splice(0, 150);
         }
 
-        // ================================================================
-        //  射击
-        // ================================================================
+        // ---- 射击（修复子弹颜色+特效） ----
         let lastShootTime = 0;
         let shootSoundCooldown = 0;
 
@@ -1301,7 +1348,8 @@
             if (len < 10) return;
 
             const weapon = WEAPONS[p.weapon];
-            const btDef = BULLET_TYPES[getCurrentBulletType()] || BULLET_TYPES.normal;
+            const btKey = getCurrentBulletType();
+            const btDef = BULLET_TYPES[btKey] || BULLET_TYPES.normal;
             const damageBonus = 1 + stats.damageBonus;
             const count = btDef.spread || weapon.spread || 1;
 
@@ -1317,14 +1365,18 @@
                     life: 130,
                     damage: Math.ceil(weapon.damage * damageBonus * btDef.damage),
                     color: btDef.color,
-                    type: getCurrentBulletType(),
+                    glow: btDef.glow || btDef.color,
+                    type: btKey,
                     pierce: btDef.pierce || 0,
                     explode: btDef.explode || false,
                     homing: btDef.homing || false,
+                    trail: btDef.trail || false,
                     hitCount: 0,
+                    trailParticles: [],
                 });
             }
-            spawnParticles(cx, cy, btDef.color, 4);
+            // 射击粒子用子弹颜色
+            spawnParticles(cx, cy, btDef.color, 6);
             if (now - shootSoundCooldown > 100) { playSound('shoot');
                 shootSoundCooldown = now; }
         }
@@ -1337,9 +1389,7 @@
             spawnParticles(game.player.x + game.player.w / 2, game.player.y + game.player.h / 2, '#44ff88', 30, 2);
         }
 
-        // ================================================================
-        //  玩家更新
-        // ================================================================
+        // ---- 玩家更新 ----
         function updatePlayer() {
             const p = game.player;
             const keys = game.keysPressed;
@@ -1397,6 +1447,7 @@
                 if (p.trail[i].life <= 0) p.trail.splice(i, 1);
             }
 
+            // 收集钥匙
             for (const key of game.keys) {
                 if (key.collected) continue;
                 if (dist(p.x + p.w / 2, p.y + p.h / 2, key.x, key.y) < 26) {
@@ -1409,6 +1460,7 @@
                 }
             }
 
+            // 拾取物品
             for (let i = game.items.length - 1; i >= 0; i--) {
                 const item = game.items[i];
                 if (dist(p.x + p.w / 2, p.y + p.h / 2, item.x, item.y) < 25) {
@@ -1430,6 +1482,7 @@
                 }
             }
 
+            // 出口
             if (game.keysCollected >= game.totalKeys) {
                 if (rectCollide(p, game.exit)) {
                     game.levelComplete = true;
@@ -1443,7 +1496,7 @@
                                 if (game.infiniteMode) {
                                     nw = 0;
                                     game.totalCycles++;
-                                    showMessage('♾️ 无尽轮回', '第 ' + game.totalCycles + ' 轮 · 难度提升！');
+                                    showMessage('♾️ 无尽轮回', '第 ' + game.totalCycles + ' 轮 · 地图变化！');
                                     setTimeout(() => {
                                         msgOverlay.classList.remove('show');
                                         game.world = 0;
@@ -1475,6 +1528,7 @@
                 }
             }
 
+            // 敌人碰撞
             for (const e of game.enemies) {
                 if (e.y > H + 50) continue;
                 if (rectCollide(p, e)) {
@@ -1497,6 +1551,7 @@
                 }
             }
 
+            // Boss
             if (game.isBoss && game.boss && game.boss.hp > 0) {
                 const b = game.boss;
                 if (rectCollide(p, b)) {
@@ -1518,9 +1573,12 @@
                 updateBossAI();
             }
 
+            // ---- 子弹更新（修复颜色+特效） ----
             const timeScale = game.skillActive ? 0.6 : 1.0;
             for (let i = game.bullets.length - 1; i >= 0; i--) {
                 const bull = game.bullets[i];
+
+                // 跟踪
                 if (bull.homing && bull.life > 30) {
                     let target = null,
                         minDist = Infinity;
@@ -1543,21 +1601,44 @@
                         }
                     }
                 }
+
+                // 子弹尾迹
+                if (bull.trail && game.frame % 2 === 0) {
+                    game.particles.push({
+                        x: bull.x + (Math.random() - 0.5) * 4,
+                        y: bull.y + (Math.random() - 0.5) * 4,
+                        vx: (Math.random() - 0.5) * 0.3,
+                        vy: (Math.random() - 0.5) * 0.3,
+                        life: 15 + Math.random() * 10,
+                        maxLife: 25,
+                        color: bull.glow || bull.color,
+                        size: 2 + Math.random() * 3,
+                    });
+                }
+
                 bull.x += bull.vx * timeScale;
                 bull.y += bull.vy * timeScale;
                 bull.life--;
                 if (bull.x < -20 || bull.x > W + 20 || bull.y < -20 || bull.y > H + 20 || bull.life <= 0) {
+                    // 消失时小粒子
+                    if (bull.trail) spawnParticles(bull.x, bull.y, bull.color, 5);
                     game.bullets.splice(i, 1);
                     continue;
                 }
+
                 let hit = false;
+                // 碰撞敌人
                 for (const e of game.enemies) {
                     if (e.y > H + 50) continue;
                     if (dist(bull.x, bull.y, e.x + e.w / 2, e.y + e.h / 2) < bull.r + 12) {
                         e.hp -= bull.damage;
                         bull.hitCount++;
+                        // 击中特效（颜色对应子弹）
+                        spawnParticles(bull.x, bull.y, bull.color, 10, 1.5);
+
                         if (bull.explode) {
-                            spawnParticles(bull.x, bull.y, '#ff6633', 30, 2);
+                            spawnParticles(bull.x, bull.y, '#ff6633', 40, 2.5);
+                            spawnParticles(bull.x, bull.y, '#ffaa44', 20, 2);
                             playSound('explode');
                             for (const e2 of game.enemies) {
                                 if (e2 === e || e2.y > H + 50) continue;
@@ -1576,6 +1657,7 @@
                             hit = true;
                             break;
                         }
+
                         if (e.hp <= 0) {
                             e.y = H + 100;
                             spawnBlood(e.x + e.w / 2, e.y + e.h / 2, 20);
@@ -1586,20 +1668,25 @@
                                 game.items.push({ type: 'heal', x: e.x + e.w / 2, y: e.y - 30, r: 12, value: 20 + Math.floor(
                                         game.totalCycles * 2) });
                             }
-                        } else { e.hitFlash = 10;
-                            spawnParticles(bull.x, bull.y, '#ffaa44', 5); }
-                        if (bull.pierce > 0 && bull.hitCount >= bull.pierce) { game.bullets.splice(i, 1);
-                            hit = true; break; }
+                        } else { e.hitFlash = 10; }
+
+                        if (bull.pierce > 0 && bull.hitCount >= bull.pierce) {
+                            game.bullets.splice(i, 1);
+                            hit = true;
+                            break;
+                        }
                         hit = true;
                         break;
                     }
                 }
+
+                // Boss碰撞
                 if (!hit && game.isBoss && game.boss && game.boss.hp > 0) {
                     const b = game.boss;
                     if (bull.x > b.x && bull.x < b.x + b.w && bull.y > b.y && bull.y < b.y + b.h) {
                         b.hp -= bull.damage;
                         b.hitCooldown = 10;
-                        spawnBlood(bull.x, bull.y, 10);
+                        spawnParticles(bull.x, bull.y, bull.color, 15, 1.5);
                         playSound('boss_hit');
                         game.screenShake = 6;
                         updateBossUI();
@@ -1616,9 +1703,7 @@
             updateUI();
         }
 
-        // ================================================================
-        //  敌人AI
-        // ================================================================
+        // ---- 敌人AI ----
         function updateEnemies(timeScale) {
             const p = game.player;
             for (const e of game.enemies) {
@@ -1641,9 +1726,7 @@
             }
         }
 
-        // ================================================================
-        //  Boss AI (6种)
-        // ================================================================
+        // ---- Boss AI（保留6种） ----
         function updateBossAI() {
             const b = game.boss;
             if (!b || b.hp <= 0) return;
@@ -1665,7 +1748,7 @@
                         b.dashTimer = 20;
                         b.dashDir = { x: Math.sign(dx), y: Math.sign(dy) }; }
                 }
-            } else if (pattern === 'spread' || pattern === 'teleport') {
+            } else if (pattern === 'spread') {
                 if (b.teleportTimer !== undefined) {
                     b.teleportTimer -= timeScale;
                     if (b.teleportTimer <= 0 && Math.random() < 0.02 * timeScale) {
@@ -1852,9 +1935,6 @@
             updateUI();
         }
 
-        // ================================================================
-        //  伤害与死亡
-        // ================================================================
         function takeDamage(amount) {
             if (game.player.invincible > 0) return;
             game.hp -= amount;
@@ -1880,17 +1960,16 @@
         }
 
         // ================================================================
-        //  绘制（完整背景修复）
+        //  绘制（完整背景修复 + 子弹特效）
         // ================================================================
         function draw() {
             const w = game.world % 3;
             const theme = WORLDS[w] || WORLDS[0];
             const scary = theme.scary + (game.infiniteMode ? 0.5 : 0);
 
-            // 清空画布
             ctx.clearRect(0, 0, W, H);
 
-            // ---- 背景渐变 ----
+            // ---- 背景 ----
             const grad = ctx.createLinearGradient(0, 0, 0, H);
             grad.addColorStop(0, theme.bg1);
             grad.addColorStop(0.6, theme.bg2);
@@ -1898,9 +1977,8 @@
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, W, H);
 
-            // ---- 恐怖特效（鬼火、雾气、骷髅） ----
+            // ---- 恐怖特效 ----
             if (scary >= 0.8) {
-                // 雾气
                 const fog = ctx.createRadialGradient(W / 2, H / 2, 50, W / 2, H / 2, 500);
                 fog.addColorStop(0, 'rgba(0,0,0,0)');
                 fog.addColorStop(0.5, 'rgba(0,0,0,0.2)');
@@ -1908,7 +1986,6 @@
                 ctx.fillStyle = fog;
                 ctx.fillRect(0, 0, W, H);
 
-                // 鬼火（大量飘动）
                 const ghostCount = Math.min(30 + Math.floor(game.totalCycles * 2), 80);
                 for (let i = 0; i < ghostCount; i++) {
                     const x = (i * 47 + game.frame * 0.06 + Math.sin(i + game.frame * 0.005) * 20) % W;
@@ -1917,27 +1994,25 @@
                     const alpha = 0.04 + Math.sin(game.frame * 0.015 + i * 0.5) * 0.03 + 0.04;
                     ctx.shadowColor = '#6b3aff';
                     ctx.shadowBlur = 35;
-                    ctx.fillStyle = `rgba(120,80,255,${alpha})`;
+                    ctx.fillStyle = 'rgba(120,80,255,' + alpha + ')';
                     ctx.beginPath();
                     ctx.arc(x, y, size, 0, Math.PI * 2);
                     ctx.fill();
                 }
                 ctx.shadowBlur = 0;
 
-                // 骷髅装饰（固定位置 + 浮动）
                 if (scary >= 1.5) {
                     ctx.fillStyle = 'rgba(120,60,60,0.08)';
                     ctx.font = '34px sans-serif';
                     ctx.fillText('💀', 25 + Math.sin(game.frame * 0.01) * 5, 50 + Math.sin(game.frame * 0.015) * 3);
-                    ctx.fillText('💀', W - 70 + Math.sin(game.frame * 0.012 + 1) * 5, 45 + Math.sin(game.frame * 0.018 + 2) *
-                    3);
-                    ctx.fillText('💀', W / 2 - 20 + Math.sin(game.frame * 0.008 + 3) * 8, 30 + Math.sin(game.frame * 0.02 +
-                        4) * 4);
-                    // 血迹
-                    ctx.fillStyle = 'rgba(80,0,0,0.06)';
+                    ctx.fillText('💀', W - 70 + Math.sin(game.frame * 0.012 + 1) * 5, 45 + Math.sin(game.frame * 0.018 +
+                    2) * 3);
+                    ctx.fillText('💀', W / 2 - 20 + Math.sin(game.frame * 0.008 + 3) * 8, 30 + Math.sin(game.frame *
+                        0.02 + 4) * 4);
                     for (let i = 0; i < 6; i++) {
                         const bx = 80 + i * 130 + Math.sin(i * 2 + game.frame * 0.005) * 30;
                         const by = 70 + Math.sin(i * 1.5 + game.frame * 0.008) * 20;
+                        ctx.fillStyle = 'rgba(80,0,0,0.06)';
                         ctx.beginPath();
                         ctx.arc(bx, by, 12 + i * 4 + Math.sin(game.frame * 0.01 + i) * 3, 0, Math.PI * 2);
                         ctx.fill();
@@ -1947,8 +2022,8 @@
 
             // ---- 平台 ----
             for (const plat of game.platforms) {
-                const platColor = game.infiniteMode ? `hsl(${220 + game.totalCycles * 3}, 30%, ${20 + game.totalCycles * 0.3}%)` :
-                    theme.plat;
+                const platColor = game.infiniteMode ? 'hsl(' + (220 + game.totalCycles * 3) + ', 30%, ' + (20 + game
+                    .totalCycles * 0.3) + '%)' : theme.plat;
                 ctx.fillStyle = platColor;
                 ctx.shadowColor = (scary >= 1.5 || game.infiniteMode) ? '#ff333355' : 'rgba(0,0,0,0.3)';
                 ctx.shadowBlur = 12;
@@ -1980,7 +2055,7 @@
             ctx.fill();
             if (canEnter) {
                 ctx.shadowBlur = 60;
-                ctx.fillStyle = `rgba(100,220,255,${0.3 + Math.sin(game.frame*0.05)*0.2})`;
+                ctx.fillStyle = 'rgba(100,220,255,' + (0.3 + Math.sin(game.frame * 0.05) * 0.2) + ')';
                 ctx.beginPath();
                 ctx.arc(ex + 15, ey + 19, 12 + Math.sin(game.frame * 0.04) * 4, 0, Math.PI * 2);
                 ctx.fill();
@@ -2108,7 +2183,7 @@
                 ctx.roundRect(b.x, b.y, b.w, b.h, 12);
                 ctx.fill();
 
-                // 独特Boss特征
+                // 独特特征
                 if (bt.id === 'flesh') {
                     for (let i = 0; i < 5; i++) {
                         const fx = b.x + 10 + i * 12 + Math.sin(i + game.frame * 0.01) * 4;
@@ -2171,11 +2246,12 @@
                     for (let i = 0; i < 8; i++) {
                         const a = (i / 8) * Math.PI * 2 + game.frame * 0.01;
                         const r = 15 + Math.sin(game.frame * 0.04 + i) * 5;
-                        ctx.fillStyle = `hsl(${320 + i * 10}, 80%, ${50 + Math.sin(game.frame*0.03+i)*10}%)`;
+                        ctx.fillStyle = 'hsl(' + (320 + i * 10) + ', 80%, ' + (50 + Math.sin(game.frame * 0.03 + i) * 10) +
+                            '%)';
                         ctx.shadowBlur = 20;
                         ctx.beginPath();
-                        ctx.arc(b.x + b.w / 2 + Math.cos(a) * r * pulse, b.y + b.h / 2 + Math.sin(a) * r * pulse, 6 * pulse,
-                            0, Math.PI * 2);
+                        ctx.arc(b.x + b.w / 2 + Math.cos(a) * r * pulse, b.y + b.h / 2 + Math.sin(a) * r * pulse, 6 *
+                            pulse, 0, Math.PI * 2);
                         ctx.fill();
                     }
                 } else if (bt.id === 'shadow') {
@@ -2185,7 +2261,7 @@
                         const a = (i / 10) * Math.PI * 2 + game.frame * 0.01;
                         const r = 20 + Math.sin(game.frame * 0.03 + i * 2) * 10;
                         const alpha = 0.3 + Math.sin(game.frame * 0.04 + i) * 0.15;
-                        ctx.fillStyle = `rgba(136,68,255,${alpha})`;
+                        ctx.fillStyle = 'rgba(136,68,255,' + alpha + ')';
                         ctx.beginPath();
                         ctx.arc(b.x + b.w / 2 + Math.cos(a + game.frame * 0.01) * r, b.y + b.h / 2 + Math.sin(a + game
                             .frame * 0.01) * r, 10 * pulse, 0, Math.PI * 2);
@@ -2239,21 +2315,31 @@
                 }
             }
 
-            // ---- 玩家子弹 ----
+            // ---- 玩家子弹（修复颜色） ----
             for (const bull of game.bullets) {
-                ctx.shadowColor = bull.color || '#6bcbff';
-                ctx.shadowBlur = 30;
+                // 发光
+                ctx.shadowColor = bull.glow || bull.color || '#6bcbff';
+                ctx.shadowBlur = 35;
+                // 主体
                 ctx.fillStyle = bull.color || '#6bcbff';
                 ctx.beginPath();
                 ctx.arc(bull.x, bull.y, bull.r, 0, Math.PI * 2);
                 ctx.fill();
+                // 内层高光
+                ctx.shadowBlur = 15;
                 ctx.fillStyle = '#ffffff';
-                ctx.shadowBlur = 10;
                 ctx.beginPath();
-                ctx.arc(bull.x - 2, bull.y - 2, bull.r * 0.3, 0, Math.PI * 2);
+                ctx.arc(bull.x - 1.5, bull.y - 1.5, bull.r * 0.35, 0, Math.PI * 2);
                 ctx.fill();
+                // 外发光（更大）
+                ctx.shadowBlur = 50;
+                ctx.shadowColor = bull.glow || bull.color || '#6bcbff';
+                ctx.fillStyle = (bull.glow || bull.color || '#6bcbff') + '44';
+                ctx.beginPath();
+                ctx.arc(bull.x, bull.y, bull.r * 1.8, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
             }
-            ctx.shadowBlur = 0;
 
             // ---- 玩家 ----
             const p = game.player;
@@ -2404,9 +2490,7 @@
             return this;
         };
 
-        // ================================================================
-        //  事件
-        // ================================================================
+        // ---- 事件 ----
         canvas.addEventListener('mousedown', (e) => {
             if (!game.running || game.gameOver || game.levelComplete) return;
             const rect = canvas.getBoundingClientRect();
@@ -2475,15 +2559,13 @@
                 game.branch = 0;
                 game.level = 0;
                 loadLevel(0, 0, 0);
-                showMessage('♾️ 无尽模式已开启', '每关随机Boss，地图不断扩张！');
+                showMessage('♾️ 无尽模式已开启', '每关地图不同，随机Boss！');
                 setTimeout(() => msgOverlay.classList.remove('show'), 1500);
             }
             updateUI();
         });
 
-        // ================================================================
-        //  主循环
-        // ================================================================
+        // ---- 主循环 ----
         function gameLoop() {
             if (game.running && !game.gameOver && !game.levelComplete) {
                 game.frame++;
