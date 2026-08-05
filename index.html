@@ -2,12 +2,12 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8" />
-    <title>👻 暗影勇者 · 联机版</title>
+    <title>👻 暗影勇者 · 双人联机版</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js">
     </script>
     <style>
-        /* ===== 样式（保留原版+技能树面板） ===== */
+        /* ===== 样式 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -326,7 +326,6 @@
         #levelUpMsg.show {
             opacity: 1;
         }
-        /* 技能树面板 */
         #skillTreePanel {
             position: absolute;
             top: 60px;
@@ -421,6 +420,35 @@
         #skillTreeBtn {
             border-color: #f7d44a;
             color: #f7d44a;
+        }
+        #roomDisplay {
+            color: #44ff88;
+            font-size: 14px;
+            display: none;
+        }
+        #peerStatus {
+            color: #8899aa;
+            font-size: 12px;
+        }
+        #roomInput {
+            width: 70px;
+            background: #1a1a30;
+            color: #fff;
+            border: 1px solid #445566;
+            border-radius: 10px;
+            padding: 3px 6px;
+            font-size: 13px;
+            display: inline-block;
+        }
+        #roomInput:focus {
+            outline: none;
+            border-color: #6bcbff;
+        }
+        #modeToggle {
+            font-size: 12px;
+            padding: 2px 10px;
+            border-color: #44ff88;
+            color: #44ff88;
         }
         #mobileControls {
             position: absolute;
@@ -529,37 +557,6 @@
             pointer-events: auto;
             touch-action: manipulation;
         }
-        /* 联机UI */
-        #roomDisplay {
-            color: #44ff88;
-            font-size: 14px;
-            display: none;
-        }
-        #peerStatus {
-            color: #8899aa;
-            font-size: 12px;
-        }
-        #roomInput {
-            width: 70px;
-            background: #1a1a30;
-            color: #fff;
-            border: 1px solid #445566;
-            border-radius: 10px;
-            padding: 3px 6px;
-            font-size: 13px;
-            display: none;
-        }
-        #roomInput:focus {
-            outline: none;
-            border-color: #6bcbff;
-        }
-        #modeToggle {
-            font-size: 12px;
-            padding: 2px 10px;
-            border-color: #44ff88;
-            color: #44ff88;
-        }
-
         @media(max-width:760px) {
             #wrapper {
                 padding: 10px;
@@ -630,10 +627,12 @@
     </style>
 </head>
 <body>
+
     <div id="wrapper">
         <canvas id="gameCanvas" width="800" height="550"></canvas>
         <div id="msgOverlay"><div id="msgText">🎉<div id="msgSub"></div></div></div>
         <div id="levelUpMsg">⬆ Lv.1</div>
+
         <div id="mobileControls">
             <div id="joystickZone" class="ctrl-zone"><div id="joystickKnob"></div></div>
             <div id="shootZone" class="ctrl-zone">🔫</div>
@@ -641,6 +640,7 @@
             <div id="mobileWeaponBtn" class="ctrl-zone">⚔</div>
             <div id="mobileSkillBtn" class="ctrl-zone">⏳</div>
         </div>
+
         <div id="statPanel">
             <h3>📊 属性分配</h3>
             <div class="points-remaining" id="pointsRemaining">剩余: 0</div>
@@ -651,13 +651,10 @@
             <div class="stat-row"><span class="stat-name">🔫 射速</span><span class="stat-val" id="statFireRate">1.0</span><button onclick="upgradeStat('fireRate')">+</button></div>
             <button class="close-btn" onclick="toggleStatPanel()">✕ 关闭</button>
         </div>
-        <!-- 技能树面板 -->
+
         <div id="skillTreePanel">
             <h3>🌳 技能树</h3>
-            <div class="currency-row">
-                <span>🪙 金币: <span id="goldDisplay">0</span></span>
-                <span>💎 宝石: <span id="gemDisplay">0</span></span>
-            </div>
+            <div class="currency-row"><span>🪙 金币: <span id="goldDisplay">0</span></span><span>💎 宝石: <span id="gemDisplay">0</span></span></div>
             <div id="skillTreeList"></div>
             <button id="skillTreeClose">✕ 关闭</button>
         </div>
@@ -676,10 +673,9 @@
                 <button class="btn" id="infiniteToggle">♾️ 无尽</button>
                 <button class="btn-stat" id="statBtn">📊 属性</button>
                 <button class="btn" id="skillTreeBtn" style="border-color:#f7d44a;color:#f7d44a;">🌳 技能树</button>
-                <!-- 联机按钮 -->
                 <button class="btn" id="hostBtn" style="border-color:#44ff88;color:#44ff88;font-size:13px;">🏠 创建</button>
                 <button class="btn" id="joinBtn" style="border-color:#6bcbff;color:#6bcbff;font-size:13px;">🔗 加入</button>
-                <input id="roomInput" placeholder="6位码" style="width:70px;background:#1a1a30;color:#fff;border:1px solid #445566;border-radius:10px;padding:3px 6px;font-size:13px;display:none;">
+                <input id="roomInput" placeholder="6位码" style="width:70px;background:#1a1a30;color:#fff;border:1px solid #445566;border-radius:10px;padding:3px 6px;font-size:13px;">
                 <span id="roomDisplay" style="color:#44ff88;font-size:14px;display:none;"></span>
                 <span id="peerStatus" style="color:#8899aa;font-size:12px;">🔴 离线</span>
                 <button class="btn" id="modeToggle" style="border-color:#44ff88;color:#44ff88;font-size:11px;padding:2px 10px;">🤝 合作</button>
@@ -691,8 +687,8 @@
 
     <script>
         // ================================================================
-        //  👻 暗影勇者 · 联机版
-        //  8种特色怪物 + 6种地形 + 4技能 + 5Boss + 无尽模式 + 双语 + 联机
+        //  👻 暗影勇者 · 双人联机完整版
+        //  所有JS代码都在这一个 <script> 标签里
         // ================================================================
 
         // ----- 常量与UI -----
@@ -731,7 +727,8 @@
         let isConnected = false;
         let syncCounter = 0;
         let gameMode = 'coop';
-        let otherPlayer = { x: 100, y: 300, hp: 100, facing: 1, weapon: 0, alive: true, maxHp: 100 };
+        let otherPlayer = { x: 150, y: 300, hp: 100, maxHp: 100, facing: 1, weapon: 0, jumpCount: 0, maxJumps: 3,
+            alive: true, gold: 0, gems: 0, level: 1, exp: 0, expToNext: 20, statPoints: 0, stats: {}, unlockedSkills: [] };
 
         // ----- 世界主题 -----
         const WORLDS = [
@@ -976,7 +973,7 @@
                     return p; }
         ];
 
-        // ----- 多语言（完整双语） -----
+        // ----- 多语言 -----
         const LANG = {
             zh: {
                 hp: '❤️',
@@ -1225,37 +1222,44 @@
             fireRate: { label: '射速', base: 1.0, cost: 3, inc: 0.08, min: 0.5 },
         };
 
-        let statPoints = 0;
-        let stats = {};
-        let level = 1;
-        let exp = 0;
-        let expToNext = 20;
-        let levelUpTimer = 0;
+        // ----- 玩家数据 -----
+        let playerData = {
+            statPoints: 0,
+            stats: {},
+            level: 1,
+            exp: 0,
+            expToNext: 20,
+            gold: 10,
+            gems: 2,
+            unlockedSkills: new Set(),
+            hp: 100,
+            maxHp: 100,
+        };
 
-        // ----- 货币与技能树 -----
-        let gold = 0;
-        let gems = 0;
-        let unlockedSkills = new Set();
-
-        function initStats() {
-            stats = {};
-            for (const key in STAT_CONFIG) stats[key] = STAT_CONFIG[key].base;
-            statPoints = 0;
-            level = 1;
-            exp = 0;
-            expToNext = 20;
+        function initPlayerStats() {
+            playerData.stats = {};
+            for (const key in STAT_CONFIG) playerData.stats[key] = STAT_CONFIG[key].base;
+            playerData.statPoints = 0;
+            playerData.level = 1;
+            playerData.exp = 0;
+            playerData.expToNext = 20;
+            playerData.hp = playerData.stats.maxHp;
+            playerData.maxHp = playerData.stats.maxHp;
+            playerData.gold = 10;
+            playerData.gems = 2;
+            playerData.unlockedSkills = new Set();
             updateStatUI();
         }
 
         function addExp(amount) {
-            exp += amount;
-            while (exp >= expToNext) {
-                exp -= expToNext;
-                level++;
-                expToNext = Math.floor(20 + level * 15);
-                statPoints += 3;
+            playerData.exp += amount;
+            while (playerData.exp >= playerData.expToNext) {
+                playerData.exp -= playerData.expToNext;
+                playerData.level++;
+                playerData.expToNext = Math.floor(20 + playerData.level * 15);
+                playerData.statPoints += 3;
                 playSound('levelup');
-                showLevelUp(level);
+                showLevelUp(playerData.level);
                 updateStatUI();
                 updateUI();
             }
@@ -1270,13 +1274,13 @@
         }
 
         function upgradeStat(key) {
-            if (statPoints <= 0) return;
+            if (playerData.statPoints <= 0) return;
             const cfg = STAT_CONFIG[key];
             if (!cfg) return;
             const cost = Math.floor(cfg.cost);
-            if (statPoints < cost) return;
-            statPoints -= cost;
-            stats[key] += cfg.inc;
+            if (playerData.statPoints < cost) return;
+            playerData.statPoints -= cost;
+            playerData.stats[key] += cfg.inc;
             updateStatUI();
             updateUI();
             applyStats();
@@ -1285,23 +1289,27 @@
         function applyStats() {
             const p = game?.player;
             if (!p) return;
-            p.maxHp = stats.maxHp;
-            p.speed = stats.speed;
-            p.jumpPower = -stats.jumpPower;
-            if (unlockedSkills.has('skill_speed')) p.speed += 0.3;
-            if (unlockedSkills.has('skill_jump')) p.maxJumps = 4;
+            p.maxHp = playerData.stats.maxHp;
+            p.speed = playerData.stats.speed;
+            p.jumpPower = -playerData.stats.jumpPower;
+            if (playerData.unlockedSkills.has('skill_speed')) p.speed += 0.3;
+            if (playerData.unlockedSkills.has('skill_jump')) p.maxJumps = 4;
             else p.maxJumps = 3;
+            p.maxHp = playerData.stats.maxHp;
+            if (playerData.hp > p.maxHp) playerData.hp = p.maxHp;
             updateUI();
         }
 
         function updateStatUI() {
-            pointsRemaining.textContent = t('statPoints', { p: statPoints });
-            document.getElementById('statHp').textContent = stats.maxHp;
-            document.getElementById('statSpeed').textContent = stats.speed.toFixed(2);
-            document.getElementById('statJump').textContent = stats.jumpPower.toFixed(2);
-            document.getElementById('statDamage').textContent = '+' + (stats.damageBonus * 100).toFixed(0) + '%';
-            document.getElementById('statFireRate').textContent = stats.fireRate.toFixed(2);
-            document.querySelectorAll('#statPanel .stat-row button').forEach(b => { b.disabled = statPoints <= 0; });
+            pointsRemaining.textContent = t('statPoints', { p: playerData.statPoints });
+            document.getElementById('statHp').textContent = playerData.stats.maxHp;
+            document.getElementById('statSpeed').textContent = playerData.stats.speed.toFixed(2);
+            document.getElementById('statJump').textContent = playerData.stats.jumpPower.toFixed(2);
+            document.getElementById('statDamage').textContent = '+' + (playerData.stats.damageBonus * 100).toFixed(0) +
+            '%';
+            document.getElementById('statFireRate').textContent = playerData.stats.fireRate.toFixed(2);
+            document.querySelectorAll('#statPanel .stat-row button').forEach(b => { b.disabled = playerData.statPoints <=
+                    0; });
         }
 
         function toggleStatPanel() {
@@ -1319,8 +1327,8 @@
             for (const sk of SKILL_TREE) {
                 const row = document.createElement('div');
                 row.className = 'skill-tree-row';
-                const unlocked = unlockedSkills.has(sk.id);
-                const canAfford = gold >= sk.costGold && gems >= sk.costGem;
+                const unlocked = playerData.unlockedSkills.has(sk.id);
+                const canAfford = playerData.gold >= sk.costGold && playerData.gems >= sk.costGem;
                 row.innerHTML = `
                         <span class="skill-name">${sk.name}</span>
                         <span class="skill-cost">🪙${sk.costGold} 💎${sk.costGem}</span>
@@ -1329,22 +1337,22 @@
                     `;
                 container.appendChild(row);
             }
-            document.getElementById('goldDisplay').textContent = gold;
-            document.getElementById('gemDisplay').textContent = gems;
+            document.getElementById('goldDisplay').textContent = playerData.gold;
+            document.getElementById('gemDisplay').textContent = playerData.gems;
         }
 
         function unlockSkill(id) {
             const sk = SKILL_TREE.find(s => s.id === id);
             if (!sk) return;
-            if (unlockedSkills.has(id)) return;
-            if (gold < sk.costGold || gems < sk.costGem) {
+            if (playerData.unlockedSkills.has(id)) return;
+            if (playerData.gold < sk.costGold || playerData.gems < sk.costGem) {
                 showMessage('❌ 资源不足', `需要 🪙${sk.costGold} 💎${sk.costGem}`);
                 setTimeout(() => msgOverlay.classList.remove('show'), 1200);
                 return;
             }
-            gold -= sk.costGold;
-            gems -= sk.costGem;
-            unlockedSkills.add(id);
+            playerData.gold -= sk.costGold;
+            playerData.gems -= sk.costGem;
+            playerData.unlockedSkills.add(id);
             if (SKILL_TREE_TO_IDX[id] !== undefined) {}
             playSound('levelup');
             updateSkillTreeUI();
@@ -1366,15 +1374,16 @@
 
         // ----- 游戏状态 -----
         let game = {};
+        let levelUpTimer = 0;
 
         function initGame() {
             isConnected = false;
             document.getElementById('msgOverlay').onclick = null;
-            initStats();
-            unlockedSkills = new Set();
-            gold = 10;
-            gems = 2;
+            initPlayerStats();
             currentSkill = 0;
+            otherPlayer = { x: 150, y: 300, hp: 100, maxHp: 100, facing: 1, weapon: 0, jumpCount: 0, maxJumps: 3,
+                alive: true, gold: 0, gems: 0, level: 1, exp: 0, expToNext: 20, statPoints: 0, stats: {},
+                unlockedSkills: [] };
             game = {
                 world: 0,
                 level: 0,
@@ -1383,8 +1392,6 @@
                 totalCycles: 0,
                 mapWidth: W,
                 mapHeight: H,
-                hp: stats.maxHp,
-                maxHp: stats.maxHp,
                 keysCollected: 0,
                 totalKeys: 0,
                 running: true,
@@ -1397,8 +1404,8 @@
                     h: 30,
                     vx: 0,
                     vy: 0,
-                    speed: stats.speed,
-                    jumpPower: -stats.jumpPower,
+                    speed: playerData.stats.speed,
+                    jumpPower: -playerData.stats.jumpPower,
                     onGround: false,
                     jumpCount: 0,
                     maxJumps: 3,
@@ -1406,7 +1413,7 @@
                     invincible: 0,
                     weapon: 0,
                     trail: [],
-                    maxHp: stats.maxHp,
+                    maxHp: playerData.stats.maxHp,
                     healTimer: 0,
                 },
                 platforms: [],
@@ -1438,6 +1445,9 @@
                 thunderTimer: 0,
                 skillType: 0,
                 terrainType: 0,
+                otherPlayer: { x: 150, y: 300, hp: 100, maxHp: 100, facing: 1, weapon: 0, jumpCount: 0, maxJumps: 3,
+                    alive: true, gold: 0, gems: 0, level: 1, exp: 0, expToNext: 20, statPoints: 0, stats: {},
+                    unlockedSkills: [] },
             };
             loadLevel(0);
             updateUI();
@@ -1716,11 +1726,15 @@
             p.jumpCount = 0;
             p.invincible = 0;
             p.trail = [];
-            p.speed = stats.speed;
-            p.jumpPower = -stats.jumpPower;
-            p.maxHp = stats.maxHp;
+            p.speed = playerData.stats.speed;
+            p.jumpPower = -playerData.stats.jumpPower;
+            p.maxHp = playerData.stats.maxHp;
             p.healTimer = 0;
-            if (game.hp > p.maxHp) game.hp = p.maxHp;
+            if (playerData.hp > p.maxHp) playerData.hp = p.maxHp;
+
+            game.otherPlayer.x = 150;
+            game.otherPlayer.y = 300;
+            game.otherPlayer.alive = true;
 
             if (game.isBoss && game.boss) { bossHpBar.style.display = 'flex';
                 updateBossUI(); } else { bossHpBar.style.display = 'none'; }
@@ -1728,18 +1742,18 @@
         }
 
         function updateUI() {
-            hpSpan.textContent = Math.ceil(game.hp);
+            hpSpan.textContent = Math.ceil(playerData.hp);
             const displayLvl = game.level + 1 + game.totalCycles * 5;
             worldSpan.textContent = `${displayLvl}`;
             keySpan.textContent = `${game.keysCollected} / ${game.totalKeys}`;
             const rem = Math.max(0, game.player.maxJumps - game.player.jumpCount);
             jumpSpan.textContent = rem;
             weaponSpan.textContent = WEAPONS[game.player.weapon].icon + ' ' + WEAPONS[game.player.weapon].name;
-            levelSpan.textContent = `Lv.${level}`;
+            levelSpan.textContent = `Lv.${playerData.level}`;
             updateSkillUI();
             updateStatUI();
-            document.getElementById('goldDisplay').textContent = gold;
-            document.getElementById('gemDisplay').textContent = gems;
+            document.getElementById('goldDisplay').textContent = playerData.gold;
+            document.getElementById('gemDisplay').textContent = playerData.gems;
         }
 
         function updateBossUI() {
@@ -1817,7 +1831,7 @@
 
         function shootBullet(targetX, targetY) {
             const now = performance.now();
-            const fireRate = Math.max(0.3, 1.0 / stats.fireRate);
+            const fireRate = Math.max(0.3, 1.0 / playerData.stats.fireRate);
             const coolDownMs = 70 * fireRate;
             if (now - lastShootTime < coolDownMs) return;
             lastShootTime = now;
@@ -1832,9 +1846,9 @@
             if (len < 10) return;
             const weapon = WEAPONS[p.weapon];
             const count = weapon.spread || 1;
-            const damageBonus = 1 + stats.damageBonus;
-            const isPierce = weapon.type === 'pierce' || unlockedSkills.has('skill_pierce');
-            const isExplode = weapon.type === 'explode' || unlockedSkills.has('skill_explode');
+            const damageBonus = 1 + playerData.stats.damageBonus;
+            const isPierce = weapon.type === 'pierce' || playerData.unlockedSkills.has('skill_pierce');
+            const isExplode = weapon.type === 'explode' || playerData.unlockedSkills.has('skill_explode');
             const pierceCount = isPierce ? 5 : 1;
             const explodeRadius = isExplode ? 30 : 15;
 
@@ -1856,6 +1870,7 @@
                     pierceCount: pierceCount,
                     isEnemy: false,
                     explodeRadius: explodeRadius,
+                    owner: 'self',
                 });
             }
             spawnParticles(cx, cy, weapon.color, 4);
@@ -1867,7 +1882,7 @@
         function activateSkill() {
             if (game.skillCooldown > 0 || game.skillActive) return;
             const skMap = { 1: 'skill_heal', 2: 'skill_dash', 3: 'skill_thunder' };
-            if (currentSkill > 0 && skMap[currentSkill] && !unlockedSkills.has(skMap[currentSkill])) {
+            if (currentSkill > 0 && skMap[currentSkill] && !playerData.unlockedSkills.has(skMap[currentSkill])) {
                 showMessage('❌ 技能未解锁', '请在技能树中解锁');
                 setTimeout(() => msgOverlay.classList.remove('show'), 1200);
                 return;
@@ -1885,7 +1900,7 @@
                         2);
                     break;
                 case 1:
-                    game.hp = Math.min(game.player.maxHp, game.hp + 20);
+                    playerData.hp = Math.min(game.player.maxHp, playerData.hp + 20);
                     spawnParticles(game.player.x + game.player.w / 2, game.player.y + game.player.h / 2, '#44ff88', 40,
                         2);
                     playSound('heal');
@@ -1900,14 +1915,14 @@
                     for (const e of game.enemies) {
                         if (e.y > game.mapHeight + 50) continue;
                         if (Math.abs(e.x - p.x) < 120 && Math.abs(e.y - p.y) < 60) {
-                            e.hp -= 5 + stats.damageBonus * 2;
+                            e.hp -= 5 + playerData.stats.damageBonus * 2;
                             if (e.hp <= 0) {
                                 e.y = game.mapHeight + 100;
                                 spawnBlood(e.x + e.w / 2, e.y + e.h / 2, 20);
                                 playSound('kill');
                                 game.totalKills++;
                                 addExp(e.expReward || 10);
-                                gold += (e.goldReward || 3);
+                                playerData.gold += (e.goldReward || 3);
                             } else { e.hitFlash = 15; }
                         }
                     }
@@ -1931,14 +1946,14 @@
                 const ty = e.y - 20;
                 spawnExplosion(tx, ty, '#ffff44', 20);
                 if (dist(game.player.x + game.player.w / 2, game.player.y + game.player.h / 2, tx, ty) < 100) {
-                    e.hp -= 8 + stats.damageBonus * 2;
+                    e.hp -= 8 + playerData.stats.damageBonus * 2;
                     if (e.hp <= 0) {
                         e.y = game.mapHeight + 100;
                         spawnBlood(e.x + e.w / 2, e.y + e.h / 2, 20);
                         playSound('kill');
                         game.totalKills++;
                         addExp(e.expReward || 10);
-                        gold += (e.goldReward || 3);
+                        playerData.gold += (e.goldReward || 3);
                     } else { e.hitFlash = 15; }
                 }
             }
@@ -1947,7 +1962,7 @@
                 const tx = b.x + b.w / 2 + Math.random() * 40 - 20;
                 const ty = b.y + b.h / 2;
                 spawnExplosion(tx, ty, '#ffff44', 30);
-                b.hp -= 5 + stats.damageBonus * 1.5;
+                b.hp -= 5 + playerData.stats.damageBonus * 1.5;
                 updateBossUI();
                 if (b.hp <= 0) bossDefeated();
             }
@@ -1962,7 +1977,7 @@
             if (p.invincible > 0) p.invincible--;
             if (p.healTimer > 0) {
                 p.healTimer--;
-                if (p.healTimer % 10 === 0) { game.hp = Math.min(p.maxHp, game.hp + 5);
+                if (p.healTimer % 10 === 0) { playerData.hp = Math.min(p.maxHp, playerData.hp + 5);
                     spawnParticles(p.x + p.w / 2, p.y + p.h / 2, '#44ff88', 2); }
             }
             if (game.skillCooldown > 0) game.skillCooldown--;
@@ -2028,7 +2043,7 @@
                     spawnParticles(key.x, key.y, '#f7d44a', 20);
                     playSound('key');
                     addExp(5);
-                    gold += 2;
+                    playerData.gold += 2;
                     updateUI();
                     updateSkillTreeUI();
                 }
@@ -2093,7 +2108,7 @@
                     if (d < 60) {
                         spawnExplosion(e.x + e.w / 2, e.y + e.h / 2, '#88cc33', 40);
                         game.screenShake = 10;
-                        if (d < 45) { takeDamage(e.damage); if (game.hp <= 0) { gameOver(); return; } }
+                        if (d < 45) { takeDamage(e.damage); if (playerData.hp <= 0) { gameOver(); return; } }
                         e.y = game.mapHeight + 100;
                         playSound('kill');
                         continue;
@@ -2108,7 +2123,7 @@
                         playSound('kill');
                         game.totalKills++;
                         addExp(e.expReward || 10);
-                        gold += (e.goldReward || 3);
+                        playerData.gold += (e.goldReward || 3);
                         if (e.split && e.hp > 1) {
                             for (let s = 0; s < 2; s++) {
                                 const size2 = e.w * 0.6;
@@ -2151,7 +2166,7 @@
                         updateSkillTreeUI();
                     } else if (p.invincible <= 0) {
                         takeDamage(e.damage || 10);
-                        if (game.hp <= 0) { gameOver(); return; }
+                        if (playerData.hp <= 0) { gameOver(); return; }
                     }
                 }
             }
@@ -2172,7 +2187,7 @@
                         if (b.hp <= 0) bossDefeated();
                     } else if (p.invincible <= 0) {
                         takeDamage(30);
-                        if (game.hp <= 0) { gameOver(); return; }
+                        if (playerData.hp <= 0) { gameOver(); return; }
                     }
                 }
                 updateBossAI();
@@ -2190,7 +2205,7 @@
                         bull.life <= 0) { game.bullets.splice(i, 1); continue; }
                     const p2 = game.player;
                     if (dist(p2.x + p2.w / 2, p2.y + p2.h / 2, bull.x, bull.y) < bull.r + 12) {
-                        if (p2.invincible <= 0) { takeDamage(bull.damage || 10); if (game.hp <= 0) { gameOver(); return; } }
+                        if (p2.invincible <= 0) { takeDamage(bull.damage || 10); if (playerData.hp <= 0) { gameOver(); return; } }
                         game.bullets.splice(i, 1);
                     }
                     continue;
@@ -2215,7 +2230,7 @@
                                 playSound('kill');
                                 game.totalKills++;
                                 addExp(e.expReward || 10);
-                                gold += (e.goldReward || 3);
+                                playerData.gold += (e.goldReward || 3);
                                 if (e.split && e.hp > 1) {
                                     for (let s = 0; s < 2; s++) {
                                         const size2 = e.w * 0.6;
@@ -2284,7 +2299,7 @@
                             playSound('kill');
                             game.totalKills++;
                             addExp(e.expReward || 10);
-                            gold += (e.goldReward || 3);
+                            playerData.gold += (e.goldReward || 3);
                             if (e.split && e.hp > 1) {
                                 for (let s = 0; s < 2; s++) {
                                     const size2 = e.w * 0.6;
@@ -2352,22 +2367,23 @@
                             i, 1); } else if (hit) { game.bullets.splice(i, 1); }
             }
 
+            if (gameMode === 'pvp') {
+                checkPVPDamage();
+            }
+
             const enemyTimeScale = game.skillActive && game.skillType === 0 ? 0.4 : 1.0;
             updateEnemies(enemyTimeScale);
             updateParticles();
             updateUI();
             updateSkillTreeUI();
-
-            // 联机同步
             syncLoop();
         }
 
-        // ----- 敌人AI（含特色行为） -----
+        // ----- 敌人AI -----
         function updateEnemies(timeScale = 1.0) {
             const p = game.player;
             for (const e of game.enemies) {
                 if (e.y > game.mapHeight + 50) continue;
-                // 暗影刺客隐身
                 if (e.stealth) {
                     e.stealthTimer--;
                     if (e.stealthTimer <= 0) {
@@ -2385,7 +2401,6 @@
                     }
                     if (e.isStealthed) continue;
                 }
-                // 远程攻击
                 if (e.ranged) {
                     const d = dist(p.x + p.w / 2, p.y + p.h / 2, e.x + e.w / 2, e.y + e.h / 2);
                     if (d < e.aggroRange) {
@@ -2411,7 +2426,6 @@
                         }
                     }
                 }
-                // 移动
                 const dx = p.x + p.w / 2 - (e.x + e.w / 2);
                 const dy = p.y + p.h / 2 - (e.y + e.h / 2);
                 const d = Math.hypot(dx, dy);
@@ -2425,7 +2439,6 @@
                     e.x += e.vx * e.speed * timeScale * slowMult;
                     if (e.x < e.minX || e.x > e.maxX) e.vx *= -1;
                 }
-                // 特殊效果
                 if (e.type === 'frost') {
                     if (game.frame % 10 === 0) spawnParticles(e.x + e.w / 2, e.y + e.h, '#88ddff', 2);
                 }
@@ -2437,7 +2450,6 @@
                 }
                 if (e.hitFlash > 0) e.hitFlash--;
             }
-            // 敌方子弹
             for (let i = game.bullets.length - 1; i >= 0; i--) {
                 const bull = game.bullets[i];
                 if (!bull.isEnemy) continue;
@@ -2445,7 +2457,7 @@
                     bull.life <= 0) { game.bullets.splice(i, 1); continue; }
                 const p = game.player;
                 if (dist(p.x + p.w / 2, p.y + p.h / 2, bull.x, bull.y) < bull.r + 12) {
-                    if (p.invincible <= 0) { takeDamage(bull.damage || 10); if (game.hp <= 0) { gameOver(); return; } }
+                    if (p.invincible <= 0) { takeDamage(bull.damage || 10); if (playerData.hp <= 0) { gameOver(); return; } }
                     game.bullets.splice(i, 1);
                 }
             }
@@ -2520,7 +2532,7 @@
                             .bullets.splice(i, 1); continue; }
                 if (dist(p.x + p.w / 2, p.y + p.h / 2, bull.x, bull.y) < bull.r + 12) {
                     if (p.invincible <= 0) { takeDamage(20);
-                        b.bullets.splice(i, 1); if (game.hp <= 0) { gameOver(); return; } }
+                        b.bullets.splice(i, 1); if (playerData.hp <= 0) { gameOver(); return; } }
                 }
             }
             if (b.hitCooldown > 0) b.hitCooldown--;
@@ -2533,7 +2545,7 @@
             game.screenShake = 25;
             playSound('death');
             addExp(b.expReward || 50);
-            gems += (b.gemReward || 3);
+            playerData.gems += (b.gemReward || 3);
             game.boss = null;
             game.isBoss = false;
             game.items.push({ type: 'heal', x: b.x + 20, y: b.y + 10, r: 12, value: 20 });
@@ -2548,15 +2560,14 @@
             updateSkillTreeUI();
         }
 
-        // ----- 伤害/死亡 -----
         function takeDamage(amount) {
             if (game.player.invincible > 0) return;
-            game.hp -= amount;
+            playerData.hp -= amount;
             game.player.invincible = 30;
             game.screenShake = 8;
             playSound('damage');
             spawnBlood(game.player.x + game.player.w / 2, game.player.y + game.player.h / 2, 20);
-            if (game.hp <= 0) { game.hp = 0;
+            if (playerData.hp <= 0) { playerData.hp = 0;
                 gameOver(); }
             updateUI();
         }
@@ -2573,7 +2584,7 @@
             msgOverlay.classList.add('show');
         }
 
-        // ----- 绘制怪物（8种特色外观） -----
+        // ----- 绘制怪物 -----
         function drawMonster(e) {
             const flash = e.hitFlash > 0;
             const size = e.w;
@@ -2858,7 +2869,6 @@
             }
             ctx.shadowBlur = 0;
 
-            // 出口
             const ex = game.exit.x,
                 ey = game.exit.y;
             const canEnter = game.keysCollected >= game.totalKeys;
@@ -2892,7 +2902,6 @@
             }
             ctx.shadowBlur = 0;
 
-            // 钥匙
             for (const key of game.keys) {
                 if (key.collected) continue;
                 const bob = Math.sin(game.frame * 0.04 + key.x) * 3;
@@ -2914,7 +2923,6 @@
             }
             ctx.shadowBlur = 0;
 
-            // 物品
             for (const item of game.items) {
                 if (item.type === 'heal') {
                     const bob = Math.sin(game.frame * 0.04 + item.x) * 3;
@@ -2944,14 +2952,12 @@
             }
             ctx.shadowBlur = 0;
 
-            // 绘制怪物
             for (const e of game.enemies) {
                 if (e.y > game.mapHeight + 50) continue;
                 drawMonster(e);
             }
             ctx.shadowBlur = 0;
 
-            // Boss
             if (game.isBoss && game.boss && game.boss.hp > 0) {
                 drawBoss(game.boss, game.player);
                 if (game.boss.hp < game.boss.maxHp * 0.3 && Math.floor(game.frame / 8) % 2 === 0) {
@@ -2960,7 +2966,6 @@
                 }
             }
 
-            // 子弹
             for (const bull of game.bullets) {
                 if (bull.isEnemy) {
                     ctx.shadowColor = '#ff4444';
@@ -3002,31 +3007,36 @@
             ctx.shadowBlur = 0;
 
             // ---- 绘制对方玩家 ----
-            if (isConnected && otherPlayer) {
-                const op = otherPlayer;
+            if (isConnected && game.otherPlayer) {
+                const op = game.otherPlayer;
                 if (op.alive !== false) {
-                    ctx.globalAlpha = 0.7;
+                    ctx.globalAlpha = 0.85;
                     ctx.shadowColor = '#ff66ff';
                     ctx.shadowBlur = 20;
-                    ctx.fillStyle = '#ff66ff';
+                    ctx.fillStyle = '#ff44aa';
                     ctx.beginPath();
                     ctx.roundRect(op.x, op.y, 24, 30, 5);
                     ctx.fill();
                     ctx.shadowBlur = 0;
-                    ctx.fillStyle = '#fff';
-                    ctx.font = '12px sans-serif';
-                    ctx.fillText('👤', op.x + 4, op.y - 4);
+                    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+                    ctx.font = '10px sans-serif';
+                    ctx.fillText('👤 队友', op.x, op.y - 6);
                     ctx.globalAlpha = 1;
                     if (op.hp !== undefined) {
                         ctx.fillStyle = 'rgba(0,0,0,0.6)';
                         ctx.fillRect(op.x, op.y - 10, 24, 4);
                         ctx.fillStyle = '#ff4444';
-                        ctx.fillRect(op.x, op.y - 10, 24 * Math.max(0, op.hp / 100), 4);
+                        ctx.fillRect(op.x, op.y - 10, 24 * Math.max(0, op.hp / (op.maxHp || 100)), 4);
+                    }
+                    if (op.weapon !== undefined && WEAPONS[op.weapon]) {
+                        ctx.font = '12px sans-serif';
+                        ctx.fillStyle = '#fff';
+                        ctx.fillText(WEAPONS[op.weapon].icon, op.x + 6, op.y + 20);
                     }
                 }
             }
 
-            // 玩家
+            // ---- 绘制自己 ----
             const p = game.player;
             for (const t of p.trail) {
                 ctx.globalAlpha = t.life / 20 * 0.2;
@@ -3143,11 +3153,12 @@
 
             ctx.fillStyle = 'rgba(255,255,255,0.08)';
             ctx.font = '14px sans-serif';
-            const expPct = Math.floor((exp / expToNext) * 100);
+            const expPct = Math.floor((playerData.exp / playerData.expToNext) * 100);
             const mapInfo = game.mapWidth > W ? ` 🌍 ${Math.floor(game.mapWidth/W*100)}%` : '';
             const terrainNames = ['塔楼', '峡谷', '浮岛', '洞穴', '桥梁', '阶梯'];
-            ctx.fillText(`🗡️ ${game.totalKills}杀  |  EXP ${exp}/${expToNext} (${expPct}%)  |  ${terrainNames[game.terrainType] || ''}${mapInfo}  🪙${gold} 💎${gems}`, 14, 28);
-            if (game.hp < 30) {
+            const statusText = isConnected ? '🟢 联机' : '🔴 单机';
+            ctx.fillText(`🗡️ ${game.totalKills}杀  |  EXP ${playerData.exp}/${playerData.expToNext} (${expPct}%)  |  ${terrainNames[game.terrainType] || ''}${mapInfo}  🪙${playerData.gold} 💎${playerData.gems}  ${statusText}`, 14, 28);
+            if (playerData.hp < 30) {
                 ctx.fillStyle = 'rgba(255,0,0,0.12)';
                 ctx.fillRect(0, 0, W, H);
             }
@@ -3197,10 +3208,7 @@
                 document.getElementById('peerStatus').textContent = t('peerWaiting');
                 document.getElementById('peerStatus').style.color = '#f7d44a';
                 showMessage('🎮 房间已创建', '🏠 房间: ' + roomCode + '\n' + t('enterCode'));
-                // 移除 onclick 绑定，避免与射击冲突
-                // document.getElementById('msgOverlay').onclick = function() {
-                //     this.classList.remove('show');
-                // };
+                document.getElementById('roomInput').style.display = 'inline-block';
             });
             peer.on('connection', (incomingConn) => {
                 conn = incomingConn;
@@ -3214,6 +3222,32 @@
             peer.on('error', (err) => {
                 console.log('Peer错误:', err);
                 showMessage(t('createFailed'), t('roomExists'));
+                document.getElementById('peerStatus').textContent = t('peerOffline');
+                document.getElementById('peerStatus').style.color = '#8899aa';
+            });
+        }
+
+        function joinRoom() {
+            const code = document.getElementById('roomInput').value.toUpperCase().trim();
+            if (code.length !== 6) {
+                showMessage(t('invalidCode'), t('enterCode'));
+                setTimeout(() => msgOverlay.classList.remove('show'), 1200);
+                return;
+            }
+            if (peer) { peer.destroy();
+                peer = null; }
+            isHost = false;
+            roomCode = code;
+            peer = new Peer();
+            peer.on('open', () => {
+                conn = peer.connect(roomCode);
+                setupConnection();
+                document.getElementById('peerStatus').textContent = t('peerConnecting');
+                document.getElementById('peerStatus').style.color = '#f7d44a';
+            });
+            peer.on('error', (err) => {
+                console.log('加入错误:', err);
+                showMessage(t('joinFailed'), t('roomExists'));
                 document.getElementById('peerStatus').textContent = t('peerOffline');
                 document.getElementById('peerStatus').style.color = '#8899aa';
             });
@@ -3248,12 +3282,20 @@
                 type: 'fullSync',
                 px: p.x,
                 py: p.y,
-                hp: g.hp,
+                hp: playerData.hp,
+                maxHp: playerData.maxHp,
                 facing: p.facing,
                 weapon: p.weapon,
-                maxHp: p.maxHp,
                 jumpCount: p.jumpCount,
                 maxJumps: p.maxJumps,
+                gold: playerData.gold,
+                gems: playerData.gems,
+                level: playerData.level,
+                exp: playerData.exp,
+                expToNext: playerData.expToNext,
+                statPoints: playerData.statPoints,
+                stats: playerData.stats,
+                unlockedSkills: Array.from(playerData.unlockedSkills),
                 keysCollected: g.keysCollected,
                 totalKeys: g.totalKeys,
                 level: g.level,
@@ -3334,11 +3376,6 @@
                 bossSpawned: g.bossSpawned || false,
                 totalKills: g.totalKills || 0,
                 terrainType: g.terrainType || 0,
-                level: level,
-                exp: exp,
-                expToNext: expToNext,
-                statPoints: statPoints,
-                stats: stats,
             };
             conn.send(data);
         }
@@ -3351,11 +3388,22 @@
                 type: 'incSync',
                 px: p.x,
                 py: p.y,
-                hp: g.hp,
+                hp: playerData.hp,
+                maxHp: playerData.maxHp,
                 facing: p.facing,
                 weapon: p.weapon,
                 jumpCount: p.jumpCount,
+                maxJumps: p.maxJumps,
+                gold: playerData.gold,
+                gems: playerData.gems,
+                level: playerData.level,
+                exp: playerData.exp,
+                expToNext: playerData.expToNext,
+                statPoints: playerData.statPoints,
+                stats: playerData.stats,
+                unlockedSkills: Array.from(playerData.unlockedSkills),
                 keysCollected: g.keysCollected,
+                totalKeys: g.totalKeys,
                 enemies: g.enemies.map(e => ({
                     x: e.x,
                     y: e.y,
@@ -3400,38 +3448,45 @@
             const g = game;
 
             if (data.type === 'fullSync') {
-                g.player.x = data.px;
-                g.player.y = data.py;
-                g.hp = data.hp;
-                g.player.facing = data.facing || 1;
-                g.player.weapon = data.weapon || 0;
-                g.player.maxHp = data.maxHp || 100;
-                g.player.jumpCount = data.jumpCount || 0;
-                g.player.maxJumps = data.maxJumps || 3;
-                g.keysCollected = data.keysCollected || 0;
-                g.totalKeys = data.totalKeys || 0;
-                g.level = data.level || 0;
-                g.totalCycles = data.totalCycles || 0;
-                g.world = data.world || 0;
-                g.mapWidth = data.mapWidth || W;
-                g.mapHeight = data.mapHeight || H;
-                g.isBoss = data.isBoss || false;
-                g.levelComplete = data.levelComplete || false;
-                g.bossSpawned = data.bossSpawned || false;
-                g.totalKills = data.totalKills || 0;
-                g.terrainType = data.terrainType || 0;
-                g.platforms = data.platforms || [];
-                if (data.exit) g.exit = data.exit;
-                g.enemies = data.enemies || [];
-                g.boss = data.boss ? { ...data.boss, bullets: [], timer: data.boss.timer || 0 } : null;
-                g.keys = data.keys || [];
-                g.items = data.items || [];
-                g.bullets = (data.bullets || []).concat(data.enemyBullets || []);
-                if (data.level !== undefined) { level = data.level;
-                    exp = data.exp || 0;
-                    expToNext = data.expToNext || 20;
-                    statPoints = data.statPoints || 0;
-                    stats = data.stats || {}; }
+                g.otherPlayer.x = data.px || 150;
+                g.otherPlayer.y = data.py || 300;
+                g.otherPlayer.hp = data.hp || 100;
+                g.otherPlayer.maxHp = data.maxHp || 100;
+                g.otherPlayer.facing = data.facing || 1;
+                g.otherPlayer.weapon = data.weapon || 0;
+                g.otherPlayer.jumpCount = data.jumpCount || 0;
+                g.otherPlayer.maxJumps = data.maxJumps || 3;
+                g.otherPlayer.gold = data.gold || 0;
+                g.otherPlayer.gems = data.gems || 0;
+                g.otherPlayer.level = data.level || 1;
+                g.otherPlayer.exp = data.exp || 0;
+                g.otherPlayer.expToNext = data.expToNext || 20;
+                g.otherPlayer.statPoints = data.statPoints || 0;
+                g.otherPlayer.stats = data.stats || {};
+                g.otherPlayer.unlockedSkills = data.unlockedSkills || [];
+                g.otherPlayer.alive = true;
+
+                if (!isHost) {
+                    g.keysCollected = data.keysCollected || 0;
+                    g.totalKeys = data.totalKeys || 0;
+                    g.level = data.level || 0;
+                    g.totalCycles = data.totalCycles || 0;
+                    g.world = data.world || 0;
+                    g.enemies = data.enemies || [];
+                    g.boss = data.boss ? { ...data.boss, bullets: [], timer: data.boss.timer || 0 } : null;
+                    g.isBoss = data.isBoss || false;
+                    g.keys = data.keys || [];
+                    g.items = data.items || [];
+                    g.bullets = (data.bullets || []).concat(data.enemyBullets || []);
+                    g.exit = data.exit || { x: 740, y: 60, w: 30, h: 38 };
+                    g.platforms = data.platforms || [];
+                    g.mapWidth = data.mapWidth || W;
+                    g.mapHeight = data.mapHeight || H;
+                    g.levelComplete = data.levelComplete || false;
+                    g.bossSpawned = data.bossSpawned || false;
+                    g.totalKills = data.totalKills || 0;
+                    g.terrainType = data.terrainType || 0;
+                }
                 updateUI();
                 updateStatUI();
                 if (g.isBoss && g.boss) {
@@ -3446,80 +3501,95 @@
             }
 
             if (data.type === 'incSync' || data.type === 'state') {
-                if (data.px !== undefined) g.player.x = data.px;
-                if (data.py !== undefined) g.player.y = data.py;
-                if (data.hp !== undefined) g.hp = data.hp;
-                if (data.facing !== undefined) g.player.facing = data.facing;
-                if (data.weapon !== undefined) g.player.weapon = data.weapon;
-                if (data.jumpCount !== undefined) g.player.jumpCount = data.jumpCount;
-                if (data.keysCollected !== undefined) g.keysCollected = data.keysCollected;
-                if (data.totalKills !== undefined) g.totalKills = data.totalKills;
-                if (data.levelComplete !== undefined) g.levelComplete = data.levelComplete;
-                if (data.isBoss !== undefined) g.isBoss = data.isBoss;
+                if (data.px !== undefined) g.otherPlayer.x = data.px;
+                if (data.py !== undefined) g.otherPlayer.y = data.py;
+                if (data.hp !== undefined) g.otherPlayer.hp = data.hp;
+                if (data.maxHp !== undefined) g.otherPlayer.maxHp = data.maxHp;
+                if (data.facing !== undefined) g.otherPlayer.facing = data.facing;
+                if (data.weapon !== undefined) g.otherPlayer.weapon = data.weapon;
+                if (data.jumpCount !== undefined) g.otherPlayer.jumpCount = data.jumpCount;
+                if (data.maxJumps !== undefined) g.otherPlayer.maxJumps = data.maxJumps;
+                if (data.gold !== undefined) g.otherPlayer.gold = data.gold;
+                if (data.gems !== undefined) g.otherPlayer.gems = data.gems;
+                if (data.level !== undefined) g.otherPlayer.level = data.level;
+                if (data.exp !== undefined) g.otherPlayer.exp = data.exp;
+                if (data.expToNext !== undefined) g.otherPlayer.expToNext = data.expToNext;
+                if (data.statPoints !== undefined) g.otherPlayer.statPoints = data.statPoints;
+                if (data.stats !== undefined) g.otherPlayer.stats = data.stats;
+                if (data.unlockedSkills !== undefined) g.otherPlayer.unlockedSkills = data.unlockedSkills;
+                g.otherPlayer.alive = true;
 
-                if (data.enemies) {
-                    for (let i = 0; i < Math.min(data.enemies.length, g.enemies.length); i++) {
-                        if (data.enemies[i]) {
-                            g.enemies[i].x = data.enemies[i].x;
-                            g.enemies[i].y = data.enemies[i].y;
-                            g.enemies[i].hp = data.enemies[i].hp;
-                            g.enemies[i].hitFlash = data.enemies[i].hitFlash || 0;
-                            g.enemies[i].isStealthed = data.enemies[i].isStealthed || false;
-                            g.enemies[i].shootTimer = data.enemies[i].shootTimer || 0;
+                if (!isHost) {
+                    if (data.keysCollected !== undefined) g.keysCollected = data.keysCollected;
+                    if (data.totalKeys !== undefined) g.totalKeys = data.totalKeys;
+                    if (data.totalKills !== undefined) g.totalKills = data.totalKills;
+                    if (data.levelComplete !== undefined) g.levelComplete = data.levelComplete;
+                    if (data.isBoss !== undefined) g.isBoss = data.isBoss;
+
+                    if (data.enemies) {
+                        for (let i = 0; i < Math.min(data.enemies.length, g.enemies.length); i++) {
+                            if (data.enemies[i]) {
+                                g.enemies[i].x = data.enemies[i].x;
+                                g.enemies[i].y = data.enemies[i].y;
+                                g.enemies[i].hp = data.enemies[i].hp;
+                                g.enemies[i].hitFlash = data.enemies[i].hitFlash || 0;
+                                g.enemies[i].isStealthed = data.enemies[i].isStealthed || false;
+                                g.enemies[i].shootTimer = data.enemies[i].shootTimer || 0;
+                            }
                         }
                     }
-                }
 
-                if (data.boss && g.boss) {
-                    g.boss.x = data.boss.x;
-                    g.boss.y = data.boss.y;
-                    g.boss.hp = data.boss.hp;
-                    g.boss.hitCooldown = data.boss.hitCooldown || 0;
-                    updateBossUI();
-                }
-
-                if (data.bullets) {
-                    for (const b of data.bullets) {
-                        g.bullets.push({
-                            x: b.x,
-                            y: b.y,
-                            vx: b.vx || 0,
-                            vy: b.vy || 0,
-                            r: b.r || 5,
-                            damage: b.damage || 1,
-                            color: b.color || '#6bcbff',
-                            type: b.type || 'normal',
-                            life: b.life || 120,
-                            pierceCount: b.pierceCount || 1,
-                            isEnemy: false,
-                        });
+                    if (data.boss && g.boss) {
+                        g.boss.x = data.boss.x;
+                        g.boss.y = data.boss.y;
+                        g.boss.hp = data.boss.hp;
+                        g.boss.hitCooldown = data.boss.hitCooldown || 0;
+                        updateBossUI();
                     }
-                    if (g.bullets.length > 200) g.bullets.splice(0, 50);
-                }
-                if (data.enemyBullets) {
-                    for (const b of data.enemyBullets) {
-                        g.bullets.push({
-                            x: b.x,
-                            y: b.y,
-                            vx: b.vx || 0,
-                            vy: b.vy || 0,
-                            r: b.r || 5,
-                            damage: b.damage || 10,
-                            color: b.color || '#ff4444',
-                            life: b.life || 120,
-                            isEnemy: true,
-                        });
-                    }
-                    if (g.bullets.length > 200) g.bullets.splice(0, 50);
-                }
 
-                if (data.items) {
-                    g.items = data.items;
-                }
-                if (data.keys) {
-                    for (let i = 0; i < Math.min(data.keys.length, g.keys.length); i++) {
-                        if (data.keys[i]) {
-                            g.keys[i].collected = data.keys[i].collected;
+                    if (data.bullets) {
+                        for (const b of data.bullets) {
+                            g.bullets.push({
+                                x: b.x,
+                                y: b.y,
+                                vx: b.vx || 0,
+                                vy: b.vy || 0,
+                                r: b.r || 5,
+                                damage: b.damage || 1,
+                                color: b.color || '#6bcbff',
+                                type: b.type || 'normal',
+                                life: b.life || 120,
+                                pierceCount: b.pierceCount || 1,
+                                isEnemy: false,
+                            });
+                        }
+                        if (g.bullets.length > 200) g.bullets.splice(0, 50);
+                    }
+                    if (data.enemyBullets) {
+                        for (const b of data.enemyBullets) {
+                            g.bullets.push({
+                                x: b.x,
+                                y: b.y,
+                                vx: b.vx || 0,
+                                vy: b.vy || 0,
+                                r: b.r || 5,
+                                damage: b.damage || 10,
+                                color: b.color || '#ff4444',
+                                life: b.life || 120,
+                                isEnemy: true,
+                            });
+                        }
+                        if (g.bullets.length > 200) g.bullets.splice(0, 50);
+                    }
+
+                    if (data.items) {
+                        g.items = data.items;
+                    }
+                    if (data.keys) {
+                        for (let i = 0; i < Math.min(data.keys.length, g.keys.length); i++) {
+                            if (data.keys[i]) {
+                                g.keys[i].collected = data.keys[i].collected;
+                            }
                         }
                     }
                 }
@@ -3554,27 +3624,26 @@
                 document.getElementById('modeToggle').textContent = t('modePvp');
                 document.getElementById('modeToggle').style.borderColor = '#ff4444';
                 document.getElementById('modeToggle').style.color = '#ff4444';
-                showMessage('⚔️ PVP', t('modePvp'));
+                showMessage('⚔️ PVP', '玩家可以互相攻击！');
             } else {
                 gameMode = 'coop';
                 document.getElementById('modeToggle').textContent = t('modeCoop');
                 document.getElementById('modeToggle').style.borderColor = '#44ff88';
                 document.getElementById('modeToggle').style.color = '#44ff88';
-                showMessage('🤝 合作', t('modeCoop'));
+                showMessage('🤝 合作', '共同对抗怪物！');
             }
             setTimeout(() => msgOverlay.classList.remove('show'), 1200);
         }
 
-        // ----- PVP伤害检测 -----
         function checkPVPDamage() {
             if (gameMode !== 'pvp') return;
             if (!isConnected) return;
             const p = game.player;
-            const op = otherPlayer;
+            const op = game.otherPlayer;
             if (!op || !op.alive) return;
             for (let i = game.bullets.length - 1; i >= 0; i--) {
                 const bull = game.bullets[i];
-                if (bull.isEnemy) continue;
+                if (bull.isEnemy || bull.owner === 'self') continue;
                 const d = dist(bull.x, bull.y, op.x + 12, op.y + 15);
                 if (d < bull.r + 15) {
                     op.hp -= bull.damage;
@@ -3590,7 +3659,7 @@
             }
         }
 
-        // ----- 按空格键关闭弹窗（不影响射击） -----
+        // ----- 按空格键关闭弹窗 -----
         document.addEventListener('keydown', function(e) {
             if (e.key === ' ' || e.key === 'Space') {
                 var overlay = document.getElementById('msgOverlay');
@@ -3618,7 +3687,7 @@
                 const available = [0];
                 for (let i = 1; i < SKILLS.length; i++) {
                     const skId = SKILL_ID_MAP[i];
-                    if (skId && unlockedSkills.has(skId)) available.push(i);
+                    if (skId && playerData.unlockedSkills.has(skId)) available.push(i);
                 }
                 const idx = available.indexOf(currentSkill);
                 const nextIdx = (idx + 1) % available.length;
@@ -3649,7 +3718,7 @@
             const available = [0];
             for (let i = 1; i < SKILLS.length; i++) {
                 const skId = SKILL_ID_MAP[i];
-                if (skId && unlockedSkills.has(skId)) available.push(i);
+                if (skId && playerData.unlockedSkills.has(skId)) available.push(i);
             }
             const idx = available.indexOf(currentSkill);
             const nextIdx = (idx + 1) % available.length;
@@ -3657,7 +3726,6 @@
             updateUI();
         });
 
-        // 技能激活 (E键)
         document.addEventListener('keydown', (e) => { if (e.key === 'e' || e.key === 'E') activateSkill(); });
         document.getElementById('mobileSkillBtn').addEventListener('touchstart', (e) => { e.preventDefault();
                 activateSkill(); });
@@ -3695,10 +3763,21 @@
             game._mouseY = (e.clientY - rect.top) * scaleY;
         });
 
-        // ----- 联机按钮事件 -----
         document.getElementById('hostBtn').addEventListener('click', createRoom);
         document.getElementById('joinBtn').addEventListener('click', () => {
-            const code = document.getElementById('roomInput').value.toUpperCase().trim();
+            const inputField = document.getElementById('roomInput');
+            if (inputField.style.display === 'none' || inputField.style.display === '') {
+                const code = prompt('请输入6位房间码：');
+                if (code && code.length === 6) {
+                    document.getElementById('roomInput').value = code.toUpperCase();
+                    document.getElementById('roomInput').style.display = 'inline-block';
+                    joinRoom();
+                } else if (code !== null) {
+                    alert('房间码必须是6位字母或数字');
+                }
+                return;
+            }
+            const code = inputField.value.toUpperCase().trim();
             if (code.length === 6) {
                 joinRoom();
             } else {
@@ -3713,13 +3792,11 @@
         });
         document.getElementById('modeToggle').addEventListener('click', toggleGameMode);
 
-        // ----- 语言切换 -----
         document.getElementById('langToggle').addEventListener('click', function() {
             currentLang = currentLang === 'zh' ? 'en' : 'zh';
             this.textContent = currentLang === 'zh' ? '🌐 EN' : '🌐 中文';
             updateAllUI();
             if (game && game.running === false && game.gameOver) showMessage(t('gameOver'), t('restart'));
-            // 更新联机状态文字
             if (isConnected) {
                 document.getElementById('peerStatus').textContent = t('peerConnected');
                 document.getElementById('peerStatus').style.color = '#44ff88';
@@ -3748,6 +3825,7 @@
             document.getElementById('hostBtn').textContent = t('hostBtn');
             document.getElementById('joinBtn').textContent = t('joinBtn');
             document.getElementById('roomInput').placeholder = t('roomPlaceholder');
+            document.getElementById('roomInput').style.display = 'inline-block';
             if (isConnected) {
                 document.getElementById('peerStatus').textContent = t('peerConnected');
                 document.getElementById('peerStatus').style.color = '#44ff88';
@@ -3780,8 +3858,6 @@
             if (game.running && !game.gameOver && !game.levelComplete) {
                 game.frame++;
                 updatePlayer();
-                // PVP伤害检测（在玩家更新中已调用checkPVPDamage，但这里也保留）
-                checkPVPDamage();
                 if (game.particles.length > 500) game.particles.splice(0, 150);
             }
             draw();
@@ -3803,11 +3879,10 @@
         document.addEventListener('click', () => { initAudio(); }, { once: true });
         window.addEventListener('resize', setupMobileControls);
 
-        console.log('✅ 暗影勇者 · 联机版加载完成！');
+        console.log('✅ 暗影勇者 · 双人联机版加载完成！');
         console.log('👾 8种特色怪物 | 5种Boss | 7个技能树节点');
-        console.log('🪙 小怪掉金币 | 💎 Boss掉宝石');
-        console.log('🌐 完整双语支持 | 🔗 WebRTC P2P联机');
-        console.log('🎮 点击"创建"生成房间码，输入码点"加入"');
+        console.log('🪙 各自独立金币/宝石 | 💎 各自独立技能');
+        console.log('🎮 两人各自控制各自角色');
         console.log('🤝 默认合作模式，按 T 切换PVP');
         console.log('⌨️ 弹窗显示时，按 空格键 关闭');
     </script>
