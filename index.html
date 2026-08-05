@@ -713,6 +713,9 @@
         let gameMode = 'coop';
         let otherPlayer = { x: 150, y: 300, hp: 100, maxHp: 100, facing: 1, weapon: 0, jumpCount: 0, maxJumps: 3,
             alive: true, gold: 0, gems: 0, level: 1, exp: 0, expToNext: 20, statPoints: 0, stats: {}, unlockedSkills: [] };
+        // 插值变量
+        let otherTarget = { x: 150, y: 300, hp: 100, facing: 1 };
+        let otherSmooth = { x: 150, y: 300, hp: 100, facing: 1 };
 
         // ----- 世界主题 -----
         const WORLDS = [
@@ -1358,8 +1361,6 @@
 
         // ----- 游戏状态 -----
         let game = {};
-        let otherTarget = { x: 150, y: 300, hp: 100, facing: 1 };
-        let otherSmooth = { x: 150, y: 300, hp: 100, facing: 1 };
         let levelUpTimer = 0;
 
         function initGame() {
@@ -1370,6 +1371,9 @@
             otherPlayer = { x: 150, y: 300, hp: 100, maxHp: 100, facing: 1, weapon: 0, jumpCount: 0, maxJumps: 3,
                 alive: true, gold: 0, gems: 0, level: 1, exp: 0, expToNext: 20, statPoints: 0, stats: {},
                 unlockedSkills: [] };
+            // 重置插值变量
+            otherTarget = { x: 150, y: 300, hp: 100, facing: 1 };
+            otherSmooth = { x: 150, y: 300, hp: 100, facing: 1 };
             game = {
                 world: 0,
                 level: 0,
@@ -3189,50 +3193,7 @@
         // ================================================================
         //  🔗 联机模块
         // ================================================================
-            function sendIncrementalSync() {
-            if (!isConnected || !conn) return;
-            const g = game;
-            const p = g.player;
-            const data = {
-                type: 'incSync',
-                // ★★★ 必须发送位置 ★★★
-                px: p.x,
-                py: p.y,
-                hp: playerData.hp,
-                maxHp: playerData.maxHp,
-                facing: p.facing,
-                weapon: p.weapon,
-                jumpCount: p.jumpCount,
-                maxJumps: p.maxJumps,
-                gold: playerData.gold,
-                gems: playerData.gems,
-                level: playerData.level,
-                exp: playerData.exp,
-                expToNext: playerData.expToNext,
-                statPoints: playerData.statPoints,
-                stats: playerData.stats,
-                unlockedSkills: Array.from(playerData.unlockedSkills),
-                keysCollected: g.keysCollected,
-                totalKeys: g.totalKeys,
-                enemies: g.enemies.map(e => ({
-                    x: e.x,
-                    y: e.y,
-                    hp: e.hp,
-                    hitFlash: e.hitFlash || 0,
-                    isStealthed: e.isStealthed || false,
-                    shootTimer: e.shootTimer || 0,
-                })),
-                boss: g.boss ? { x: g.boss.x, y: g.boss.y, hp: g.boss.hp, hitCooldown: g.boss.hitCooldown || 0 } :
-                    null,
-                // 不发送子弹数据，减少网络流量
-                items: g.items.map(i => ({ type: i.type, x: i.x, y: i.y, r: i.r })),
-                keys: g.keys.map(k => ({ x: k.x, y: k.y, collected: k.collected })),
-                levelComplete: g.levelComplete || false,
-                isBoss: g.isBoss,
-                totalKills: g.totalKills || 0,
-            };
-            conn.send(data);
-        }
+
         function generateRoomCode() {
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
             let code = '';
@@ -3457,7 +3418,6 @@
                 })),
                 boss: g.boss ? { x: g.boss.x, y: g.boss.y, hp: g.boss.hp, hitCooldown: g.boss.hitCooldown || 0 } :
                     null,
-                // 不发送子弹数据，减少网络流量
                 items: g.items.map(i => ({ type: i.type, x: i.x, y: i.y, r: i.r })),
                 keys: g.keys.map(k => ({ x: k.x, y: k.y, collected: k.collected })),
                 levelComplete: g.levelComplete || false,
@@ -3489,6 +3449,16 @@
                 g.otherPlayer.stats = data.stats || {};
                 g.otherPlayer.unlockedSkills = data.unlockedSkills || [];
                 g.otherPlayer.alive = true;
+
+                // ★★★ 同步更新插值目标 ★★★
+                otherTarget.x = g.otherPlayer.x;
+                otherTarget.y = g.otherPlayer.y;
+                otherTarget.hp = g.otherPlayer.hp;
+                otherTarget.facing = g.otherPlayer.facing;
+                otherSmooth.x = g.otherPlayer.x;
+                otherSmooth.y = g.otherPlayer.y;
+                otherSmooth.hp = g.otherPlayer.hp;
+                otherSmooth.facing = g.otherPlayer.facing;
 
                 if (!isHost) {
                     g.keysCollected = data.keysCollected || 0;
@@ -3525,11 +3495,28 @@
             }
 
             if (data.type === 'incSync' || data.type === 'state') {
-                if (data.px !== undefined) g.otherPlayer.x = data.px;
-                if (data.py !== undefined) g.otherPlayer.y = data.py;
-                if (data.hp !== undefined) g.otherPlayer.hp = data.hp;
+                // ★★★ 更新对方位置，同时更新插值目标 ★★★
+                if (data.px !== undefined) {
+                    g.otherPlayer.x = data.px;
+                    otherTarget.x = data.px;
+                    otherSmooth.x = data.px;
+                }
+                if (data.py !== undefined) {
+                    g.otherPlayer.y = data.py;
+                    otherTarget.y = data.py;
+                    otherSmooth.y = data.py;
+                }
+                if (data.hp !== undefined) {
+                    g.otherPlayer.hp = data.hp;
+                    otherTarget.hp = data.hp;
+                    otherSmooth.hp = data.hp;
+                }
                 if (data.maxHp !== undefined) g.otherPlayer.maxHp = data.maxHp;
-                if (data.facing !== undefined) g.otherPlayer.facing = data.facing;
+                if (data.facing !== undefined) {
+                    g.otherPlayer.facing = data.facing;
+                    otherTarget.facing = data.facing;
+                    otherSmooth.facing = data.facing;
+                }
                 if (data.weapon !== undefined) g.otherPlayer.weapon = data.weapon;
                 if (data.jumpCount !== undefined) g.otherPlayer.jumpCount = data.jumpCount;
                 if (data.maxJumps !== undefined) g.otherPlayer.maxJumps = data.maxJumps;
