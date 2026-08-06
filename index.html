@@ -673,7 +673,7 @@
     <script>
         // ================================================================
         //  👻 暗影勇者 · 双人联机版
-        //  子弹同步 + 怪物伤害 + PVP 完整修复
+        //  修复：加入者攻击现在有效且可见
         // ================================================================
 
         // ----- 常量与UI -----
@@ -1846,7 +1846,7 @@
                 const speed = game.skillActive && game.skillType === 0 ? weapon.speed * 0.4 : weapon.speed;
                 const vx = Math.cos(angle) * speed;
                 const vy = Math.sin(angle) * speed;
-                game.bullets.push({
+                const bullet = {
                     x: cx,
                     y: cy,
                     vx: vx,
@@ -1859,8 +1859,9 @@
                     pierceCount: pierceCount,
                     isEnemy: false,
                     explodeRadius: explodeRadius,
-                    owner: 'self',
-                });
+                    owner: 'self', // 标记为自己发射的子弹
+                };
+                game.bullets.push(bullet);
             }
             spawnParticles(cx, cy, weapon.color, 4);
             if (now - shootSoundCooldown > 100) { playSound('shoot');
@@ -2200,6 +2201,7 @@
                     continue;
                 }
 
+                // 玩家的子弹
                 bull.x += bull.vx * timeScale;
                 bull.y += bull.vy * timeScale;
                 bull.life--;
@@ -2207,6 +2209,44 @@
                     bull.life <= 0) { game.bullets.splice(i, 1); continue; }
                 let hit = false;
 
+                // 如果子弹是对方发射的，只检查是否打到怪物/Boss，不检查与自己的碰撞
+                if (bull.owner === 'other') {
+                    // 检查是否打到怪物
+                    for (const e of game.enemies) {
+                        if (e.y > game.mapHeight + 50) continue;
+                        if (dist(bull.x, bull.y, e.x + e.w / 2, e.y + e.h / 2) < bull.r + 12) {
+                            e.hp -= bull.damage;
+                            if (e.hp <= 0) {
+                                e.y = game.mapHeight + 100;
+                                spawnBlood(e.x + e.w / 2, e.y + e.h / 2, 20);
+                                playSound('kill');
+                                game.totalKills++;
+                                addExp(e.expReward || 10);
+                                playerData.gold += (e.goldReward || 3);
+                            } else { e.hitFlash = 10;
+                                spawnParticles(bull.x, bull.y, '#ffaa44', 5); }
+                            hit = true;
+                            break;
+                        }
+                    }
+                    if (!hit && game.isBoss && game.boss && game.boss.hp > 0) {
+                        const b = game.boss;
+                        if (bull.x > b.x && bull.x < b.x + b.w && bull.y > b.y && bull.y < b.y + b.h) {
+                            b.hp -= bull.damage;
+                            b.hitCooldown = 10;
+                            spawnBlood(bull.x, bull.y, 10);
+                            playSound('boss_hit');
+                            game.screenShake = 8;
+                            updateBossUI();
+                            hit = true;
+                            if (b.hp <= 0) bossDefeated();
+                        }
+                    }
+                    if (hit) { game.bullets.splice(i, 1); }
+                    continue;
+                }
+
+                // 自己的子弹：检查怪物、Boss、PVP（对方）
                 if (bull.type === 'explode') {
                     let exploded = false;
                     for (const e of game.enemies) {
@@ -2973,6 +3013,21 @@
                     ctx.shadowBlur = 0;
                     continue;
                 }
+                // 对方子弹用不同颜色
+                if (bull.owner === 'other') {
+                    ctx.shadowColor = '#ff66ff';
+                    ctx.shadowBlur = 25;
+                    ctx.fillStyle = '#ff66ff';
+                    ctx.beginPath();
+                    ctx.arc(bull.x, bull.y, bull.r, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                    ctx.beginPath();
+                    ctx.arc(bull.x - 2, bull.y - 2, bull.r * 0.3, 0, Math.PI * 2);
+                    ctx.fill();
+                    continue;
+                }
                 ctx.shadowColor = bull.color || '#6bcbff';
                 ctx.shadowBlur = 30;
                 ctx.fillStyle = bull.color || '#6bcbff';
@@ -3409,7 +3464,7 @@
                     null,
                 items: g.items.map(i => ({ type: i.type, x: i.x, y: i.y, r: i.r })),
                 keys: g.keys.map(k => ({ x: k.x, y: k.y, collected: k.collected })),
-                // ★★★ 发送自己的子弹（给对面看） ★★★
+                // 发送自己的子弹（给对面看）
                 myBullets: g.bullets
                     .filter(b => !b.isEnemy && b.owner === 'self')
                     .slice(-40)
@@ -3476,7 +3531,6 @@
                     g.isBoss = data.isBoss || false;
                     g.keys = data.keys || [];
                     g.items = data.items || [];
-                    // ★★★ 接收对方的子弹 ★★★
                     if (data.bullets) {
                         for (const b of data.bullets) {
                             g.bullets.push({
@@ -3560,7 +3614,6 @@
                 if (data.unlockedSkills !== undefined) g.otherPlayer.unlockedSkills = data.unlockedSkills;
                 g.otherPlayer.alive = true;
 
-                // ★★★ 客户端接收对方的子弹（增量同步） ★★★
                 if (!isHost) {
                     if (data.keysCollected !== undefined) g.keysCollected = data.keysCollected;
                     if (data.totalKeys !== undefined) g.totalKeys = data.totalKeys;
@@ -3600,7 +3653,7 @@
                         }
                     }
 
-                    // ★★★ 接收对方的子弹（标记为other） ★★★
+                    // 接收对方的子弹（标记为other）
                     if (data.myBullets) {
                         for (const b of data.myBullets) {
                             g.bullets.push({
