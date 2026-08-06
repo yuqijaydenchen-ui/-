@@ -7,6 +7,7 @@
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js">
     </script>
     <style>
+        /* ===== 样式（与原版相同，省略，保持页面干净） ===== */
         * {
             margin: 0;
             padding: 0;
@@ -671,8 +672,8 @@
 
     <script>
         // ================================================================
-        //  👻 暗影勇者 · 双人联机版 (完整修复)
-        //  子弹同步 + PVP伤害 + 合作打怪
+        //  👻 暗影勇者 · 双人联机版
+        //  子弹同步 + 怪物伤害 + PVP 完整修复
         // ================================================================
 
         // ----- 常量与UI -----
@@ -2355,7 +2356,6 @@
                             i, 1); } else if (hit) { game.bullets.splice(i, 1); }
             }
 
-            // ★★★ PVP 伤害检测 ★★★
             if (gameMode === 'pvp') {
                 checkPVPDamage();
             }
@@ -3409,7 +3409,7 @@
                     null,
                 items: g.items.map(i => ({ type: i.type, x: i.x, y: i.y, r: i.r })),
                 keys: g.keys.map(k => ({ x: k.x, y: k.y, collected: k.collected })),
-                // ★★★ 发送自己的子弹 ★★★
+                // ★★★ 发送自己的子弹（给对面看） ★★★
                 myBullets: g.bullets
                     .filter(b => !b.isEnemy && b.owner === 'self')
                     .slice(-40)
@@ -3600,7 +3600,7 @@
                         }
                     }
 
-                    // ★★★ 接收对方的子弹 ★★★
+                    // ★★★ 接收对方的子弹（标记为other） ★★★
                     if (data.myBullets) {
                         for (const b of data.myBullets) {
                             g.bullets.push({
@@ -3638,7 +3638,7 @@
             }
         }
 
-        // ★★★ PVP 伤害检测 ★★★
+        // ★★★ PVP 伤害检测（只检测自己的子弹打对方） ★★★
         function checkPVPDamage() {
             if (gameMode !== 'pvp') return;
             if (!isConnected) return;
