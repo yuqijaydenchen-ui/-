@@ -3664,25 +3664,38 @@
             setTimeout(() => msgOverlay.classList.remove('show'), 1200);
         }
 
-        function checkPVPDamage() {
+                function checkPVPDamage() {
             if (gameMode !== 'pvp') return;
             if (!isConnected) return;
             const p = game.player;
             const op = game.otherPlayer;
             if (!op || !op.alive) return;
+            
             for (let i = game.bullets.length - 1; i >= 0; i--) {
                 const bull = game.bullets[i];
-                if (bull.isEnemy || bull.owner === 'self') continue;
+                // ★★★ 只检查自己的子弹（不是敌人的，不是对方的） ★★★
+                if (bull.isEnemy) continue;
+                if (bull.owner !== 'self') continue;  // 只处理自己射出的子弹
+                
                 const d = dist(bull.x, bull.y, op.x + 12, op.y + 15);
                 if (d < bull.r + 15) {
+                    // 扣血
                     op.hp -= bull.damage;
                     spawnBlood(op.x + 12, op.y + 15, 15);
                     game.bullets.splice(i, 1);
+                    
+                    // 如果对方死亡
                     if (op.hp <= 0) {
                         op.alive = false;
                         showMessage(t('pvpKill'), t('pvpKillSub'));
                         setTimeout(() => msgOverlay.classList.remove('show'), 1500);
+                        // 2秒后复活
+                        setTimeout(() => {
+                            op.hp = 100;
+                            op.alive = true;
+                        }, 2000);
                     }
+                    // ★★★ 立即同步，让对方知道掉血了 ★★★
                     sendFullSync();
                 }
             }
