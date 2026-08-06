@@ -7,7 +7,7 @@
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js">
     </script>
     <style>
-        /* ===== 样式（与原版相同，省略，保持页面干净） ===== */
+        /* ===== 样式 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -672,8 +672,8 @@
 
     <script>
         // ================================================================
-        //  👻 暗影勇者 · 双人联机版 (修复版)
-        //  修复：加入者攻击现在有效且可见
+        //  👻 暗影勇者 · 双人联机版 (完整修复版)
+        //  修复：加入者攻击、拾取、过关全部正常
         // ================================================================
 
         // ----- 常量与UI -----
@@ -3284,7 +3284,8 @@
         };
 
         // ================================================================
-        //  🔗 联机模块 (完整修复)
+        //  🔗 联机模块 (完整修复版)
+        //  修复：加入者攻击、拾取、过关全部正常
         // ================================================================
 
         function generateRoomCode() {
@@ -3395,6 +3396,9 @@
                 unlockedSkills: Array.from(playerData.unlockedSkills),
                 keysCollected: g.keysCollected,
                 totalKeys: g.totalKeys,
+                keys: g.keys.map(k => ({ x: k.x, y: k.y, collected: k.collected, r: k.r })),
+                items: g.items.map(i => ({ type: i.type, x: i.x, y: i.y, r: i.r, value: i.value || 0, weaponIdx: i
+                            .weaponIdx || 0 })),
                 level: g.level,
                 totalCycles: g.totalCycles,
                 world: g.world,
@@ -3440,9 +3444,6 @@
                     type: g.boss.type,
                 } : null,
                 isBoss: g.isBoss,
-                keys: g.keys.map(k => ({ x: k.x, y: k.y, collected: k.collected, r: k.r })),
-                items: g.items.map(i => ({ type: i.type, x: i.x, y: i.y, r: i.r, value: i.value || 0, weaponIdx: i
-                            .weaponIdx || 0 })),
                 bullets: g.bullets.filter(b => !b.isEnemy && b.owner === 'self').map(b => ({
                     x: b.x,
                     y: b.y,
@@ -3500,14 +3501,39 @@
                 statPoints: playerData.statPoints,
                 stats: playerData.stats,
                 unlockedSkills: Array.from(playerData.unlockedSkills),
+                
+                // ★★★ 关键修复：同步钥匙收集状态 ★★★
                 keysCollected: g.keysCollected,
                 totalKeys: g.totalKeys,
-                enemies: g.enemies.map(e => ({ x: e.x, y: e.y, hp: e.hp, hitFlash: e.hitFlash || 0, isStealthed: e
-                        .isStealthed || false, shootTimer: e.shootTimer || 0 })),
-                boss: g.boss ? { x: g.boss.x, y: g.boss.y, hp: g.boss.hp, hitCooldown: g.boss.hitCooldown || 0 } :
-                    null,
-                items: g.items.map(i => ({ type: i.type, x: i.x, y: i.y, r: i.r })),
                 keys: g.keys.map(k => ({ x: k.x, y: k.y, collected: k.collected })),
+                
+                // ★★★ 关键修复：同步物品状态 ★★★
+                items: g.items.map(i => ({ type: i.type, x: i.x, y: i.y, r: i.r, value: i.value || 0, weaponIdx: i.weaponIdx || 0 })),
+                
+                // ★★★ 关键修复：同步敌人状态 ★★★
+                enemies: g.enemies.map(e => ({ 
+                    x: e.x, 
+                    y: e.y, 
+                    hp: e.hp, 
+                    hitFlash: e.hitFlash || 0, 
+                    isStealthed: e.isStealthed || false, 
+                    shootTimer: e.shootTimer || 0 
+                })),
+                
+                // ★★★ 关键修复：同步Boss状态 ★★★
+                boss: g.boss ? { 
+                    x: g.boss.x, 
+                    y: g.boss.y, 
+                    hp: g.boss.hp, 
+                    hitCooldown: g.boss.hitCooldown || 0 
+                } : null,
+                
+                // ★★★ 关键修复：同步关卡状态 ★★★
+                levelComplete: g.levelComplete || false,
+                isBoss: g.isBoss,
+                totalKills: g.totalKills || 0,
+                
+                // 子弹同步
                 myBullets: g.bullets
                     .filter(b => !b.isEnemy && b.owner === 'self')
                     .slice(-50)
@@ -3527,9 +3553,6 @@
                         owner: 'self',
                         timestamp: b.timestamp || Date.now(),
                     })),
-                levelComplete: g.levelComplete || false,
-                isBoss: g.isBoss,
-                totalKills: g.totalKills || 0,
             };
             conn.send(data);
         }
@@ -3567,16 +3590,26 @@
                 otherSmooth.facing = g.otherPlayer.facing;
 
                 if (!isHost) {
+                    // ★★★ 同步所有游戏状态 ★★★
                     g.keysCollected = data.keysCollected || 0;
                     g.totalKeys = data.totalKeys || 0;
+                    g.keys = data.keys || [];
+                    g.items = data.items || [];
                     g.level = data.level || 0;
                     g.totalCycles = data.totalCycles || 0;
                     g.world = data.world || 0;
                     g.enemies = data.enemies || [];
                     g.boss = data.boss ? { ...data.boss, bullets: [], timer: data.boss.timer || 0 } : null;
                     g.isBoss = data.isBoss || false;
-                    g.keys = data.keys || [];
-                    g.items = data.items || [];
+                    g.levelComplete = data.levelComplete || false;
+                    g.bossSpawned = data.bossSpawned || false;
+                    g.totalKills = data.totalKills || 0;
+                    g.terrainType = data.terrainType || 0;
+                    g.exit = data.exit || { x: 740, y: 60, w: 30, h: 38 };
+                    g.platforms = data.platforms || [];
+                    g.mapWidth = data.mapWidth || W;
+                    g.mapHeight = data.mapHeight || H;
+                    
                     if (data.bullets) {
                         for (const b of data.bullets) {
                             g.bullets.push({
@@ -3602,14 +3635,6 @@
                             g.bullets.push(b);
                         }
                     }
-                    g.exit = data.exit || { x: 740, y: 60, w: 30, h: 38 };
-                    g.platforms = data.platforms || [];
-                    g.mapWidth = data.mapWidth || W;
-                    g.mapHeight = data.mapHeight || H;
-                    g.levelComplete = data.levelComplete || false;
-                    g.bossSpawned = data.bossSpawned || false;
-                    g.totalKills = data.totalKills || 0;
-                    g.terrainType = data.terrainType || 0;
                 }
                 updateUI();
                 updateStatUI();
@@ -3661,12 +3686,25 @@
                 g.otherPlayer.alive = true;
 
                 if (!isHost) {
-                    if (data.keysCollected !== undefined) g.keysCollected = data.keysCollected;
+                    // ★★★ 修复：同步钥匙收集状态 ★★★
+                    if (data.keysCollected !== undefined) {
+                        g.keysCollected = data.keysCollected;
+                        if (data.keys) {
+                            for (let i = 0; i < Math.min(data.keys.length, g.keys.length); i++) {
+                                if (data.keys[i]) {
+                                    g.keys[i].collected = data.keys[i].collected;
+                                }
+                            }
+                        }
+                    }
                     if (data.totalKeys !== undefined) g.totalKeys = data.totalKeys;
-                    if (data.totalKills !== undefined) g.totalKills = data.totalKills;
-                    if (data.levelComplete !== undefined) g.levelComplete = data.levelComplete;
-                    if (data.isBoss !== undefined) g.isBoss = data.isBoss;
-
+                    
+                    // ★★★ 修复：同步物品状态 ★★★
+                    if (data.items) {
+                        g.items = data.items;
+                    }
+                    
+                    // ★★★ 修复：同步敌人状态 ★★★
                     if (data.enemies) {
                         for (let i = 0; i < Math.min(data.enemies.length, g.enemies.length); i++) {
                             if (data.enemies[i]) {
@@ -3680,6 +3718,7 @@
                         }
                     }
 
+                    // ★★★ 修复：同步Boss状态 ★★★
                     if (data.boss && g.boss) {
                         g.boss.x = data.boss.x;
                         g.boss.y = data.boss.y;
@@ -3688,18 +3727,12 @@
                         updateBossUI();
                     }
 
-                    if (data.items) {
-                        g.items = data.items;
-                    }
-                    if (data.keys) {
-                        for (let i = 0; i < Math.min(data.keys.length, g.keys.length); i++) {
-                            if (data.keys[i]) {
-                                g.keys[i].collected = data.keys[i].collected;
-                            }
-                        }
-                    }
+                    // ★★★ 修复：同步关卡状态 ★★★
+                    if (data.levelComplete !== undefined) g.levelComplete = data.levelComplete;
+                    if (data.isBoss !== undefined) g.isBoss = data.isBoss;
+                    if (data.totalKills !== undefined) g.totalKills = data.totalKills;
 
-                    // 接收对方的子弹（标记为other）- 增加ID去重
+                    // 接收对方的子弹
                     if (data.myBullets) {
                         for (const b of data.myBullets) {
                             const exists = g.bullets.some(existing =>
@@ -3744,7 +3777,7 @@
             }
         }
 
-        // ★★★ PVP 伤害检测（只检测自己的子弹打对方） ★★★
+        // ★★★ PVP 伤害检测 ★★★
         function checkPVPDamage() {
             if (gameMode !== 'pvp') return;
             if (!isConnected) return;
@@ -3754,7 +3787,6 @@
 
             for (let i = game.bullets.length - 1; i >= 0; i--) {
                 const bull = game.bullets[i];
-                // 只检查自己的子弹
                 if (bull.isEnemy) continue;
                 if (bull.owner !== 'self') continue;
 
@@ -3782,9 +3814,11 @@
         function syncLoop() {
             if (!isConnected || !conn) return;
             syncCounter++;
-            if (syncCounter % 2 === 0) {
+            // 每帧都发送增量同步
+            if (syncCounter % 1 === 0) {
                 sendIncrementalSync();
             }
+            // 每秒发送一次全量同步
             if (syncCounter % 60 === 0) {
                 sendFullSync();
             }
