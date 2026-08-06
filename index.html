@@ -672,7 +672,7 @@
 
     <script>
         // ================================================================
-        //  👻 暗影勇者 · 双人联机版
+        //  👻 暗影勇者 · 双人联机版 (修复版)
         //  修复：加入者攻击现在有效且可见
         // ================================================================
 
@@ -1841,12 +1841,15 @@
             const pierceCount = isPierce ? 5 : 1;
             const explodeRadius = isExplode ? 30 : 15;
 
+            const bulletId = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
             for (let i = 0; i < count; i++) {
                 const angle = Math.atan2(dy, dx) + (i - (count - 1) / 2) * 0.25;
                 const speed = game.skillActive && game.skillType === 0 ? weapon.speed * 0.4 : weapon.speed;
                 const vx = Math.cos(angle) * speed;
                 const vy = Math.sin(angle) * speed;
                 const bullet = {
+                    id: bulletId + '_' + i,
                     x: cx,
                     y: cy,
                     vx: vx,
@@ -1859,7 +1862,8 @@
                     pierceCount: pierceCount,
                     isEnemy: false,
                     explodeRadius: explodeRadius,
-                    owner: 'self', // 标记为自己发射的子弹
+                    owner: 'self',
+                    timestamp: Date.now(),
                 };
                 game.bullets.push(bullet);
             }
@@ -2209,9 +2213,10 @@
                     bull.life <= 0) { game.bullets.splice(i, 1); continue; }
                 let hit = false;
 
-                // 如果子弹是对方发射的，只检查是否打到怪物/Boss，不检查与自己的碰撞
+                // 如果子弹是对方发射的，只检查是否打到怪物/Boss
                 if (bull.owner === 'other') {
-                    // 检查是否打到怪物
+                    let hitOther = false;
+                    // 检查怪物
                     for (const e of game.enemies) {
                         if (e.y > game.mapHeight + 50) continue;
                         if (dist(bull.x, bull.y, e.x + e.w / 2, e.y + e.h / 2) < bull.r + 12) {
@@ -2223,13 +2228,50 @@
                                 game.totalKills++;
                                 addExp(e.expReward || 10);
                                 playerData.gold += (e.goldReward || 3);
+                                if (e.split && e.hp > 1) {
+                                    for (let s = 0; s < 2; s++) {
+                                        const size2 = e.w * 0.6;
+                                        game.enemies.push({
+                                            x: e.x + s * 30 - 10,
+                                            y: e.y + 20,
+                                            w: size2,
+                                            h: size2,
+                                            type: e.type,
+                                            name: e.name,
+                                            color: e.color,
+                                            glow: e.glow,
+                                            level: e.level,
+                                            hp: Math.ceil(e.maxHp / 2),
+                                            maxHp: Math.ceil(e.maxHp / 2),
+                                            vx: (0.4 + Math.random() * 0.4) * (s === 0 ? 1 : -1),
+                                            speed: e.speed * 1.2,
+                                            minX: 10,
+                                            maxX: game.mapWidth - 10,
+                                            startY: e.y + 20,
+                                            damage: e.damage * 0.6,
+                                            hitFlash: 0,
+                                            aggroRange: e.aggroRange,
+                                            expReward: Math.ceil(e.expReward / 2),
+                                            goldReward: Math.ceil((e.goldReward || 3) / 2),
+                                            split: false,
+                                            ranged: false,
+                                            stealth: false,
+                                            explode: false,
+                                            slow: false,
+                                            shootTimer: 0,
+                                            stealthTimer: 0,
+                                            isStealthed: false,
+                                        });
+                                    }
+                                }
                             } else { e.hitFlash = 10;
                                 spawnParticles(bull.x, bull.y, '#ffaa44', 5); }
-                            hit = true;
+                            hitOther = true;
                             break;
                         }
                     }
-                    if (!hit && game.isBoss && game.boss && game.boss.hp > 0) {
+                    // 检查Boss
+                    if (!hitOther && game.isBoss && game.boss && game.boss.hp > 0) {
                         const b = game.boss;
                         if (bull.x > b.x && bull.x < b.x + b.w && bull.y > b.y && bull.y < b.y + b.h) {
                             b.hp -= bull.damage;
@@ -2238,11 +2280,13 @@
                             playSound('boss_hit');
                             game.screenShake = 8;
                             updateBossUI();
-                            hit = true;
+                            hitOther = true;
                             if (b.hp <= 0) bossDefeated();
                         }
                     }
-                    if (hit) { game.bullets.splice(i, 1); }
+                    if (hitOther) {
+                        game.bullets.splice(i, 1);
+                    }
                     continue;
                 }
 
@@ -3464,11 +3508,11 @@
                     null,
                 items: g.items.map(i => ({ type: i.type, x: i.x, y: i.y, r: i.r })),
                 keys: g.keys.map(k => ({ x: k.x, y: k.y, collected: k.collected })),
-                // 发送自己的子弹（给对面看）
                 myBullets: g.bullets
                     .filter(b => !b.isEnemy && b.owner === 'self')
-                    .slice(-40)
+                    .slice(-50)
                     .map(b => ({
+                        id: b.id || Date.now() + '_' + Math.random().toString(36).substr(2, 9),
                         x: b.x,
                         y: b.y,
                         vx: b.vx,
@@ -3480,6 +3524,8 @@
                         life: b.life || 120,
                         pierceCount: b.pierceCount || 1,
                         explodeRadius: b.explodeRadius || 15,
+                        owner: 'self',
+                        timestamp: b.timestamp || Date.now(),
                     })),
                 levelComplete: g.levelComplete || false,
                 isBoss: g.isBoss,
@@ -3653,27 +3699,34 @@
                         }
                     }
 
-                    // 接收对方的子弹（标记为other）
+                    // 接收对方的子弹（标记为other）- 增加ID去重
                     if (data.myBullets) {
                         for (const b of data.myBullets) {
-                            g.bullets.push({
-                                x: b.x,
-                                y: b.y,
-                                vx: b.vx || 0,
-                                vy: b.vy || 0,
-                                r: b.r || 5,
-                                damage: b.damage || 1,
-                                color: b.color || '#6bcbff',
-                                type: b.type || 'normal',
-                                life: b.life || 120,
-                                pierceCount: b.pierceCount || 1,
-                                explodeRadius: b.explodeRadius || 15,
-                                isEnemy: false,
-                                owner: 'other',
-                            });
+                            const exists = g.bullets.some(existing =>
+                                existing.id && existing.id === b.id
+                            );
+                            if (!exists) {
+                                g.bullets.push({
+                                    id: b.id,
+                                    x: b.x,
+                                    y: b.y,
+                                    vx: b.vx || 0,
+                                    vy: b.vy || 0,
+                                    r: b.r || 5,
+                                    damage: b.damage || 1,
+                                    color: b.color || '#ff66ff',
+                                    type: b.type || 'normal',
+                                    life: b.life || 120,
+                                    pierceCount: b.pierceCount || 1,
+                                    explodeRadius: b.explodeRadius || 15,
+                                    isEnemy: false,
+                                    owner: 'other',
+                                    timestamp: b.timestamp || Date.now(),
+                                });
+                            }
                         }
-                        if (g.bullets.length > 300) {
-                            g.bullets = g.bullets.slice(-200);
+                        if (g.bullets.length > 400) {
+                            g.bullets = g.bullets.slice(-300);
                         }
                     }
                 }
@@ -3859,8 +3912,6 @@
         });
 
         document.getElementById('hostBtn').addEventListener('click', createRoom);
-
-        // 点"加入"弹出小窗输入房间码
         document.getElementById('joinBtn').addEventListener('click', () => {
             const code = prompt('请输入6位房间码：');
             if (code === null) return;
