@@ -3439,7 +3439,7 @@
             conn.send(data);
         }
 
-        function receiveSyncData(data) {
+                function receiveSyncData(data) {
             if (!data || !data.type) return;
             const g = game;
 
@@ -3462,7 +3462,6 @@
                 g.otherPlayer.unlockedSkills = data.unlockedSkills || [];
                 g.otherPlayer.alive = true;
 
-                // ★★★ 同步更新插值目标 ★★★
                 otherTarget.x = g.otherPlayer.x;
                 otherTarget.y = g.otherPlayer.y;
                 otherTarget.hp = g.otherPlayer.hp;
@@ -3483,12 +3482,20 @@
                     g.isBoss = data.isBoss || false;
                     g.keys = data.keys || [];
                     g.items = data.items || [];
-                    // 接收对方的子弹（来自fullSync）
+                    // ★★★ 接收对方子弹 ★★★
                     if (data.bullets) {
                         for (const b of data.bullets) {
-                            b.isEnemy = false;
-                            b.owner = 'other';
-                            g.bullets.push(b);
+                            g.bullets.push({
+                                x: b.x, y: b.y, vx: b.vx || 0, vy: b.vy || 0,
+                                r: b.r || 5, damage: b.damage || 1,
+                                color: b.color || '#6bcbff',
+                                type: b.type || 'normal',
+                                life: b.life || 120,
+                                pierceCount: b.pierceCount || 1,
+                                explodeRadius: b.explodeRadius || 15,
+                                isEnemy: false,
+                                owner: 'other',
+                            });
                         }
                     }
                     if (data.enemyBullets) {
@@ -3520,7 +3527,7 @@
             }
 
             if (data.type === 'incSync' || data.type === 'state') {
-                // ★★★ 更新对方位置，同时更新插值目标 ★★★
+                // 更新对方位置
                 if (data.px !== undefined) {
                     g.otherPlayer.x = data.px;
                     otherTarget.x = data.px;
@@ -3555,6 +3562,7 @@
                 if (data.unlockedSkills !== undefined) g.otherPlayer.unlockedSkills = data.unlockedSkills;
                 g.otherPlayer.alive = true;
 
+                // ★★★ 客户端接收对方的子弹（增量同步） ★★★
                 if (!isHost) {
                     if (data.keysCollected !== undefined) g.keysCollected = data.keysCollected;
                     if (data.totalKeys !== undefined) g.totalKeys = data.totalKeys;
@@ -3594,7 +3602,7 @@
                         }
                     }
 
-                    // ★★★ 接收对方的子弹（增量同步） ★★★
+                    // ★★★ 接收对方的子弹（增量同步）★★★
                     if (data.myBullets) {
                         for (const b of data.myBullets) {
                             g.bullets.push({
@@ -3610,12 +3618,11 @@
                                 pierceCount: b.pierceCount || 1,
                                 explodeRadius: b.explodeRadius || 15,
                                 isEnemy: false,
-                                owner: 'other',
+                                owner: 'other',  // ★★★ 标记为对方的子弹 ★★★
                             });
                         }
-                        // 限制子弹数量防止卡顿
+                        // 限制子弹数量
                         if (g.bullets.length > 300) {
-                            // 只保留最近200颗
                             g.bullets = g.bullets.slice(-200);
                         }
                     }
@@ -3664,38 +3671,35 @@
             setTimeout(() => msgOverlay.classList.remove('show'), 1200);
         }
 
-                function checkPVPDamage() {
+                        function checkPVPDamage() {
             if (gameMode !== 'pvp') return;
             if (!isConnected) return;
             const p = game.player;
             const op = game.otherPlayer;
             if (!op || !op.alive) return;
-            
+
             for (let i = game.bullets.length - 1; i >= 0; i--) {
                 const bull = game.bullets[i];
-                // ★★★ 只检查自己的子弹（不是敌人的，不是对方的） ★★★
+                // 只检查自己的子弹
                 if (bull.isEnemy) continue;
-                if (bull.owner !== 'self') continue;  // 只处理自己射出的子弹
-                
+                if (bull.owner !== 'self') continue;
+
                 const d = dist(bull.x, bull.y, op.x + 12, op.y + 15);
                 if (d < bull.r + 15) {
-                    // 扣血
                     op.hp -= bull.damage;
                     spawnBlood(op.x + 12, op.y + 15, 15);
                     game.bullets.splice(i, 1);
-                    
-                    // 如果对方死亡
+
                     if (op.hp <= 0) {
                         op.alive = false;
-                        showMessage(t('pvpKill'), t('pvpKillSub'));
+                        showMessage('⚔️ 击杀!', '你击败了对手!');
                         setTimeout(() => msgOverlay.classList.remove('show'), 1500);
-                        // 2秒后复活
                         setTimeout(() => {
                             op.hp = 100;
                             op.alive = true;
                         }, 2000);
                     }
-                    // ★★★ 立即同步，让对方知道掉血了 ★★★
+                    // ★★★ 立即同步 ★★★
                     sendFullSync();
                 }
             }
