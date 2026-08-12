@@ -110,28 +110,6 @@
         #skillDisplay:hover {
             background: #1a2a22;
         }
-        #goldDisplay {
-            color: #ffaa00;
-            font-size: 18px;
-            text-shadow: 0 0 20px #ffaa0055;
-            cursor: pointer;
-            padding: 2px 8px;
-            border-radius: 8px;
-        }
-        #goldDisplay:hover {
-            background: rgba(255, 170, 0, 0.15);
-        }
-        #gemDisplay {
-            color: #cc44ff;
-            font-size: 18px;
-            text-shadow: 0 0 20px #cc44ff55;
-            cursor: pointer;
-            padding: 2px 8px;
-            border-radius: 8px;
-        }
-        #gemDisplay:hover {
-            background: rgba(204, 68, 255, 0.15);
-        }
         #levelDisplay {
             color: #f7d44a;
             font-size: 20px;
@@ -336,93 +314,6 @@
         #statPanel .close-btn:hover {
             background: #4a2a2a;
         }
-        #shopPanel {
-            position: absolute;
-            top: 80px;
-            right: 20px;
-            background: #0a0a1aee;
-            border: 2px solid #ffaa44;
-            border-radius: 16px;
-            padding: 20px 24px;
-            color: #fff;
-            z-index: 22;
-            display: none;
-            min-width: 260px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 60px #ffaa4433;
-            font-size: 14px;
-        }
-        #shopPanel h3 {
-            text-align: center;
-            color: #f7d44a;
-            margin-bottom: 12px;
-            font-size: 18px;
-        }
-        #shopPanel .shop-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px 0;
-            border-bottom: 1px solid #33445544;
-        }
-        #shopPanel .shop-row .shop-name {
-            color: #aabbdd;
-            flex: 1;
-        }
-        #shopPanel .shop-row .shop-cost {
-            color: #ffaa00;
-            font-weight: bold;
-            margin: 0 8px;
-            min-width: 50px;
-            text-align: right;
-        }
-        #shopPanel .shop-row .shop-gemcost {
-            color: #cc44ff;
-            font-weight: bold;
-            margin: 0 8px;
-            min-width: 50px;
-            text-align: right;
-        }
-        #shopPanel .shop-row button {
-            background: #2a3a5a;
-            color: #6bcbff;
-            border: 1px solid #6bcbff;
-            border-radius: 30px;
-            padding: 0 14px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 13px;
-            transition: .2s;
-            touch-action: manipulation;
-        }
-        #shopPanel .shop-row button:hover {
-            background: #3a4a6a;
-        }
-        #shopPanel .shop-row button:disabled {
-            opacity: .3;
-            cursor: not-allowed;
-        }
-        #shopPanel .shop-row .owned {
-            color: #44ff88;
-            font-size: 12px;
-        }
-        #shopPanel .close-btn {
-            display: block;
-            margin: 10px auto 0;
-            background: #3a1a1a;
-            color: #ff6666;
-            border: 1px solid #ff6666;
-            border-radius: 30px;
-            padding: 4px 24px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-            transition: .2s;
-            touch-action: manipulation;
-        }
-        #shopPanel .close-btn:hover {
-            background: #4a2a2a;
-        }
         #wrapper {
             position: relative;
         }
@@ -576,9 +467,7 @@
                 font-size: 14px;
             }
             #keyDisplay,
-            #jumpDisplay,
-            #goldDisplay,
-            #gemDisplay {
+            #jumpDisplay {
                 font-size: 13px;
             }
             #weaponDisplay,
@@ -611,13 +500,6 @@
                 right: 8px;
                 padding: 10px 14px;
                 min-width: 160px;
-                font-size: 11px;
-            }
-            #shopPanel {
-                top: 40px;
-                right: 8px;
-                padding: 10px 14px;
-                min-width: 180px;
                 font-size: 11px;
             }
             #levelUpMsg {
@@ -1011,12 +893,6 @@
             <div class="stat-row"><span class="stat-name" id="statNameFire">🔫 射速</span><span class="stat-val" id="statFireRate">1.0</span><button onclick="upgradeStat('fireRate')">+</button></div>
             <button class="close-btn" id="statCloseBtn" onclick="toggleStatPanel()">✕ 关闭</button>
         </div>
-        <div id="shopPanel">
-            <h3 id="shopTitle">⚔️ 武器商店</h3>
-            <div class="points-remaining" id="shopCurrency">🪙 0</div>
-            <div id="shopList"></div>
-            <button class="close-btn" id="shopCloseBtn" onclick="closeShopPanel()">✕ 关闭</button>
-        </div>
         <div id="ui">
             <div id="uiLeft">
                 <span><span class="label">❤️</span> <span id="hpDisplay">100</span></span>
@@ -1026,8 +902,6 @@
                 <span><span class="label">🦘</span> <span id="jumpDisplay">3</span></span>
                 <span id="weaponDisplay">⚔️ 武器</span>
                 <span id="skillDisplay">⏳ 技能</span>
-                <span id="goldDisplay">🪙 0</span>
-                <span id="gemDisplay">💎 0</span>
                 <span id="bossNameDisplay">👹 Boss</span>
                 <span id="bossHpBar"><span class="bar"><span class="fill" id="bossFill"></span></span></span>
                 <button class="btn" id="infiniteToggle">♾️ 无尽</button>
@@ -1082,8 +956,6 @@
         const keySpan = document.getElementById('keyDisplay');
         const jumpSpan = document.getElementById('jumpDisplay');
         const weaponSpan = document.getElementById('weaponDisplay');
-        const goldSpan = document.getElementById('goldDisplay');
-        const gemSpan = document.getElementById('gemDisplay');
         const levelSpan = document.getElementById('levelDisplay');
         const bossNameSpan = document.getElementById('bossNameDisplay');
         const bossHpBar = document.getElementById('bossHpBar');
@@ -1094,12 +966,10 @@
         const infiniteBtn = document.getElementById('infiniteToggle');
         const statBtn = document.getElementById('statBtn');
         const statPanel = document.getElementById('statPanel');
-        const shopPanel = document.getElementById('shopPanel');
-        const shopTitle = document.getElementById('shopTitle');
-        const shopCurrency = document.getElementById('shopCurrency');
-        const shopList = document.getElementById('shopList');
         const pointsRemaining = document.getElementById('pointsRemaining');
         const levelUpMsg = document.getElementById('levelUpMsg');
+        const mpModal = document.getElementById('mpModal');
+        const mpRoomCodeInput = document.getElementById('mpRoomCodeInput');
         const GRAVITY = 0.55;
         const FRICTION = 0.80;
 
@@ -1111,17 +981,17 @@
 
         const WEAPONS = [
             { nameZh: '普通', nameEn: 'Normal', damage: 1, speed: 9, color: '#6bcbff', spread: 1, icon: '🔫',
-            type: 'normal', cost: 0 },
+            type: 'normal' },
             { nameZh: '速射', nameEn: 'Rapid', damage: 1, speed: 14, color: '#ffaa44', spread: 1, icon: '⚡',
-            type: 'normal', cost: 2 },
+            type: 'normal' },
             { nameZh: '重炮', nameEn: 'Cannon', damage: 3, speed: 5, color: '#ff4444', spread: 1, icon: '💥',
-            type: 'normal', cost: 3 },
+            type: 'normal' },
             { nameZh: '散射', nameEn: 'Spread', damage: 1, speed: 7, color: '#44ff88', spread: 3, icon: '🔱',
-            type: 'normal', cost: 2 },
+            type: 'normal' },
             { nameZh: '穿透', nameEn: 'Pierce', damage: 2, speed: 10, color: '#ff66ff', spread: 1, icon: '➡️',
-            type: 'pierce', cost: 4 },
+            type: 'pierce' },
             { nameZh: '爆炸', nameEn: 'Explode', damage: 2, speed: 6, color: '#ff8833', spread: 1, icon: '💣',
-            type: 'explode', cost: 5 }
+            type: 'explode' }
         ];
 
         function wName(w) { return currentLang === 'zh' ? w.nameZh : w.nameEn; }
@@ -1175,19 +1045,14 @@
         function bName(b) { return currentLang === 'zh' ? b.nameZh : b.nameEn; }
 
         const SKILLS = [
-            { id: 0, nameZh: '凝滞', nameEn: 'Time Stop', cooldown: 480, duration: 90, icon: '⏳', cost: 0 },
-            { id: 1, nameZh: '突袭', nameEn: 'Shadow Strike', cooldown: 360, duration: 10, icon: '⚡', cost: 1 },
-            { id: 2, nameZh: '治疗波', nameEn: 'Heal Wave', cooldown: 600, duration: 20, icon: '💚', cost: 2 },
-            { id: 3, nameZh: '雷电风暴', nameEn: 'Thunder Storm', cooldown: 720, duration: 60, icon: '🌩️',
-            cost: 3 }
+            { id: 0, nameZh: '凝滞', nameEn: 'Time Stop', cooldown: 480, duration: 90, icon: '⏳' },
+            { id: 1, nameZh: '突袭', nameEn: 'Shadow Strike', cooldown: 360, duration: 10, icon: '⚡' },
+            { id: 2, nameZh: '治疗波', nameEn: 'Heal Wave', cooldown: 600, duration: 20, icon: '💚' },
+            { id: 3, nameZh: '雷电风暴', nameEn: 'Thunder Storm', cooldown: 720, duration: 60, icon: '🌩️' }
         ];
 
         function sName(s) { return currentLang === 'zh' ? s.nameZh : s.nameEn; }
         let currentSkill = 0;
-        let gold = 0;
-        let gems = 0;
-        let unlockedWeapons = [true, false, false, false, false, false];
-        let unlockedSkills = [true, false, false, false];
 
         const TERRAIN_TEMPLATES = [
             function(seed) { const p = []; for (let i = 0; i < 6; i++) { const x = 80 + i * 100 + Math.sin(
@@ -1228,7 +1093,7 @@
 
         const LANG = {
             zh: {
-                hp: '❤️', level: '⭐', world: '🌍', key: '🔑', jump: '🦘', weapon: '⚔️',
+                hp: '❤️', level: '⭐', world: '🌍', key: '🔑', jump: '🦘', weapon: '⚔️', skill: '⏳ 技能',
                 boss: '👹 Boss', statTitle: '📊 属性分配', statHp: '❤️ 生命', statSpeed: '🏃 速度',
                 statJump: '🦘 跳跃', statDmg: '⚔️ 伤害', statFire: '🔫 射速', statClose: '✕ 关闭',
                 statPoints: '剩余: {p}', infiniteOn: '♾️ 无尽 (开)', infiniteOff: '♾️ 无尽 (关)',
@@ -1239,13 +1104,12 @@
                 bossDefeated: '💀 Boss击败！', bossDefeatedSub: '{name} 已被消灭！',
                 levelComplete: '🎉 过关！', levelCompleteSub: '进入第 {n} 关',
                 infiniteStart: '♾️ 无尽模式已开启', infiniteSub: '每5关随机Boss，地图越来越大！',
-                weaponShop: '⚔️ 武器商店', skillShop: '⏳ 技能商店', goldLabel: '🪙',
-                gemLabel: '💎', owned: '✅ 已拥有', unlock: '解锁', unlockWarn1: '⚠️ 联机模式下请使用房间功能',
-                unlockWarn2: '⚠️ 联机属性由房主控制', mpRoom: '房间', mpCreate: '🎮 创建房间',
-                mpJoin: '🔗 加入房间', mpTitle: '🌐 联机对战', mpModeLabel: '选择房间模式',
-                mpCoop: '合作闯关', mpPvp: 'PVP 对战', mpCreateBtn: '✨ 创建房间',
-                mpWaitLabel: '房间已创建，邀请好友加入', mpHint: '把 6 位房间码（英文/数字）告诉好友即可加入',
-                mpWaitClose: '✕ 关闭', mpJoinLabel: '输入房间码', mpJoinBtn: '🔗 加入房间',
+                terrainNames: ['塔楼', '峡谷', '浮岛', '洞穴', '桥梁', '阶梯'],
+                mpRoom: '房间', mpCreate: '🎮 创建房间', mpJoin: '🔗 加入房间', mpTitle: '🌐 联机对战',
+                mpModeLabel: '选择房间模式', mpCoop: '合作闯关', mpPvp: 'PVP 对战',
+                mpCreateBtn: '✨ 创建房间', mpWaitLabel: '房间已创建，邀请好友加入',
+                mpHint: '把 6 位房间码（英文/数字）告诉好友即可加入', mpWaitClose: '✕ 关闭',
+                mpJoinLabel: '输入房间码', mpJoinBtn: '🔗 加入房间',
                 mpFull: '⚠️ 已有玩家加入，房间已满', mpJoined: '🎉 玩家已加入房间！一起闯关吧！',
                 mpLeft: '👋 玩家已离开房间', mpHostLeft: '⚠️ 房主已离开，返回单人模式',
                 mpLeave: '🚪 离开房间', mpRoomClosed: '🚪 房间已关闭', mpLeftRoom: '🚪 已离开房间',
@@ -1263,13 +1127,11 @@
                 mpKilled: '💀 你被击败了！ 比分 {h} : {g}',
                 mpDown: '💀 队友倒下了，等待复活…', mpDownSelf: '💀 你倒下了！即将复活',
                 mpPVPScore: '⚔️ {h} 你 : {g} 对手', mpPVPScoreGuest: '⚔️ {g} 你 : {h} 房主',
-                goldDrop: '🪙 精英掉落 {n} 金币！', gemDrop: '💎 Boss 掉落 {n} 颗宝石！',
-                boughtWeapon: '✅ 已解锁武器: {icon} {name}',
-                boughtSkill: '✅ 已解锁技能: {icon} {name}',
-                terrainNames: ['塔楼', '峡谷', '浮岛', '洞穴', '桥梁', '阶梯'],
+                unlockWarn1: '⚠️ 联机模式下请使用房间功能',
+                unlockWarn2: '⚠️ 联机属性由房主控制',
             },
             en: {
-                hp: '❤️', level: '⭐', world: '🌍', key: '🔑', jump: '🦘', weapon: '⚔️',
+                hp: '❤️', level: '⭐', world: '🌍', key: '🔑', jump: '🦘', weapon: '⚔️', skill: '⏳ Skill',
                 boss: '👹 Boss', statTitle: '📊 Stats', statHp: '❤️ HP', statSpeed: '🏃 Speed',
                 statJump: '🦘 Jump', statDmg: '⚔️ Damage', statFire: '🔫 Fire Rate', statClose: '✕ Close',
                 statPoints: 'Remaining: {p}', infiniteOn: '♾️ Infinite (ON)', infiniteOff: '♾️ Infinite (OFF)',
@@ -1280,15 +1142,12 @@
                 bossDefeated: '💀 Boss Defeated!', bossDefeatedSub: '{name} has been slain!',
                 levelComplete: '🎉 Level Complete!', levelCompleteSub: 'Enter Level {n}',
                 infiniteStart: '♾️ Infinite Mode ON', infiniteSub: 'Random Boss every 5 levels, maps grow!',
-                weaponShop: '⚔️ Weapon Shop', skillShop: '⏳ Skill Shop', goldLabel: '🪙',
-                gemLabel: '💎', owned: '✅ Owned', unlock: 'Unlock',
-                unlockWarn1: '⚠️ Use room features in multiplayer',
-                unlockWarn2: '⚠️ Host controls stats in multiplayer', mpRoom: 'Room',
-                mpCreate: '🎮 Create Room', mpJoin: '🔗 Join Room', mpTitle: '🌐 Multiplayer',
+                terrainNames: ['Tower', 'Canyon', 'Float', 'Cave', 'Bridge', 'Stairs'],
+                mpRoom: 'Room', mpCreate: '🎮 Create Room', mpJoin: '🔗 Join Room', mpTitle: '🌐 Multiplayer',
                 mpModeLabel: 'Select Mode', mpCoop: 'Co-op', mpPvp: 'PVP Battle',
                 mpCreateBtn: '✨ Create Room', mpWaitLabel: 'Room created, invite a friend',
-                mpHint: 'Share the 6-digit code with your friend',
-                mpWaitClose: '✕ Close', mpJoinLabel: 'Enter Room Code', mpJoinBtn: '🔗 Join Room',
+                mpHint: 'Share the 6-digit code with your friend', mpWaitClose: '✕ Close',
+                mpJoinLabel: 'Enter Room Code', mpJoinBtn: '🔗 Join Room',
                 mpFull: '⚠️ Room is full', mpJoined: '🎉 Player joined! Let\'s go!',
                 mpLeft: '👋 Player left the room', mpHostLeft: '⚠️ Host left, returning to solo',
                 mpLeave: '🚪 Leave Room', mpRoomClosed: '🚪 Room Closed', mpLeftRoom: '🚪 Left Room',
@@ -1307,10 +1166,8 @@
                 mpKilled: '💀 You were defeated! Score {h} : {g}',
                 mpDown: '💀 Teammate down, reviving…', mpDownSelf: '💀 You fell! Reviving…',
                 mpPVPScore: '⚔️ {h} You : {g} Opponent', mpPVPScoreGuest: '⚔️ {g} You : {h} Host',
-                goldDrop: '🪙 Elite dropped {n} gold!', gemDrop: '💎 Boss dropped {n} gems!',
-                boughtWeapon: '✅ Unlocked: {icon} {name}',
-                boughtSkill: '✅ Unlocked: {icon} {name}',
-                terrainNames: ['Tower', 'Canyon', 'Float', 'Cave', 'Bridge', 'Stairs'],
+                unlockWarn1: '⚠️ Use room features in multiplayer',
+                unlockWarn2: '⚠️ Host controls stats in multiplayer',
             }
         };
         let currentLang = 'zh';
@@ -1472,7 +1329,6 @@
             document.getElementById('statNameDmg').textContent = t('statDmg');
             document.getElementById('statNameFire').textContent = t('statFire');
             document.getElementById('statCloseBtn').textContent = t('statClose');
-            document.getElementById('shopCloseBtn').textContent = t('statClose');
             document.getElementById('statBtn').textContent = t('statBtn');
             document.getElementById('hint').textContent = t('hint');
             document.getElementById('langToggle').textContent = t('langBtn');
@@ -1481,7 +1337,6 @@
             document.getElementById('mpCreateBtn').textContent = t('mpCreate');
             document.getElementById('mpJoinBtn').textContent = t('mpJoin');
             updateAllUI();
-            updateShopUI();
             updateUI();
         }
 
@@ -1510,85 +1365,19 @@
                 `⏳ ${currentLang==='zh'?'技能':'Skill'}: ${name} ${currentLang==='zh'?'就绪':'Ready'}`;
                 el.style.color = '#44ff88'; } }
 
-        function updateGoldGemUI() { goldSpan.textContent = `${t('goldLabel')} ${gold}`;
-            gemSpan.textContent = `${t('gemLabel')} ${gems}`; }
+        function cycleWeapon() { const cur = game.player.weapon; let next = (cur + 1) % WEAPONS.length;
+            game.player.weapon = next;
+            playSound('weapon');
+            updateUI(); }
 
-        function addGold(amount) { gold += amount;
-            updateGoldGemUI();
-            updateShopUI(); }
+        function cycleSkill() { const cur = currentSkill; let next = (cur + 1) % SKILLS.length;
+            currentSkill = next;
+            updateUI(); }
 
-        function addGems(amount) { gems += amount;
-            updateGoldGemUI();
-            updateShopUI(); }
-
-        function unlockWeapon(idx) { const w = WEAPONS[idx]; if (gold < w.cost) return;
-            gold -= w.cost;
-            unlockedWeapons[idx] = true;
-            updateGoldGemUI();
-            updateShopUI();
-            mpToast(t('boughtWeapon', { icon: w.icon, name: wName(w) })); }
-
-        function unlockSkill(idx) { const s = SKILLS[idx]; if (gems < s.cost) return;
-            gems -= s.cost;
-            unlockedSkills[idx] = true;
-            updateGoldGemUI();
-            updateShopUI();
-            mpToast(t('boughtSkill', { icon: s.icon, name: sName(s) })); }
-        window.unlockWeapon = unlockWeapon;
-        window.unlockSkill = unlockSkill;
-
-        function openWeaponShop() { shopTitle.textContent = t('weaponShop');
-            updateShopUI('weapon');
-            shopPanel.style.display = 'block';
-            statPanel.style.display = 'none'; }
-
-        function openSkillShop() { shopTitle.textContent = t('skillShop');
-            updateShopUI('skill');
-            shopPanel.style.display = 'block';
-            statPanel.style.display = 'none'; }
-
-        function closeShopPanel() { shopPanel.style.display = 'none'; }
-        window.openWeaponShop = openWeaponShop;
-        window.openSkillShop = openSkillShop;
-        window.closeShopPanel = closeShopPanel;
-
-        function updateShopUI(mode) { if (!mode) { if (shopTitle.textContent.includes(t('weaponShop').substring(2, 4))) mode =
-                    'weapon'; else mode = 'skill'; } let html = ''; if (mode === 'weapon') { shopCurrency.textContent =
-                `${t('goldLabel')} ${gold}`; for (let i = 0; i < WEAPONS.length; i++) { const w = WEAPONS[i]; if (
-                    unlockedWeapons[i]) { html +=
-                    `<div class="shop-row"><span class="shop-name">${w.icon} ${wName(w)}</span><span class="owned">${t('owned')}</span></div>`; } else {
-                    html +=
-                    `<div class="shop-row"><span class="shop-name">${w.icon} ${wName(w)}</span><span class="shop-cost">🪙 ${w.cost}</span><button onclick="unlockWeapon(${i})" ${gold<w.cost?'disabled':''}>${t('unlock')}</button></div>`; } } } else { shopCurrency
-                    .textContent = `${t('gemLabel')} ${gems}`; for (let i = 0; i < SKILLS.length; i++) { const s = SKILLS[
-                        i
-                    ]; if (unlockedSkills[i]) { html +=
-                    `<div class="shop-row"><span class="shop-name">${s.icon} ${sName(s)}</span><span class="owned">${t('owned')}</span></div>`; } else {
-                    html +=
-                    `<div class="shop-row"><span class="shop-name">${s.icon} ${sName(s)}</span><span class="shop-gemcost">💎 ${s.cost}</span><button onclick="unlockSkill(${i})" ${gems<s.cost?'disabled':''}>${t('unlock')}</button></div>`; } } }
-            shopList.innerHTML = html; }
-
-        function cycleWeapon() { const cur = game.player.weapon; let next = (cur + 1) % WEAPONS.length; let cnt = 0; while (!
-                unlockedWeapons[next] && cnt < WEAPONS.length) { next = (next + 1) % WEAPONS.length;
-                cnt++; } if (unlockedWeapons[next]) { game.player.weapon = next;
-                playSound('weapon');
-                updateUI(); } }
-
-        function cycleSkill() { const cur = currentSkill; let next = (cur + 1) % SKILLS.length; let cnt = 0; while (!
-                unlockedSkills[next] && cnt < SKILLS.length) { next = (next + 1) % SKILLS.length;
-                cnt++; } if (unlockedSkills[next]) { currentSkill = next;
-                updateUI(); } }
-
-        function canUseSkill(idx) { return unlockedSkills[idx]; }
         let game = {};
 
         function initGame() { initStats();
-            gold = 0;
-            gems = 0;
-            unlockedWeapons = [true, false, false, false, false, false];
-            unlockedSkills = [true, false, false, false];
             currentSkill = 0;
-            updateGoldGemUI();
-            updateShopUI();
             game = { world: 0, level: 0, maxLevel: 5, infiniteMode: false, totalCycles: 0, mapWidth: W, mapHeight: H,
                 hp: stats.maxHp, maxHp: stats.maxHp, keysCollected: 0, totalKeys: 0, running: true, levelComplete: false,
                 gameOver: false, player: { x: 40, y: 400, w: 24, h: 30, vx: 0, vy: 0, speed: stats.speed,
@@ -1822,8 +1611,7 @@
             weaponSpan.textContent = WEAPONS[game.player.weapon].icon + ' ' + wName(WEAPONS[game.player.weapon]);
             levelSpan.textContent = `Lv.${lvl}`;
             updateSkillUI();
-            updateStatUI();
-            updateGoldGemUI(); }
+            updateStatUI(); }
 
         function updateBossUI() { if (!game.boss) return; const pct = Math.max(0, (game.boss.hp / game.boss.maxHp) * 100);
             bossFill.style.width = pct + '%'; }
@@ -1848,14 +1636,6 @@
                 game.particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 1,
                     life: 40 + Math.random() * 40, maxLife: 80, color: Math.random() > 0.5 ? '#8b0000' : '#cc0000',
                     size: 2 + Math.random() * 6 }); } }
-
-        function spawnGoldParticles(x, y) { for (let i = 0; i < 8; i++) { game.particles.push({ x, y, vx: (Math.random() -
-                        0.5) * 4, vy: (Math.random() - 2) * 3, life: 40, maxLife: 40, color: '#ffaa00',
-                    size: 4 + Math.random() * 4 }); } }
-
-        function spawnGemParticles(x, y) { for (let i = 0; i < 10; i++) { game.particles.push({ x, y, vx: (Math.random() -
-                        0.5) * 5, vy: (Math.random() - 2) * 4, life: 45, maxLife: 45, color: '#cc44ff',
-                    size: 4 + Math.random() * 5 }); } }
 
         function updateParticles() { for (let i = game.particles.length - 1; i >= 0; i--) { const p = game.particles[i];
                 p.x += p.vx;
@@ -1887,7 +1667,7 @@
             spawnParticles(cx, cy, weapon.color, 4); if (now - shootSoundCooldown > 100) { playSound('shoot');
                 shootSoundCooldown = now; } }
 
-        function activateSkill() { if (!canUseSkill(currentSkill)) return; if (game.skillCooldown > 0 || game.skillActive) return; const
+        function activateSkill() { if (game.skillCooldown > 0 || game.skillActive) return; const
                 skill = SKILLS[currentSkill];
             game.skillActive = true;
             game.skillTimer = skill.duration;
@@ -2142,10 +1922,7 @@
             playSound('death');
             addExp(b.expReward || 50);
             game.boss = null;
-            game.isBoss = false; const gemDrop = 1 + Math.floor(Math.random() * 2);
-            addGems(gemDrop);
-            spawnGemParticles(b.x + b.w / 2, b.y + b.h / 2);
-            mpToast(t('gemDrop', { n: gemDrop }));
+            game.isBoss = false;
             game.items.push({ type: 'heal', x: b.x + 20, y: b.y + 10, r: 12, value: 20 });
             game.items.push({ type: 'weapon', weaponIdx: Math.floor(Math.random() * WEAPONS.length), x: b.x + b.w - 30, y: b
                     .y + 10, r: 14 });
@@ -2902,7 +2679,15 @@
             this.quadraticCurveTo(x, y, x + r, y);
             this.closePath(); return this; };
 
-        document.addEventListener('keydown', (e) => { const key = e.key; const isGuest = MP.enabled && !MP.isHost; if (key ===
+        // 判断是否有弹窗/输入框聚焦，是则游戏不拦截按键
+        function isModalActive() {
+            if (mpModal.classList.contains('show')) return true;
+            if (document.activeElement === mpRoomCodeInput) return true;
+            return false;
+        }
+
+        document.addEventListener('keydown', (e) => { const key = e.key;
+            if (isModalActive()) return; const isGuest = MP.enabled && !MP.isHost; if (key ===
                 'ArrowLeft' || key === 'a' || key === 'A') { game.keysPressed.left = true;
                 e.preventDefault(); } if (key === 'ArrowRight' || key === 'd' || key === 'D') { game.keysPressed.right =
                 true;
@@ -2917,7 +2702,7 @@
                 e.preventDefault(); } if (key === 'f' || key === 'F') { if (!isGuest) toggleStatPanel();
                 e.preventDefault(); } if (key === ' ') { e.preventDefault(); if (!isGuest && (game.gameOver || !game.running)) {
                     initGame(); } } });
-        document.addEventListener('keyup', (e) => { const key = e.key; if (key === 'ArrowLeft' || key === 'a' || key === 'A') { game
+        document.addEventListener('keyup', (e) => { const key = e.key; if (isModalActive()) return; if (key === 'ArrowLeft' || key === 'a' || key === 'A') { game
                 .keysPressed.left = false;
                 e.preventDefault(); } if (key === 'ArrowRight' || key === 'd' || key === 'D') { game.keysPressed.right =
                 false;
@@ -2928,9 +2713,7 @@
                 guestFireSkill(); if (MP.connected) { try { MP.conn.send({ type: 'skill' }); } catch (e2) {} } return; }
             activateSkill();
             updateUI(); });
-        weaponSpan.addEventListener('click', function() { openWeaponShop(); });
-        goldSpan.addEventListener('click', function() { openWeaponShop(); });
-        gemSpan.addEventListener('click', function() { openSkillShop(); });
+        weaponSpan.addEventListener('click', function() { cycleWeapon(); });
         infiniteBtn.addEventListener('click', function() { if (MP.enabled) { mpToast(t('unlockWarn1')); return; }
             game.infiniteMode = !game.infiniteMode;
             this.classList.toggle('active');
@@ -2974,7 +2757,7 @@
             MP.toastTimer = setTimeout(() => el.classList.remove('show'), 3200); }
 
         function openCreateRoom() { if (typeof Peer === 'undefined') { mpToast(t('mpNeedNet')); return; } if (MP.enabled) { mpToast(
-                t('mpInRoom')); return; } const md = document.getElementById('mpModal');
+                t('mpInRoom')); return; } const md = mpModal;
             md.classList.add('show');
             document.getElementById('mpModalTitle').textContent = t('mpTitle');
             document.getElementById('mpCreateContent').style.display = 'block';
@@ -2987,7 +2770,7 @@
             document.getElementById('mpCreateConfirmBtn').textContent = t('mpCreateBtn'); }
 
         function openJoinRoom() { if (typeof Peer === 'undefined') { mpToast(t('mpNeedNet')); return; } if (MP.enabled) { mpToast(
-                t('mpInRoom')); return; } const md = document.getElementById('mpModal');
+                t('mpInRoom')); return; } const md = mpModal;
             md.classList.add('show');
             document.getElementById('mpModalTitle').textContent = t('mpTitle');
             document.getElementById('mpCreateContent').style.display = 'none';
@@ -2997,7 +2780,7 @@
             document.getElementById('mpJoinLabel').textContent = t('mpJoinLabel');
             document.getElementById('mpJoinConfirmBtn').textContent = t('mpJoinBtn'); }
 
-        function closeMpModal() { document.getElementById('mpModal').classList.remove('show'); }
+        function closeMpModal() { mpModal.classList.remove('show'); }
 
         function startCreateRoom() { const mode = document.querySelector('input[name="mpModeCreate"]:checked').value;
             MP.mode = mode;
@@ -3027,7 +2810,7 @@
                         mpToast(t('mpRoomFail') + (err.type || err.message)); } }); };
             tryCreate(); }
 
-        function startJoinRoom() { const codeInput = document.getElementById('mpRoomCodeInput'); const code = (codeInput.value ||
+        function startJoinRoom() { const codeInput = mpRoomCodeInput; const code = (codeInput.value ||
                 '').trim().toUpperCase(); if (!/^[A-Z0-9]{6}$/.test(code)) { mpToast(t('mpCodeBad')); return; }
             MP.roomCode = code;
             MP.isHost = false;
@@ -3272,7 +3055,7 @@
             .dead) return;
             shootBulletFor(game.player, tx, ty, 'p2'); }
 
-        function guestFireSkill() { const idx = currentSkill; if (!unlockedSkills[idx]) return; const skill = SKILLS[idx] ||
+        function guestFireSkill() { const idx = currentSkill; const skill = SKILLS[idx] ||
                 SKILLS[0]; const p = game.player; const cx = p.x + p.w / 2; const cy = p.y + p.h / 2;
             playSound('skill'); if (idx === 0) { spawnParticles(cx, cy, '#44ff88', 30, 2); } else if (idx === 2) {
                 spawnParticles(cx, cy, '#44ff88', 40, 2);
@@ -3389,10 +3172,7 @@
             spawnBlood(e.x + e.w / 2, e.y + e.h / 2, bloodCount);
             playSound('kill');
             game.totalKills++;
-            addExp(e.expReward || 10); if (e.elite) { const goldDrop = 1 + Math.floor(Math.random() * 2);
-                addGold(goldDrop);
-                spawnGoldParticles(e.x + e.w / 2, e.y + e.h / 2);
-                mpToast(t('goldDrop', { n: goldDrop })); } if (doSplit) { for (let s2 = 0; s2 < 2; s2++) { const size2 = e.w *
+            addExp(e.expReward || 10); if (doSplit) { for (let s2 = 0; s2 < 2; s2++) { const size2 = e.w *
                         0.6;
                     game.enemies.push({ x: e.x + s2 * 30 - 10, y: e.y + 20, w: size2, h: size2, type: e.type,
                         nameZh: e.nameZh, nameEn: e.nameEn, color: e.color, glow: e.glow, level: e.level,
@@ -3621,18 +3401,15 @@
         gameLoop();
         updateAllUI();
         updateMPStatusUI();
-        updateGoldGemUI();
-        updateShopUI();
         refreshLangUI();
         window.addEventListener('beforeunload', () => { if (MP.peer) { try { MP.peer.destroy(); } catch (e2) {} } });
-        window.addEventListener('keydown', (e) => { if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'q', 'Q',
+        window.addEventListener('keydown', (e) => { if (isModalActive()) return; if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'q', 'Q',
                 'e', 'E', 'r', 'R', 'f', 'F'
             ].includes(e.key)) e.preventDefault(); });
         document.addEventListener('click', () => { initAudio(); }, { once: true });
         window.addEventListener('resize', () => { setupMobileControls(); });
         window.addEventListener('orientationchange', () => { setTimeout(() => { setupMobileControls(); }, 300); });
         console.log('✅ 特色怪物版加载完成！9种怪物（含精英）各具特色！');
-        console.log('🪙 金币解锁武器 | 💎 宝石解锁技能 | 🌐 完整中英文 | 📱 移动端横竖屏适配');
     </script>
 </body>
 </html>
