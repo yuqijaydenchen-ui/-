@@ -154,7 +154,7 @@ canvas{display:block;margin:0 auto;border-radius:16px;background:#1a1a30;box-sha
 <div class="save-box">
 <button id="saveCloseBtn">✕</button>
 <h2>💾 存档管理</h2>
-<div class="save-create-row"><input type="text" id="newSaveName" placeholder="新存档名称，如：第1关存档"><button id="createSaveBtn">➕ 创建存档</button><button id="saveCurrentBtn">📥 保存当前进度</button></div>
+<div class="save-create-row"><input type="text" id="newSaveName" placeholder="新存档名称，如：第1关存档"><button id="createSaveBtn">💾 快照存档</button><button id="saveCurrentBtn">📥 保存当前进度</button></div>
 <div class="save-toolbar"><button id="importSaveBtn">📂 导入存档</button><input type="file" id="importFile" accept=".json,application/json" style="display:none"></div>
 <div id="saveList"></div>
 <div id="saveDetail">
@@ -285,7 +285,6 @@ const WORLDS=[
 {nameZh:'暗影沼泽',nameEn:'Shadow Swamp',bg1:'#0a0a1a',bg2:'#1a0a2a',plat:'#2a1a3a',scary:1},
 {nameZh:'地狱深渊',nameEn:'Hell Abyss',bg1:'#0a0000',bg2:'#1a0000',plat:'#3a0a0a',scary:2}
 ];
-
 const WEAPONS=[
 {nameZh:'普通',nameEn:'Normal',damage:1,speed:9,color:'#6bcbff',spread:1,icon:'🔫',type:'normal',cost:0},
 {nameZh:'速射',nameEn:'Rapid',damage:1,speed:14,color:'#ffaa44',spread:1,icon:'⚡',type:'normal',cost:2},
@@ -295,7 +294,6 @@ const WEAPONS=[
 {nameZh:'爆炸',nameEn:'Explode',damage:2,speed:6,color:'#ff8833',spread:1,icon:'💣',type:'explode',cost:5}
 ];
 function wName(w){return currentLang==='zh'?w.nameZh:w.nameEn;}
-
 const MONSTER_TYPES=[
 {id:'slime',nameZh:'腐化史莱姆',nameEn:'Slime',color:'#44aa44',glow:'#88ff88',size:26,speed:0.6,hp:4,damage:8,exp:15,aggro:140,split:true,ranged:false,stealth:false,explode:false,slow:false,elite:false},
 {id:'frost',nameZh:'冰霜行者',nameEn:'Frost Walker',color:'#44ccff',glow:'#88ddff',size:24,speed:0.65,hp:5,damage:14,exp:18,aggro:200,split:false,ranged:false,stealth:false,explode:false,slow:true,elite:false},
@@ -308,7 +306,6 @@ const MONSTER_TYPES=[
 {id:'elite',nameZh:'暗金骑士',nameEn:'Gold Knight',color:'#ffaa00',glow:'#ffdd44',size:34,speed:0.8,hp:14,damage:26,exp:40,aggro:300,split:false,ranged:true,stealth:false,explode:false,slow:false,elite:true}
 ];
 function mName(m){return currentLang==='zh'?(m.nameZh||m.name):(m.nameEn||m.name);}
-
 const BOSS_TYPES=[
 {id:'beast',nameZh:'腐化巨兽',nameEn:'Corrupt Beast',color:'#44aa44',glow:'#88ff88',shape:'beast',hpMult:1.0,speed:0.6,bulletColor:'#44ff44',attackType:'spray'},
 {id:'ghost',nameZh:'暗影幽灵',nameEn:'Shadow Ghost',color:'#aa44ff',glow:'#cc88ff',shape:'ghost',hpMult:0.8,speed:1.2,bulletColor:'#cc66ff',attackType:'scatter'},
@@ -317,7 +314,6 @@ const BOSS_TYPES=[
 {id:'void',nameZh:'虚空使者',nameEn:'Void Emissary',color:'#8833cc',glow:'#bb66ff',shape:'void',hpMult:1.4,speed:0.4,bulletColor:'#aa44ff',attackType:'nova'}
 ];
 function bName(b){return currentLang==='zh'?b.nameZh:b.nameEn;}
-
 const SKILLS=[
 {id:0,nameZh:'凝滞',nameEn:'Time Stop',cooldown:480,duration:90,icon:'⏳',cost:0},
 {id:1,nameZh:'突袭',nameEn:'Shadow Strike',cooldown:360,duration:10,icon:'⚡',cost:1},
@@ -330,7 +326,6 @@ let gold=0;
 let gems=0;
 let unlockedWeapons=[true,false,false,false,false,false];
 let unlockedSkills=[true,false,false,false];
-
 const TERRAIN_TEMPLATES=[
 function(seed){const p=[];for(let i=0;i<6;i++){const x=80+i*100+Math.sin(seed+i*0.7)*25;const y=420-i*45-Math.sin(seed+i*1.2)*10;const w=80+Math.sin(seed*2+i*1.5)*20+40;p.push({x:Math.max(10,Math.min(W-80,x)),y:Math.max(80,Math.min(440,y)),w:Math.max(60,Math.min(120,w)),h:14});}return p;},
 function(seed){const p=[];for(let i=0;i<7;i++){const t=i/6;const x=30+i*115+Math.sin(seed+i*0.5)*20;const y=400-80*Math.sin(t*Math.PI)-Math.sin(seed+i*1.8)*15;const w=70+Math.sin(seed*1.5+i*2)*20+30;p.push({x:Math.max(10,Math.min(W-60,x)),y:Math.max(60,Math.min(440,y)),w:Math.max(50,Math.min(110,w)),h:14});}return p;},
@@ -339,7 +334,6 @@ function(seed){const p=[];for(let i=0;i<5;i++){const x=40+i*140+Math.sin(seed+i*
 function(seed){const p=[];for(let i=0;i<8;i++){const x=20+i*85+Math.sin(seed+i*0.3)*10;const y=350+Math.sin(seed*1.5+i*0.8)*30;const w=50+Math.sin(seed*2+i*1.2)*15+30;p.push({x:Math.max(10,Math.min(W-50,x)),y:Math.max(200,Math.min(440,y)),w:Math.max(40,Math.min(80,w)),h:14});}return p;},
 function(seed){const p=[];for(let i=0;i<7;i++){const x=30+i*95+Math.sin(seed+i*0.4)*15;const y=420-i*40+Math.sin(seed*1.8+i*1.5)*12;const w=70+Math.sin(seed*2.5+i*1.3)*15+30;p.push({x:Math.max(10,Math.min(W-60,x)),y:Math.max(100,Math.min(440,y)),w:Math.max(50,Math.min(110,w)),h:14});}return p;}
 ];
-
 const LANG={
 zh:{
 hp:'❤️',level:'⭐',world:'🌍',key:'🔑',jump:'🦘',weapon:'⚔️',skill:'⏳ 技能',boss:'👹 Boss',statTitle:'📊 属性分配',statHp:'❤️ 生命',statSpeed:'🏃 速度',statJump:'🦘 跳跃',statDmg:'⚔️ 伤害',statFire:'🔫 射速',statClose:'✕ 关闭',statPoints:'剩余: {p}',infiniteOn:'♾️ 无尽 (开)',infiniteOff:'♾️ 无尽 (关)',statBtn:'📊 属性',langBtn:'🌐 EN',weaponShopBtn:'🔫 子弹',skillShopBtn:'⏳ 技能树',hint:'🖱️射击 | ← → 移动 | 空格跳 | Q切武器 | E切换技能 | R放技能 | F属性',levelUp:'⬆ Lv.{lv}',gameOver:'💀 死亡',restart:'按 空格键 重新开始',victory:'🏆 通关！',victorySub:'开启无尽模式继续挑战',bossDefeated:'💀 Boss击败！',bossDefeatedSub:'{name} 已被消灭！',levelComplete:'🎉 过关！',levelCompleteSub:'进入第 {n} 关',infiniteStart:'♾️ 无尽模式已开启',infiniteSub:'每20关Boss掉宝石，精英每8-12关掉金币！',weaponShop:'⚔️ 子弹商店',skillShop:'⏳ 技能树',goldLabel:'🪙',gemLabel:'💎',owned:'✅ 已拥有',unlock:'解锁',goldDrop:'🪙 精英掉落 {n} 金币！',gemDrop:'💎 Boss 掉落 {n} 颗宝石！',boughtWeapon:'✅ 已解锁子弹: {icon} {name}',boughtSkill:'✅ 已解锁技能: {icon} {name}',terrainNames:['塔楼','峡谷','浮岛','洞穴','桥梁','阶梯'],mpRoom:'房间',mpCreate:'🎮 创建房间',mpJoin:'🔗 加入房间',mpTitle:'🌐 联机对战',mpModeLabel:'选择房间模式',mpCoop:'合作闯关',mpPvp:'PVP 对战',mpCreateBtn:'✨ 创建房间',mpWaitLabel:'房间已创建，邀请好友加入',mpHint:'把 6 位房间码（英文/数字）告诉好友即可加入',mpWaitClose:'✕ 关闭',mpJoinLabel:'输入房间码',mpJoinBtn:'🔗 加入房间',mpFull:'⚠️ 已有玩家加入，房间已满',mpJoined:'🎉 玩家已加入房间！一起闯关吧！',mpLeft:'👋 玩家已离开房间',mpHostLeft:'⚠️ 房主已离开，返回单人模式',mpLeave:'🚪 离开房间',mpRoomClosed:'🚪 房间已关闭',mpLeftRoom:'🚪 已离开房间',mpConnOk:'✅ 玩家已连接',mpConnWait:'⏳ 等待玩家加入…',mpConnGuest:'✅ 已连接',mpConnGuestWait:'⏳ 连接中…',mpConnBad:'⚠️ 连接不稳定…',mpSyncBad:'⚠️ 同步中断…',mpNeedNet:'⚠️ 需要联网才能联机（PeerJS 未加载）',mpInRoom:'⚠️ 你已在房间中',mpFail:'⚠️ 创建失败，请重试',mpCodeBad:'⚠️ 请输入 6 位英文或数字房间码',mpJoinFail:'⚠️ 加入失败: 房间不存在或已关闭',mpJoinFail2:'⚠️ 加入失败: 无法找到房间',mpTimeout:'⚠️ 连接超时，请检查房间码',mpConnErr:'⚠️ 连接出错',mpRoomFail:'⚠️ 房间创建失败: ',mpRoomOk:'🎮 房间已创建！房间码: ',mpCreating:'⏳ 正在创建房间…',mpGenCode:'⏳ 生成中…',mpJoinIng:'🔗 正在加入房间',mpScore:'⚔️ 比分  你 {y} : {o} 房主',mpKillScore:'🏆 你击败了对手！ 比分 {h} : {g}',mpKilled:'💀 你被击败了！ 比分 {h} : {g}',mpDown:'💀 队友倒下了，等待复活…',mpDownSelf:'💀 你倒下了！即将复活',mpPVPScore:'⚔️ {h} 你 : {g} 对手',mpPVPScoreGuest:'⚔️ {g} 你 : {h} 房主',unlockWarn1:'⚠️ 联机模式下请使用房间功能',unlockWarn2:'⚠️ 联机属性由房主控制',
@@ -387,6 +381,7 @@ function cycleWeapon(){const cur=game.player.weapon;let next=(cur+1)%WEAPONS.len
 function cycleSkill(){const cur=currentSkill;let next=(cur+1)%SKILLS.length;let cnt=0;while(!unlockedSkills[next]&&cnt<SKILLS.length){next=(next+1)%SKILLS.length;cnt++;}if(unlockedSkills[next]){currentSkill=next;updateUI();}}
 function canUseSkill(idx){return unlockedSkills[idx];}
 let game={};
+window.gameState={};
 function initGame(){initStats();gold=0;gems=0;unlockedWeapons=[true,false,false,false,false,false];unlockedSkills=[true,false,false,false];currentSkill=0;updateGoldGemUI();updateShopUI();game={world:0,level:0,maxLevel:5,infiniteMode:false,totalCycles:0,mapWidth:W,mapHeight:H,hp:stats.maxHp,maxHp:stats.maxHp,keysCollected:0,totalKeys:0,running:true,levelComplete:false,gameOver:false,player:{x:40,y:400,w:24,h:30,vx:0,vy:0,speed:stats.speed,jumpPower:-stats.jumpPower,onGround:false,jumpCount:0,maxJumps:3,facing:1,invincible:0,weapon:0,trail:[],maxHp:stats.maxHp,healTimer:0},platforms:[],enemies:[],keys:[],items:[],exit:{x:740,y:60,w:30,h:38},keysPressed:{left:false,right:false,up:false},frame:0,particles:[],bullets:[],boss:null,isBoss:false,totalKills:0,screenShake:0,skillCooldown:0,skillActive:false,skillTimer:0,bossSpawned:false,bossType:null,touchLeft:false,touchRight:false,touchJump:false,touchShoot:false,touchX:0,touchY:0,thunderTimer:0,skillType:0,terrainType:0,platGraph:null};loadLevel(0);updateUI();msgOverlay.classList.remove('show');game.running=true;game.gameOver=false;bossHpBar.style.display='none';bossNameSpan.style.display='none';applyStats();updateAllUI();if(MP.enabled&&MP.isHost&&MP.connected&&!game.player2){initGuestPlayer();resetPlayersForLevel();}}
 let joystickDX=0,joystickDY=0;
 function setupMobileControls(){const isMobile=('ontouchstart' in window)||(navigator.maxTouchPoints>0);if(!isMobile){document.getElementById('mobileControls').classList.remove('active');return;}document.getElementById('mobileControls').classList.add('active');const joystickZone=document.getElementById('joystickZone');const knob=document.getElementById('joystickKnob');const shootZone=document.getElementById('shootZone');const jumpBtn=document.getElementById('jumpBtn');const weaponBtn=document.getElementById('mobileWeaponBtn');const skillBtn=document.getElementById('mobileSkillBtn');let jtId=null,stId=null;
@@ -495,7 +490,7 @@ function currentUser(){return localStorage.getItem('shadowHero_currentUser')||nu
 function setCurrent(username){if(username)localStorage.setItem('shadowHero_currentUser',username);else localStorage.removeItem('shadowHero_currentUser');}
 function rememberKey(){return'shadowHero_remember';}
 function formatDT(d){const p=n=>String(n).padStart(2,'0');return`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;}
-function userSaves(username){const raw=localStorage.getItem(`user_${username}_data`);if(!raw)return[];try{return(JSON.parse(raw).saves)||[];}catch(e){return[];}}
+function userSaves(username){if(!username)return[];const raw=localStorage.getItem(`user_${username}_data`);if(!raw)return[];try{return(JSON.parse(raw).saves)||[];}catch(e){return[];}}
 function setUserSaves(username,saves){localStorage.setItem(`user_${username}_data`,JSON.stringify({saves}));}
 function showAuthMsg(text,isError){const el=document.getElementById('authMsg');el.textContent=text||'';el.className=isError?'err':'ok';}
 function showSaveMsg(text,isError){const el=document.getElementById('saveMsg');el.textContent=text||'';el.className=isError?'err':'ok';}
@@ -507,17 +502,163 @@ function fillRemembered(){const raw=localStorage.getItem(rememberKey());if(raw){
 function enterAuthState(){authOverlay.classList.remove('hidden');saveModal.classList.remove('show');document.getElementById('topUser').textContent='未登录';document.getElementById('topSaveBtn').style.display='none';document.getElementById('topLogoutBtn').style.display='none';fillRemembered();}
 function enterLoggedInState(username){authOverlay.classList.add('hidden');document.getElementById('topUser').textContent='👤 '+username;document.getElementById('topSaveBtn').style.display='';document.getElementById('topLogoutBtn').style.display='';renderSaveList();}
 
-// ======================= 存档系统 =======================
+// ======================= 快照存档系统 =======================
 let currentSaveId=null;
+
+function captureFormControls(){
+  const res={};
+  document.querySelectorAll('input, textarea, select').forEach(el=>{
+    const key=el.id||el.name||el.placeholder||el.type;
+    if(el.type==='checkbox'||el.type==='radio')res[key]=!!el.checked;
+    else res[key]=el.value||'';
+  });
+  return res;
+}
+function applyFormControls(controls){
+  if(!controls||typeof controls!=='object')return;
+  document.querySelectorAll('input, textarea, select').forEach(el=>{
+    const key=el.id||el.name||el.placeholder||el.type;
+    if(key in controls){
+      if(el.type==='checkbox'||el.type==='radio')el.checked=!!controls[key];
+      else el.value=controls[key]??'';
+    }
+  });
+}
+function captureGameState(){
+  const p=game.player;
+  window.gameState={
+    version:3,
+    savedAt:new Date().toISOString(),
+    gold:gold,gems:gems,lvl:lvl,exp:exp,expToNext:expToNext,statPoints:statPoints,
+    stats:JSON.parse(JSON.stringify(stats)),
+    unlockedWeapons:[...unlockedWeapons],
+    unlockedSkills:[...unlockedSkills],
+    currentSkill:currentSkill,
+    currentLang:currentLang,
+    game:{
+      level:game.level,world:game.world,totalCycles:game.totalCycles,
+      hp:game.hp,maxHp:game.maxHp,keysCollected:game.keysCollected,totalKeys:game.totalKeys,
+      totalKills:game.totalKills,running:game.running,gameOver:game.gameOver,
+      levelComplete:game.levelComplete,infiniteMode:game.infiniteMode,
+      skillCooldown:game.skillCooldown,skillActive:game.skillActive,
+      skillTimer:game.skillTimer,skillType:game.skillType,
+    },
+    player:{
+      x:p.x,y:p.y,vx:p.vx,vy:p.vy,facing:p.facing,weapon:p.weapon,
+      jumpCount:p.jumpCount,onGround:p.onGround,invincible:p.invincible,
+      maxHp:p.maxHp,maxJumps:p.maxJumps,healTimer:p.healTimer,speed:p.speed,jumpPower:p.jumpPower,
+    },
+    ui:{controls:captureFormControls()},
+  };
+  return window.gameState;
+}
+function applyGameState(s){
+  if(!s||typeof s!=='object')return false;
+  if(s.gold!==undefined)gold=Number(s.gold)||0;
+  if(s.gems!==undefined)gems=Number(s.gems)||0;
+  if(s.lvl!==undefined)lvl=Number(s.lvl)||1;
+  if(s.exp!==undefined)exp=Number(s.exp)||0;
+  if(s.expToNext!==undefined)expToNext=Number(s.expToNext)||20;
+  if(s.statPoints!==undefined)statPoints=Number(s.statPoints)||0;
+  if(s.stats&&typeof s.stats==='object')stats={...stats,...s.stats};
+  if(Array.isArray(s.unlockedWeapons))unlockedWeapons=[...s.unlockedWeapons];
+  if(Array.isArray(s.unlockedSkills))unlockedSkills=[...s.unlockedSkills];
+  if(s.currentSkill!==undefined)currentSkill=Number(s.currentSkill)||0;
+  if(s.currentLang)currentLang=s.currentLang;
+  if(s.game&&typeof s.game==='object'){
+    const g=s.game;
+    if(g.level!==undefined)game.level=Number(g.level)||0;
+    if(g.world!==undefined)game.world=Number(g.world)||0;
+    if(g.totalCycles!==undefined)game.totalCycles=Number(g.totalCycles)||0;
+    if(g.hp!==undefined)game.hp=Number(g.hp);
+    if(g.maxHp!==undefined)game.maxHp=Number(g.maxHp);
+    if(g.keysCollected!==undefined)game.keysCollected=Number(g.keysCollected)||0;
+    if(g.totalKeys!==undefined)game.totalKeys=Number(g.totalKeys)||0;
+    if(g.totalKills!==undefined)game.totalKills=Number(g.totalKills)||0;
+    if(g.running!==undefined)game.running=!!g.running;
+    if(g.gameOver!==undefined)game.gameOver=!!g.gameOver;
+    if(g.levelComplete!==undefined)game.levelComplete=!!g.levelComplete;
+    if(g.infiniteMode!==undefined)game.infiniteMode=!!g.infiniteMode;
+    if(g.skillCooldown!==undefined)game.skillCooldown=Number(g.skillCooldown)||0;
+    if(g.skillActive!==undefined)game.skillActive=!!g.skillActive;
+    if(g.skillTimer!==undefined)game.skillTimer=Number(g.skillTimer)||0;
+    if(g.skillType!==undefined)game.skillType=Number(g.skillType)||0;
+  }
+  loadLevel(game.level);
+  if(s.player&&typeof s.player==='object'){
+    const p=game.player,q=s.player;
+    if(q.x!==undefined)p.x=Number(q.x);
+    if(q.y!==undefined)p.y=Number(q.y);
+    if(q.vx!==undefined)p.vx=Number(q.vx)||0;
+    if(q.vy!==undefined)p.vy=Number(q.vy)||0;
+    if(q.facing!==undefined)p.facing=Number(q.facing)||1;
+    if(q.weapon!==undefined)p.weapon=Number(q.weapon)||0;
+    if(q.jumpCount!==undefined)p.jumpCount=Number(q.jumpCount)||0;
+    if(q.onGround!==undefined)p.onGround=!!q.onGround;
+    if(q.invincible!==undefined)p.invincible=Number(q.invincible)||0;
+    if(q.maxHp!==undefined)p.maxHp=Number(q.maxHp);
+    if(q.maxJumps!==undefined)p.maxJumps=Number(q.maxJumps)||3;
+    if(q.healTimer!==undefined)p.healTimer=Number(q.healTimer)||0;
+    if(q.speed!==undefined)p.speed=Number(q.speed);
+    if(q.jumpPower!==undefined)p.jumpPower=Number(q.jumpPower);
+  }
+  applyStats();
+  if(s.ui&&s.ui.controls)applyFormControls(s.ui.controls);
+  return true;
+}
+function refreshAllUI(){
+  updateUI();
+  updateStatUI();
+  updateGoldGemUI();
+  updateShopUI();
+  updateSkillUI();
+  updateBossUI();
+  updateAllUI();
+}
+function saveSnapshot(){
+  if(!currentUser()){showSaveMsg('未登录',true);return;}
+  const name=document.getElementById('newSaveName').value.trim()||`快照 ${formatDT(new Date())}`;
+  const json=JSON.stringify(captureGameState(),null,2);
+  try{localStorage.setItem('save_游戏存档',json);}catch(e){}
+  const username=currentUser();
+  const now=formatDT(new Date());
+  const save={id:Date.now()+'_'+Math.random().toString(36).slice(2,7),name:name,content:json,createdAt:now,updatedAt:now};
+  const saves=userSaves(username);
+  saves.push(save);
+  setUserSaves(username,saves);
+  renderSaveList();
+  loadSaveDetail(save.id);
+  document.getElementById('newSaveName').value='';
+  showSaveMsg('✅ 快照已保存（localStorage: save_游戏存档）',false);
+}
+function restoreFromSnapshotText(text,silent){
+  try{
+    const parsed=JSON.parse(text);
+    if(!parsed||typeof parsed!=='object'){if(!silent)showSaveMsg('❌ 快照数据无效',true);return false;}
+    Object.assign(window.gameState,parsed);
+    applyGameState(window.gameState);
+    refreshAllUI();
+    if(!silent)showSaveMsg('✅ 快照已加载，页面完全复原',false);
+    return true;
+  }catch(e){
+    if(!silent)showSaveMsg('❌ 快照解析失败',true);
+    return false;
+  }
+}
+function loadSnapshot(){
+  const raw=localStorage.getItem('save_游戏存档');
+  if(!raw){showSaveMsg('⚠️ 没有找到快照存档',true);return false;}
+  return restoreFromSnapshotText(raw,false);
+}
 function renderSaveList(){const username=currentUser();const list=document.getElementById('saveList');if(!username){list.innerHTML='';return;}const saves=userSaves(username).sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||'')||(b.id<a.id?-1:1));if(!saves.length){list.innerHTML='<div style="color:#667799;text-align:center;padding:10px;">暂无存档</div>';return;}list.innerHTML=saves.map(s=>`<div class="save-item" data-id="${escapeHtml(s.id)}"><span class="si-name">💾 ${escapeHtml(s.name)}</span><span class="si-time">🕒 ${escapeHtml(s.updatedAt||s.createdAt)}</span><span class="si-actions"><button data-act="load">加载</button><button data-act="export">导出</button><button data-act="delete" class="danger">删除</button></span></div>`).join('');}
 function getSaveById(id){return userSaves(currentUser()).find(s=>s.id===id);}
 function createSave(name,content){const username=currentUser();if(!username)return'未登录';if(!name||!name.trim())return'请输入存档名称';const now=formatDT(new Date());const save={id:Date.now()+'_'+Math.random().toString(36).slice(2,7),name:name.trim(),content:content||'',createdAt:now,updatedAt:now};const saves=userSaves(username);saves.push(save);setUserSaves(username,saves);renderSaveList();loadSaveDetail(save.id);return null;}
-function loadSaveDetail(id){const save=getSaveById(id);if(!save)return;currentSaveId=id;document.getElementById('saveDetailName').textContent='💾 '+save.name;document.getElementById('saveContent').value=save.content||'';document.getElementById('saveDetailMeta').textContent=`创建：${save.createdAt} ｜ 更新：${save.updatedAt}`;showSaveMsg('');}
+function loadSaveDetail(id){const save=getSaveById(id);if(!save)return;currentSaveId=id;document.getElementById('saveDetailName').textContent='💾 '+save.name;document.getElementById('saveContent').value=save.content||'';document.getElementById('saveDetailMeta').textContent=`创建：${save.createdAt} ｜ 更新：${save.updatedAt}`;const restored=restoreFromSnapshotText(save.content,true);showSaveMsg(restored?'✅ 存档已加载，游戏状态已完全复原':'',false);}
 function saveCurrentDetail(){if(!currentSaveId){showSaveMsg('请先选择或创建一个存档',true);return;}const username=currentUser();const saves=userSaves(username);const save=saves.find(s=>s.id===currentSaveId);if(!save){showSaveMsg('存档不存在',true);return;}save.content=document.getElementById('saveContent').value;save.updatedAt=formatDT(new Date());setUserSaves(username,saves);renderSaveList();document.getElementById('saveDetailMeta').textContent=`创建：${save.createdAt} ｜ 更新：${save.updatedAt}`;showSaveMsg('✅ 存档已保存',false);}
 function deleteSave(id){if(!confirm('确定删除该存档吗？此操作不可恢复。'))return;const username=currentUser();let saves=userSaves(username);saves=saves.filter(s=>s.id!==id);setUserSaves(username,saves);if(currentSaveId===id){currentSaveId=null;document.getElementById('saveDetailName').textContent='请选择或创建一个存档';document.getElementById('saveContent').value='';document.getElementById('saveDetailMeta').textContent='';}renderSaveList();showSaveMsg('🗑️ 存档已删除',false);}
 function exportSave(id){const save=getSaveById(id);if(!save)return;const data=JSON.stringify(save,null,2);const blob=new Blob([data],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`${save.name}.json`;a.click();URL.revokeObjectURL(a.href);}
 function importSave(file){const reader=new FileReader();reader.onload=(e)=>{try{const obj=JSON.parse(e.target.result);if(!obj||typeof obj!=='object'||!obj.name){showSaveMsg('❌ 无效的存档文件',true);return;}const username=currentUser();const saves=userSaves(username);const idx=saves.findIndex(s=>s.name===obj.name);const now=formatDT(new Date());const save={id:obj.id||(Date.now()+'_'+Math.random().toString(36).slice(2,7)),name:obj.name,content:obj.content||'',createdAt:obj.createdAt||now,updatedAt:now};if(idx>=0){saves[idx]={...saves[idx],...save};}else{saves.push(save);}setUserSaves(username,saves);renderSaveList();loadSaveDetail(save.id);showSaveMsg('✅ 存档导入成功',false);}catch(err){showSaveMsg('❌ 文件解析失败',true);}};reader.readAsText(file);}
-function saveCurrentProgress(){const name=document.getElementById('newSaveName').value.trim()||`自动存档 ${formatDT(new Date())}`;const content=JSON.stringify({level:game.level,world:game.world,totalCycles:game.totalCycles,hp:game.hp,gold:gold,gems:gems,lvl:lvl,exp:exp,statPoints:statPoints,stats:stats,unlockedWeapons:unlockedWeapons,unlockedSkills:unlockedSkills,currentSkill:currentSkill,weapon:game.player?game.player.weapon:0,totalKills:game.totalKills,infiniteMode:game.infiniteMode},null,2);const err=createSave(name,content);if(err)showSaveMsg('❌ '+err,true);else{document.getElementById('newSaveName').value='';showSaveMsg('✅ 当前进度已保存',false);}}
+function saveCurrentProgress(){saveSnapshot();}
 function initAuthUI(){
 document.getElementById('tabLogin').addEventListener('click',()=>{document.getElementById('tabLogin').classList.add('active');document.getElementById('tabRegister').classList.remove('active');document.getElementById('loginForm').style.display='';document.getElementById('registerForm').style.display='none';showAuthMsg('',false);});
 document.getElementById('tabRegister').addEventListener('click',()=>{document.getElementById('tabRegister').classList.add('active');document.getElementById('tabLogin').classList.remove('active');document.getElementById('registerForm').style.display='';document.getElementById('loginForm').style.display='none';showAuthMsg('',false);});
@@ -528,7 +669,7 @@ document.getElementById('registerBtn').addEventListener('click',()=>{const u=doc
 document.getElementById('topLogoutBtn').addEventListener('click',logoutUser);
 document.getElementById('topSaveBtn').addEventListener('click',()=>{saveModal.classList.add('show');renderSaveList();});
 document.getElementById('saveCloseBtn').addEventListener('click',()=>saveModal.classList.remove('show'));
-document.getElementById('createSaveBtn').addEventListener('click',()=>{const name=document.getElementById('newSaveName').value.trim();const err=createSave(name,'');if(err)showSaveMsg('❌ '+err,true);else{document.getElementById('newSaveName').value='';showSaveMsg('✅ 存档已创建',false);}});
+document.getElementById('createSaveBtn').addEventListener('click',()=>{saveSnapshot();});
 document.getElementById('saveCurrentBtn').addEventListener('click',saveCurrentProgress);
 document.getElementById('importSaveBtn').addEventListener('click',()=>document.getElementById('importFile').click());
 document.getElementById('importFile').addEventListener('change',(e)=>{if(e.target.files[0])importSave(e.target.files[0]);e.target.value='';});
@@ -552,7 +693,7 @@ document.addEventListener('click',()=>{initAudio();},{once:true});
 window.addEventListener('resize',()=>{setupMobileControls();});
 window.addEventListener('orientationchange',()=>{setTimeout(()=>{setupMobileControls();},300);});
 console.log('✅ 特色怪物版加载完成！9种怪物（含精英）各具特色！');
-console.log('👤 账号系统 + 💾 存档系统已启用');
+console.log('👤 账号系统 + 📸 快照存档系统（window.gameState + refreshAllUI）已启用');
 </script>
 </body>
 </html>
